@@ -33,7 +33,37 @@ public class App {
 			System.out.println("get");
 			ctx.result("Hello World");
 		});
-*/		app.post("/", ctx -> {
+*/		app.get("/chain.pem", ctx -> {
+			java.net.URL url=de.netsysit.util.ResourceLoader.getResource("rfc3161timestampingserver/priv/chain.pem");
+			java.io.InputStream is=url.openStream();
+			java.io.ByteArrayOutputStream baos=new java.io.ByteArrayOutputStream();
+			de.elbosso.util.Utilities.copyBetweenStreams(is,baos,true);
+			byte[] content=baos.toByteArray();
+			ctx.status(201);
+			ctx.contentType("application/pkcs7-mime");
+			ctx.result(new java.io.ByteArrayInputStream(content));
+		});
+		app.get("/tsa.crt", ctx -> {
+			java.net.URL url=de.netsysit.util.ResourceLoader.getResource("rfc3161timestampingserver/priv/tsa.crt");
+			java.io.InputStream is=url.openStream();
+			java.io.ByteArrayOutputStream baos=new java.io.ByteArrayOutputStream();
+			de.elbosso.util.Utilities.copyBetweenStreams(is,baos,true);
+			byte[] content=baos.toByteArray();
+			ctx.status(201);
+			ctx.contentType("application/pkix-cert");
+			ctx.result(new java.io.ByteArrayInputStream(content));
+		});
+		app.get("/tsa.conf", ctx -> {
+			java.net.URL url=de.netsysit.util.ResourceLoader.getResource("rfc3161timestampingserver/etc/tsa.conf");
+			java.io.InputStream is=url.openStream();
+			java.io.ByteArrayOutputStream baos=new java.io.ByteArrayOutputStream();
+			de.elbosso.util.Utilities.copyBetweenStreams(is,baos,true);
+			byte[] content=baos.toByteArray();
+			ctx.status(201);
+			ctx.contentType("text/plain");
+			ctx.result(new java.io.ByteArrayInputStream(content));
+		});
+		app.post("/", ctx -> {
 			byte[] tsq=null;
 			if(ctx.contentType().equals("application/timestamp-query"))
 			{
