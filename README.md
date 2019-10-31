@@ -62,8 +62,29 @@ some default port.
 
 Verweis auf [expect-dialog-ca](https://github.com/elbosso/expect-dialog-ca)
 
-openssl ts -query -config tsa.conf -sha512 -cert -data ../../../create_ca.sh -no_nonce -out ../../../_priv/create_ca.sh.tsq
-curl -H "Content-Type: application/timestamp-query" --data-binary '@../../work/expect-dialog-ca.git/_priv/create_ca.sh.tsq' http://localhost:7000/
-curl -F "tsq=@../../create_ca.sh.tsq" http://rfc3161timestampingserver.docker.lab/ >/tmp/javalin1.tsr
-openssl ts -config tsa.conf -reply -in /tmp/javalin1.tsr -text
-openssl ts -verify -config tsa.conf -queryfile ../../create_ca.sh.tsq -in /tmp/javalin1.tsr -CAfile chain.pem
+Das Projekt stellt unter der URL `http://<host>:<port>/tsa.conf` eine Konfigurationsdatei
+zur verfügung, die durch den Anwender für die Erstellung eines Timestamp-Requests benutzt werden kann:
+```shell script
+openssl ts -query -config tsa.conf -cert -sha512 -data <path>/<some_file> -no_nonce -out <request_path>/<request>.tsq
+```
+Der Request kann als multipart (zum Beispiel über ein Datei-Upload-Formular)
+an den Server übertragen werden:
+```shell script
+curl -F "tsq=@<request>.tsq" http://<host>:<port>/ ><reply>.tsr
+``` 
+Die Datei _reply.tsr_ enthält dann den erzeugten Zeitstempel.
+Alternativ funktioniert das auch über einen POST Request, der die 
+Daten des Timestamp Query im Body überträgt:
+```shell script
+curl -H "Content-Type: application/timestamp-query" --data-binary '@<request>.tsq' http://<host>:<port>/ ><reply>.tsr
+```
+Den Inhalt des Zeitstempels kann man sich dann mittels des folgenden
+Kommandos anzeigen lassen:
+```shell script
+openssl ts -config tsa.conf -reply -in <reply>.tsr -text
+```
+Die Korrektheit des Zeitstempels kann man mit dem folgenden Kommando 
+prüfen:
+```shell script
+openssl ts -verify -config tsa.conf -queryfile <request>.tsq -in <reply>.tsr -CAfile chain.pem
+```
