@@ -11,7 +11,6 @@ import org.bouncycastle.operator.OperatorCreationException;
 import org.bouncycastle.operator.jcajce.JcaDigestCalculatorProviderBuilder;
 import org.bouncycastle.tsp.*;
 
-import java.io.File;
 import java.io.IOException;
 import java.math.BigInteger;
 import java.nio.charset.StandardCharsets;
@@ -65,12 +64,12 @@ public class App {
 			{
 				CertificateFactory cf = CertificateFactory.getInstance("X.509");
 
-				java.net.URL url=de.netsysit.util.ResourceLoader.getResource("rfc3161timestampingserver/tsa non rep.crt");
+				java.net.URL url=de.netsysit.util.ResourceLoader.getResource("rfc3161timestampingserver/priv/tsa.crt");
 				java.io.InputStream is=url.openStream();
 				X509Certificate rsaSigningCert=(X509Certificate)cf.generateCertificate(is);
 				is.close();
 
-				url=de.netsysit.util.ResourceLoader.getResource("rfc3161timestampingserver/tsa.key");
+				url=de.netsysit.util.ResourceLoader.getResource("rfc3161timestampingserver/priv/tsa.key");
 				is=url.openStream();
 				java.lang.String privateKeyPEM=de.elbosso.util.Utilities.readIntoString(is,StandardCharsets.UTF_8);
 				is.close();

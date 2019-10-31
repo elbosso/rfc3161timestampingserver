@@ -1,0 +1,28 @@
+version: '3'
+
+services:
+  rfc3161timestampingserver:
+    build:
+      context: ./ # Local
+    #      context: https://github.com/elbosso/rfc3161timestampingserver.git # Build from Github
+    container_name: rfc3161timestampingserver
+    hostname: rfc3161timestampingserver
+#    ports:
+#      - 7000:7000
+    restart: always
+    labels:
+      - "traefik.backend=rfc3161timestampingserver"
+      - "traefik.enable=true"
+      - "traefik.frontend.rule=Host:rfc3161timestampingserver.docker.lab"
+      - "traefik.port=7000"
+      - "traefik.docker.network=traefik_proxy"
+    networks:
+      - traefik_proxy
+
+networks:
+  traefik_proxy:
+    external:
+      name: traefik_proxy
+
+
+
