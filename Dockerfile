@@ -5,7 +5,7 @@ ADD . /rfc3161timestampingserver
 
 WORKDIR rfc3161timestampingserver
 
-RUN mvn -U compile package
+RUN mvn -U compile package assembly:single
 
 # Run it
 FROM openjdk:11
