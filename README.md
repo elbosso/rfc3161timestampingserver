@@ -57,3 +57,13 @@ to actually use a proxy solution like traefik (the docker-compose is
 already prepared for this) or similar
 solutions so the services are actually accessible with a sound hostname and 
 some default port.
+
+## Working with it
+
+Verweis auf [expect-dialog-ca](https://github.com/elbosso/expect-dialog-ca)
+
+openssl ts -query -config tsa.conf -sha512 -cert -data ../../../create_ca.sh -no_nonce -out ../../../_priv/create_ca.sh.tsq
+curl -H "Content-Type: application/timestamp-query" --data-binary '@../../work/expect-dialog-ca.git/_priv/create_ca.sh.tsq' http://localhost:7000/
+curl -F "tsq=@../../create_ca.sh.tsq" http://rfc3161timestampingserver.docker.lab/ >/tmp/javalin1.tsr
+openssl ts -config tsa.conf -reply -in /tmp/javalin1.tsr -text
+openssl ts -verify -config tsa.conf -queryfile ../../create_ca.sh.tsq -in /tmp/javalin1.tsr -CAfile chain.pem
