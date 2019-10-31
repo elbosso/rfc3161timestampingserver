@@ -29,11 +29,11 @@ public class App {
 	public static void main(String[] args) {
 		Security.addProvider(new BouncyCastleProvider());
 		Javalin app = Javalin.create().start(7000);
-		app.get("/", ctx -> {
+/*		app.get("/", ctx -> {
 			System.out.println("get");
 			ctx.result("Hello World");
 		});
-		app.post("/", ctx -> {
+*/		app.post("/", ctx -> {
 			byte[] tsq=null;
 			if(ctx.contentType().equals("application/timestamp-query"))
 			{
