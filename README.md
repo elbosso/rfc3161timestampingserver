@@ -27,10 +27,10 @@ and then starting the resulting monolithic jar file by issuing
 $JAVA_HOME/bin/java -jar target/rfc3161timestampingserver-<version>-jar-with-dependencies.jar
 ```
 *Note, however, that to be fully functional, the server needs cryptographic
-material, namely
- * a certificate named tsa.crt
- * a private key matching the certificate named tsa.key
- * and the certificate chain for the certificate named chain.pem
+material, namely*
+ * *a certificate named _tsa.crt_*
+ * *a private key matching the certificate named _tsa.key_*
+ * *and the certificate chain for the certificate named _chain.pem_*
  
 *all inside the directory _src/main/resources/rfc3161timestampingserver/priv_.*
 
