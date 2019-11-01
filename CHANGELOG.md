@@ -15,6 +15,13 @@ Changelog of this project.
 
 
 
+**fixes #2**
+
+
+[bef08ee1f0c789e](https://github.com/<user>/<project>>/commit/bef08ee1f0c789e) Juergen Key *2019-10-31 18:20:48*
+
+
+
 **preparations for docker**
 
 
