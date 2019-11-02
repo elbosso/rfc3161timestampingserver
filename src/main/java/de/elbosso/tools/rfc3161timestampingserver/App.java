@@ -29,16 +29,47 @@ public class App {
 	public static void main(String[] args) {
 		Security.addProvider(new BouncyCastleProvider());
 		Javalin app = Javalin.create().start(7000);
+		app.config.addStaticFiles("/site");
 /*		app.get("/", ctx -> {
 			System.out.println("get");
 			ctx.result("Hello World");
 		});
-*/		app.post("/", ctx -> {
+*/		app.get("/chain.pem", ctx -> {
+			java.net.URL url=de.netsysit.util.ResourceLoader.getResource("rfc3161timestampingserver/priv/chain.pem");
+			java.io.InputStream is=url.openStream();
+			java.io.ByteArrayOutputStream baos=new java.io.ByteArrayOutputStream();
+			de.elbosso.util.Utilities.copyBetweenStreams(is,baos,true);
+			byte[] content=baos.toByteArray();
+			ctx.status(201);
+			ctx.contentType("application/pkcs7-mime");
+			ctx.result(new java.io.ByteArrayInputStream(content));
+		});
+		app.get("/tsa.crt", ctx -> {
+			java.net.URL url=de.netsysit.util.ResourceLoader.getResource("rfc3161timestampingserver/priv/tsa.crt");
+			java.io.InputStream is=url.openStream();
+			java.io.ByteArrayOutputStream baos=new java.io.ByteArrayOutputStream();
+			de.elbosso.util.Utilities.copyBetweenStreams(is,baos,true);
+			byte[] content=baos.toByteArray();
+			ctx.status(201);
+			ctx.contentType("application/pkix-cert");
+			ctx.result(new java.io.ByteArrayInputStream(content));
+		});
+		app.get("/tsa.conf", ctx -> {
+			java.net.URL url=de.netsysit.util.ResourceLoader.getResource("rfc3161timestampingserver/etc/tsa.conf");
+			java.io.InputStream is=url.openStream();
+			java.io.ByteArrayOutputStream baos=new java.io.ByteArrayOutputStream();
+			de.elbosso.util.Utilities.copyBetweenStreams(is,baos,true);
+			byte[] content=baos.toByteArray();
+			ctx.status(201);
+			ctx.contentType("text/plain");
+			ctx.result(new java.io.ByteArrayInputStream(content));
+		});
+		app.post("/", ctx -> {
 			byte[] tsq=null;
 			if(ctx.contentType().equals("application/timestamp-query"))
 			{
 				//curl -H "Content-Type: application/timestamp-query" --data-binary '@../../work/expect-dialog-ca.git/_priv/create_ca.sh.tsq' http://localhost:7000/
-				System.out.println("body " + ctx.bodyAsBytes().length);
+				//System.out.println("body " + ctx.bodyAsBytes().length);
 				tsq=ctx.bodyAsBytes();
 			}
 			else if(ctx.contentType().startsWith("multipart/form-data"))
@@ -46,7 +77,7 @@ public class App {
 				//curl -F "tsq=@../../work/expect-dialog-ca.git/_priv/create_ca.sh.tsq" http://localhost:7000/
 				if(ctx.uploadedFile("tsq")!=null)
 				{
-					System.out.println("tsq "+ctx.uploadedFile("tsq").getContentLength());
+					//System.out.println("tsq "+ctx.uploadedFile("tsq").getContentLength());
 					java.io.InputStream is=ctx.uploadedFile("tsq").getContent();
 					java.io.ByteArrayOutputStream baos=new java.io.ByteArrayOutputStream();
 					de.elbosso.util.Utilities.copyBetweenStreams(is,baos,true);
@@ -110,12 +141,12 @@ public class App {
 				ctx.status(500);
 			}
 		});
-		app.before(ctx -> {
+/*		app.before(ctx -> {
 			System.out.println("before");
 			System.out.println(ctx.contentType());
 			System.out.println(ctx.req.getMethod());
 		});
-	}
+*/	}
 	byte[] createTspResponse(PrivateKey tspSigningKey, X509Certificate tspSigningCert, byte[] encRequest)
 			throws TSPException, OperatorCreationException, GeneralSecurityException, IOException
 	{
