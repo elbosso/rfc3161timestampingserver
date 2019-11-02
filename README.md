@@ -34,6 +34,12 @@ material, namely*
  
 *all inside the directory _src/main/resources/rfc3161timestampingserver/priv_.*
 
+The easiest way to get these files is to use a Certificate Authority
+managed by project [expect-dialog-ca](https://github.com/elbosso/expect-dialog-ca).
+Another advantage of using this project is that you get a configuration file
+_tsa.conf_ for working with timestamps using 
+[OpenSSL](https://www.openssl.org/) for free (see below).
+
 Alternatively one could just start the server using maven by  issuing
 
 ```
@@ -62,29 +68,44 @@ some default port.
 
 Verweis auf [expect-dialog-ca](https://github.com/elbosso/expect-dialog-ca)
 
-Das Projekt stellt unter der URL `http://<host>:<port>/tsa.conf` eine Konfigurationsdatei
-zur verfügung, die durch den Anwender für die Erstellung eines Timestamp-Requests benutzt werden kann:
+The project offers some resources to make it easier working with timestamps:
+One of them is available under `http://<host>:<port>/tsa.conf`.
+It is a configuration that can be used with 
+[OpenSSL](https://www.openssl.org/) to create a certificate
+request like so:
 ```shell script
 openssl ts -query -config tsa.conf -cert -sha512 -data <path>/<some_file> -no_nonce -out <request_path>/<request>.tsq
 ```
-Der Request kann als multipart (zum Beispiel über ein Datei-Upload-Formular)
-an den Server übertragen werden:
+This request can be sent using a HTTP POST request as multipart form data
+(for example from a file upload form inside a web page):
 ```shell script
 curl -F "tsq=@<request>.tsq" http://<host>:<port>/ ><reply>.tsr
 ``` 
-Die Datei _reply.tsr_ enthält dann den erzeugten Zeitstempel.
-Alternativ funktioniert das auch über einen POST Request, der die 
-Daten des Timestamp Query im Body überträgt:
+The file _reply.tsr_ contains the timestamp. Alternatively,
+this also works with a POST request containing the timestamp query in 
+the body of said request having the correct mime-type:
 ```shell script
 curl -H "Content-Type: application/timestamp-query" --data-binary '@<request>.tsq' http://<host>:<port>/ ><reply>.tsr
 ```
-Den Inhalt des Zeitstempels kann man sich dann mittels des folgenden
-Kommandos anzeigen lassen:
+The content of the timestamp (useful for ascertaining the time and date
+for example) can be displayed for example with the help of 
+OpenSSL command line tools like so:
 ```shell script
 openssl ts -config tsa.conf -reply -in <reply>.tsr -text
 ```
-Die Korrektheit des Zeitstempels kann man mit dem folgenden Kommando 
-prüfen:
+To verify the timestamp, OpenSSL can help too:
 ```shell script
 openssl ts -verify -config tsa.conf -queryfile <request>.tsq -in <reply>.tsr -CAfile chain.pem
 ```
+This project offers a server that adheres to standards - this way, it
+can be used as standin for any solution that needs access to a timestamping
+server. One example for that is the Java build tool [Ant](https://ant.apache.org/): 
+it has a `signjar`
+task that takes an attribute named `tsaurl`. If one sets this parameter to
+`http://<host>:<port>/`, the jar file is not only signed but also timestamped.
+
+This can get important when the application the jar belongs to is started after
+the signing certificate is expired: Ordinarily, the app would not start anymore
+but the timestamp guarantees that the certificate was valid at the time 
+the timestamp was created and so the application can be used after expiration of the signing
+certificate up to the expiration of the timestamping certificate.
