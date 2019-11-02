@@ -66,8 +66,6 @@ some default port.
 
 ## Working with it
 
-Verweis auf [expect-dialog-ca](https://github.com/elbosso/expect-dialog-ca)
-
 The project offers some resources to make it easier working with timestamps:
 One of them is available under `http://<host>:<port>/tsa.conf`.
 It is a configuration that can be used with 

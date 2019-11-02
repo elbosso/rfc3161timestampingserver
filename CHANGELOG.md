@@ -3,6 +3,16 @@
 Changelog of this project.
 
 
+**fixes #1**
+
+
+[38b099f7e8708e5](https://github.com/<user>/<project>>/commit/38b099f7e8708e5) Juergen Key *2019-11-02 05:43:12*
+
+**re #1**
+
+
+[dc6973ab044a700](https://github.com/<user>/<project>>/commit/dc6973ab044a700) Juergen Key *2019-11-01 08:59:19*
+
 **re #1**
 
 
