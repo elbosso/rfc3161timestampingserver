@@ -3,6 +3,13 @@
 Changelog of this project.
 
 
+**housekeeping**
+
+
+[db0db1039694cc3](https://github.com/<user>/<project>>/commit/db0db1039694cc3) Juergen Key *2019-11-02 09:25:13*
+
+
+
 **fixes #1**
 
 
@@ -29,6 +36,13 @@ Changelog of this project.
 
 
 [bef08ee1f0c789e](https://github.com/<user>/<project>>/commit/bef08ee1f0c789e) Juergen Key *2019-10-31 18:20:48*
+
+
+
+**fixes #3**
+
+
+[0a0f345e3de0cc4](https://github.com/<user>/<project>>/commit/0a0f345e3de0cc4) Juergen Key *2019-11-02 09:18:19*
 
 
 
