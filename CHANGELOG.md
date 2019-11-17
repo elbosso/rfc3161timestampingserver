@@ -3,6 +3,11 @@
 Changelog of this project.
 
 
+**querying the database now works too**
+
+
+[f213bd2bc7e9698](https://github.com/<user>/<project>>/commit/f213bd2bc7e9698) Juergen Key *2019-11-17 18:20:52*
+
 **first step towards production quality: unique serial numbers are assigned and preparations are made to be able to query message digests**
 
 
