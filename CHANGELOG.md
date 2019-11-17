@@ -3,6 +3,11 @@
 Changelog of this project.
 
 
+**first step towards production quality: unique serial numbers are assigned and preparations are made to be able to query message digests**
+
+
+[ecabc01534ee6a6](https://github.com/<user>/<project>>/commit/ecabc01534ee6a6) Juergen Key *2019-11-17 17:21:54*
+
 **housekeeping**
 
 

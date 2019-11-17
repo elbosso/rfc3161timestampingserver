@@ -101,6 +101,62 @@ public class App {
 			ctx.result(new java.io.ByteArrayInputStream(content));
 		});
 		if(CLASS_LOGGER.isDebugEnabled())CLASS_LOGGER.debug("added path for tsa configuration: /tsa.conf (allowed methods: GET)");
+		app.post("/query", ctx -> {
+			if(ctx.contentType().startsWith("multipart/form-data"))
+			{
+				if(CLASS_LOGGER.isDebugEnabled())CLASS_LOGGER.debug("request is multipart/form-data - searching for parameters algoid and msgDigest");
+				String algoid=ctx.formParam("algoid");
+				if(algoid!=null)
+				{
+					if (CLASS_LOGGER.isDebugEnabled()) CLASS_LOGGER.debug("found algoid to be " + algoid);
+				}
+				else
+				{
+					if (CLASS_LOGGER.isEnabledFor(Priority.ERROR)) CLASS_LOGGER.error("did not find algoid");
+				}
+				String msgDigest = ctx.formParam("msgDigest");
+				if(msgDigest!=null)
+				{
+					if (CLASS_LOGGER.isDebugEnabled()) CLASS_LOGGER.debug("found msgDigest to be " + msgDigest);
+				}
+				else
+				{
+					if (CLASS_LOGGER.isEnabledFor(Priority.ERROR)) CLASS_LOGGER.error("did not find msgDigest");
+				}
+				if((algoid!=null)&&(msgDigest!=null))
+				{
+					EntityManager em = PersistenceManager.INSTANCE.getEntityManager();
+					Query namedQuery = em.createNamedQuery("Rfc3161Timestamp.findYoungestByMsgDigestAndImprint");
+					namedQuery.setParameter("Alg", algoid);
+					namedQuery.setParameter("Imprint", msgDigest);
+					namedQuery.setMaxResults(1);
+					java.util.List resultList= namedQuery.getResultList();
+					if(resultList.isEmpty()==false)
+					{
+						if (CLASS_LOGGER.isInfoEnabled()) CLASS_LOGGER.info("Entry found in database");
+						Rfc3161Timestamp rfc3161Timestamp = (Rfc3161Timestamp) resultList.get(0);
+						ctx.status(201);
+						ctx.contentType("application/timestamp-reply");
+						ctx.result(new java.io.ByteArrayInputStream(rfc3161Timestamp.getTsrData()));
+					}
+					else
+					{
+						if (CLASS_LOGGER.isInfoEnabled()) CLASS_LOGGER.info("No entry found in database");
+						ctx.status(404);
+					}
+				}
+				else
+				{
+					if (CLASS_LOGGER.isEnabledFor(Priority.ERROR)) CLASS_LOGGER.error("Not all needed information present");
+					ctx.status(500);
+				}
+			}
+			else
+			{
+				if (CLASS_LOGGER.isDebugEnabled()) CLASS_LOGGER.error("request is not multipart/form-data");
+				ctx.status(500);
+			}
+		});
 		app.post("/", ctx -> {
 			if(CLASS_LOGGER.isDebugEnabled())CLASS_LOGGER.debug("received timestamp request");
 			byte[] tsq=null;

@@ -8,6 +8,7 @@ import java.util.Date;
 @Entity
 @Table(name = "rfc3161timestamp")
 @NamedQuery(name = "Rfc3161Timestamp.findById", query = "SELECT u FROM Rfc3161Timestamp u WHERE u.id=:Id")
+@NamedQuery(name = "Rfc3161Timestamp.findYoungestByMsgDigestAndImprint", query = "SELECT u FROM Rfc3161Timestamp u WHERE u.messageImprintAlgOID=:Alg AND u.messageImprintDigestBase64=:Imprint ORDER BY u.creationDate DESC")
 public class Rfc3161Timestamp extends de.elbosso.util.beans.EventHandlingSupport
 {
 	@Id
