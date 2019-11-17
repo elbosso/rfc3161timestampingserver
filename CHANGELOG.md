@@ -3,6 +3,11 @@
 Changelog of this project.
 
 
+**docker deployment preparations...**
+
+
+[e28f142452bd91a](https://github.com/<user>/<project>>/commit/e28f142452bd91a) Juergen Key *2019-11-17 18:25:19*
+
 **querying the database now works too**
 
 

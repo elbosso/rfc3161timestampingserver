@@ -95,6 +95,20 @@ To verify the timestamp, OpenSSL can help too:
 ```shell script
 openssl ts -verify -config tsa.conf -queryfile <request>.tsq -in <reply>.tsr -CAfile chain.pem
 ```
+
+The server offers the possibility to search for a hash value - either
+with 
+
+```shell script
+curl -F "algoid=x.y.z" -F "msgDigest=<base64encodedDigest>" http://<host>:<port>/query --output <queried>.tsr
+```
+
+or without specifying the message digest algorithm for computing it:
+
+```shell script
+curl -F "msgDigest=<base64encodedDigest>" http://<host>:<port>/query --output <queried>.tsr
+```
+
 This project offers a server that adheres to standards - this way, it
 can be used as standin for any solution that needs access to a timestamping
 server. One example for that is the Java build tool [Ant](https://ant.apache.org/): 

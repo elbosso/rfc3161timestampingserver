@@ -125,9 +125,32 @@ public class App {
 				}
 				if((algoid!=null)&&(msgDigest!=null))
 				{
+					if (CLASS_LOGGER.isDebugEnabled()) CLASS_LOGGER.debug("searching using message digest algorithm and message digest imprint as parameters");
 					EntityManager em = PersistenceManager.INSTANCE.getEntityManager();
 					Query namedQuery = em.createNamedQuery("Rfc3161Timestamp.findYoungestByMsgDigestAndImprint");
 					namedQuery.setParameter("Alg", algoid);
+					namedQuery.setParameter("Imprint", msgDigest);
+					namedQuery.setMaxResults(1);
+					java.util.List resultList= namedQuery.getResultList();
+					if(resultList.isEmpty()==false)
+					{
+						if (CLASS_LOGGER.isInfoEnabled()) CLASS_LOGGER.info("Entry found in database");
+						Rfc3161Timestamp rfc3161Timestamp = (Rfc3161Timestamp) resultList.get(0);
+						ctx.status(201);
+						ctx.contentType("application/timestamp-reply");
+						ctx.result(new java.io.ByteArrayInputStream(rfc3161Timestamp.getTsrData()));
+					}
+					else
+					{
+						if (CLASS_LOGGER.isInfoEnabled()) CLASS_LOGGER.info("No entry found in database");
+						ctx.status(404);
+					}
+				}
+				else if(msgDigest!=null)
+				{
+					if (CLASS_LOGGER.isDebugEnabled()) CLASS_LOGGER.debug("searching using only message digest imprint as parameter");
+					EntityManager em = PersistenceManager.INSTANCE.getEntityManager();
+					Query namedQuery = em.createNamedQuery("Rfc3161Timestamp.findYoungestByMsgImprint");
 					namedQuery.setParameter("Imprint", msgDigest);
 					namedQuery.setMaxResults(1);
 					java.util.List resultList= namedQuery.getResultList();
