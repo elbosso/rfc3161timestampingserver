@@ -10,8 +10,12 @@ public enum PersistenceManager
 	private EntityManagerFactory emFactory;
 	private PersistenceManager()
 	{
+		java.util.Map<java.lang.String, java.lang.String> emConfig=new java.util.HashMap();
+		emConfig.put("javax.persistence.jdbc.url", System.getenv("javax.persistence.jdbc.url")!=null?System.getenv("javax.persistence.jdbc.url"):"jdbc:postgresql://postgresqlserver/jdbctest");
+        emConfig.put("javax.persistence.jdbc.user", System.getenv("javax.persistence.jdbc.user")!=null?System.getenv("javax.persistence.jdbc.user"):"jdbctestuser");
+        emConfig.put("javax.persistence.jdbc.password", System.getenv("javax.persistence.jdbc.password")!=null?System.getenv("javax.persistence.jdbc.password"):"jdbctestuser");
 		// "rfc3161timestampingserver" is the value of the name attribute of the persistence-unit element.
-		emFactory = Persistence.createEntityManagerFactory("rfc3161timestampingserver");
+		emFactory = Persistence.createEntityManagerFactory("rfc3161timestampingserver",emConfig);
 	}
 	public EntityManager getEntityManager()
 	{

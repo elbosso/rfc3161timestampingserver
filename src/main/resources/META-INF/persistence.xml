@@ -6,9 +6,9 @@ http://xmlns.jcp.org/xml/ns/persistence/persistence_2_1.xsd"
     <persistence-unit name="rfc3161timestampingserver" transaction-type="RESOURCE_LOCAL">
         <provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
         <properties>
-            <property name="javax.persistence.jdbc.url" value="jdbc:postgresql://postgresqlserver/jdbctest" />
+            <!--property name="javax.persistence.jdbc.url" value="jdbc:postgresql://postgresqlserver/jdbctest" />
             <property name="javax.persistence.jdbc.user" value="jdbctestuser" />
-            <property name="javax.persistence.jdbc.password" value="jdbctestuser" />
+            <property name="javax.persistence.jdbc.password" value="jdbctestuser" /-->
             <property name="javax.persistence.jdbc.driver" value="org.postgresql.Driver" />
             <property name="hibernate.show_sql" value="true" />
             <property name="hibernate.format_sql" value="true" />
