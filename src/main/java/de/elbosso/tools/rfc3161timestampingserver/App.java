@@ -44,31 +44,7 @@ public class App {
 		if(CLASS_LOGGER.isDebugEnabled())CLASS_LOGGER.debug("started app - listening on port 7000");
 		app.config.addStaticFiles("/site");
 		if(CLASS_LOGGER.isDebugEnabled())CLASS_LOGGER.debug("added path for static contents: /site (allowed methods: GET)");
-/*		app.get("/persistence", ctx -> {
-			java.lang.String content="huhu";
-			Address address = new Address();
-			address.setCity("Rudolstadt")
-					.setCountry("Deutschland")
-					.setPostcode("07407")
-					.setStreet("Damaschke")
-					.setProvince("Thuringia");
-			EntityManager em = PersistenceManager.INSTANCE.getEntityManager();
-			em.getTransaction().begin();
-			em.persist(address);
-			content+=" "+java.lang.Integer.toString(address.getId());
-			Query namedQuery = em.createNamedQuery("Address.findById");
-			namedQuery.setParameter("Id", 1);
-			Address found= (Address) namedQuery.getSingleResult();
-			content+=" "+found.toString();
-			found.setProvince(java.lang.Long.toString(System.currentTimeMillis()));
-			em.persist(found);
-			em.getTransaction().commit();
-			em.close();
-			ctx.status(201);
-			ctx.contentType("text/plain");
-			ctx.result(new java.io.ByteArrayInputStream(content.getBytes()));
-		});
-*/		app.get("/chain.pem", ctx -> {
+		app.get("/chain.pem", ctx -> {
 			java.net.URL url=de.netsysit.util.ResourceLoader.getResource("rfc3161timestampingserver/priv/chain.pem");
 			java.io.InputStream is=url.openStream();
 			java.io.ByteArrayOutputStream baos=new java.io.ByteArrayOutputStream();
@@ -102,7 +78,7 @@ public class App {
 		});
 		if(CLASS_LOGGER.isDebugEnabled())CLASS_LOGGER.debug("added path for tsa configuration: /tsa.conf (allowed methods: GET)");
 		app.post("/query", ctx -> {
-			if(ctx.contentType().startsWith("multipart/form-data"))
+			if((ctx.contentType().startsWith("multipart/form-data"))||(ctx.contentType().startsWith("application/x-www-form-urlencoded")))
 			{
 				if(CLASS_LOGGER.isDebugEnabled())CLASS_LOGGER.debug("request is multipart/form-data - searching for parameters algoid and msgDigest");
 				String algoid=ctx.formParam("algoid");
@@ -112,24 +88,33 @@ public class App {
 				}
 				else
 				{
-					if (CLASS_LOGGER.isEnabledFor(Priority.ERROR)) CLASS_LOGGER.error("did not find algoid");
+					if (CLASS_LOGGER.isEnabledFor(Priority.WARN)) CLASS_LOGGER.warn("did not find algoid");
 				}
-				String msgDigest = ctx.formParam("msgDigest");
-				if(msgDigest!=null)
+				String msgDigestBase64 = ctx.formParam("msgDigestBase64");
+				if(msgDigestBase64!=null)
 				{
-					if (CLASS_LOGGER.isDebugEnabled()) CLASS_LOGGER.debug("found msgDigest to be " + msgDigest);
+					if (CLASS_LOGGER.isDebugEnabled()) CLASS_LOGGER.debug("found msgDigestBase64 to be " + msgDigestBase64);
 				}
 				else
 				{
-					if (CLASS_LOGGER.isEnabledFor(Priority.ERROR)) CLASS_LOGGER.error("did not find msgDigest");
+					if (CLASS_LOGGER.isEnabledFor(Priority.WARN)) CLASS_LOGGER.warn("did not find msgDigestBase64");
 				}
-				if((algoid!=null)&&(msgDigest!=null))
+				String msgDigestHex = ctx.formParam("msgDigestHex");
+				if(msgDigestHex!=null)
 				{
-					if (CLASS_LOGGER.isDebugEnabled()) CLASS_LOGGER.debug("searching using message digest algorithm and message digest imprint as parameters");
+					if (CLASS_LOGGER.isDebugEnabled()) CLASS_LOGGER.debug("found msgDigestHex to be " + msgDigestHex);
+				}
+				else
+				{
+					if (CLASS_LOGGER.isEnabledFor(Priority.WARN)) CLASS_LOGGER.warn("did not find msgDigestHex");
+				}
+				if((algoid!=null)&&(msgDigestBase64!=null))
+				{
+					if (CLASS_LOGGER.isDebugEnabled()) CLASS_LOGGER.debug("searching using message digest algorithm and message digest (Base64) imprint as parameters");
 					EntityManager em = PersistenceManager.INSTANCE.getEntityManager();
-					Query namedQuery = em.createNamedQuery("Rfc3161Timestamp.findYoungestByMsgDigestAndImprint");
+					Query namedQuery = em.createNamedQuery("Rfc3161Timestamp.findYoungestByMsgDigestAndImprintBase64");
 					namedQuery.setParameter("Alg", algoid);
-					namedQuery.setParameter("Imprint", msgDigest);
+					namedQuery.setParameter("Imprint", msgDigestBase64);
 					namedQuery.setMaxResults(1);
 					java.util.List resultList= namedQuery.getResultList();
 					if(resultList.isEmpty()==false)
@@ -138,6 +123,7 @@ public class App {
 						Rfc3161Timestamp rfc3161Timestamp = (Rfc3161Timestamp) resultList.get(0);
 						ctx.status(201);
 						ctx.contentType("application/timestamp-reply");
+						ctx.header("Content-Disposition","filename=\"queried.tsr\"");
 						ctx.result(new java.io.ByteArrayInputStream(rfc3161Timestamp.getTsrData()));
 					}
 					else
@@ -146,12 +132,12 @@ public class App {
 						ctx.status(404);
 					}
 				}
-				else if(msgDigest!=null)
+				else if(msgDigestBase64!=null)
 				{
-					if (CLASS_LOGGER.isDebugEnabled()) CLASS_LOGGER.debug("searching using only message digest imprint as parameter");
+					if (CLASS_LOGGER.isDebugEnabled()) CLASS_LOGGER.debug("searching using only message digest (Base64) imprint as parameter");
 					EntityManager em = PersistenceManager.INSTANCE.getEntityManager();
-					Query namedQuery = em.createNamedQuery("Rfc3161Timestamp.findYoungestByMsgImprint");
-					namedQuery.setParameter("Imprint", msgDigest);
+					Query namedQuery = em.createNamedQuery("Rfc3161Timestamp.findYoungestByMsgImprintBase64");
+					namedQuery.setParameter("Imprint", msgDigestBase64);
 					namedQuery.setMaxResults(1);
 					java.util.List resultList= namedQuery.getResultList();
 					if(resultList.isEmpty()==false)
@@ -160,6 +146,30 @@ public class App {
 						Rfc3161Timestamp rfc3161Timestamp = (Rfc3161Timestamp) resultList.get(0);
 						ctx.status(201);
 						ctx.contentType("application/timestamp-reply");
+						ctx.header("Content-Disposition","filename=\"queried.tsr\"");
+						ctx.result(new java.io.ByteArrayInputStream(rfc3161Timestamp.getTsrData()));
+					}
+					else
+					{
+						if (CLASS_LOGGER.isInfoEnabled()) CLASS_LOGGER.info("No entry found in database");
+						ctx.status(404);
+					}
+				}
+				else if(msgDigestHex!=null)
+				{
+					if (CLASS_LOGGER.isDebugEnabled()) CLASS_LOGGER.debug("searching using only message digest (Base64) imprint as parameter");
+					EntityManager em = PersistenceManager.INSTANCE.getEntityManager();
+					Query namedQuery = em.createNamedQuery("Rfc3161Timestamp.findYoungestByMsgImprintHex");
+					namedQuery.setParameter("Imprint", msgDigestHex.toUpperCase());
+					namedQuery.setMaxResults(1);
+					java.util.List resultList= namedQuery.getResultList();
+					if(resultList.isEmpty()==false)
+					{
+						if (CLASS_LOGGER.isInfoEnabled()) CLASS_LOGGER.info("Entry found in database");
+						Rfc3161Timestamp rfc3161Timestamp = (Rfc3161Timestamp) resultList.get(0);
+						ctx.status(201);
+						ctx.contentType("application/timestamp-reply");
+						ctx.header("Content-Disposition","filename=\"queried.tsr\"");
 						ctx.result(new java.io.ByteArrayInputStream(rfc3161Timestamp.getTsrData()));
 					}
 					else
@@ -270,6 +280,7 @@ public class App {
 					rfc3161Timestamp.setCreationDate(new java.util.Date());
 					rfc3161Timestamp.setMessageImprintAlgOID(timeStampRequest.getMessageImprintAlgOID().getId());
 					rfc3161Timestamp.setMessageImprintDigestBase64(de.elbosso.util.Utilities.base64Encode(timeStampRequest.getMessageImprintDigest()));
+					rfc3161Timestamp.setMessageImprintDigestHex(de.elbosso.util.Utilities.formatHexDump(timeStampRequest.getMessageImprintDigest(),false).toUpperCase());
 					em.persist(rfc3161Timestamp);
 
 					byte[] tsr = tsRespGen.generate(timeStampRequest, rfc3161Timestamp.getId(), rfc3161Timestamp.getCreationDate()).getEncoded();
@@ -285,6 +296,7 @@ public class App {
 
 					ctx.status(201);
 					ctx.contentType("application/timestamp-reply");
+					ctx.header("Content-Disposition","filename=\"reply.tsr\"");
 					ctx.result(new java.io.ByteArrayInputStream(tsr));
 					em.getTransaction().commit();
 				}

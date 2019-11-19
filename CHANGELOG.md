@@ -3,6 +3,11 @@
 Changelog of this project.
 
 
+**search now is possible without the need to specify the message digest algorithm**
+
+
+[dc5514c628198bf](https://github.com/<user>/<project>>/commit/dc5514c628198bf) Juergen Key *2019-11-17 18:31:56*
+
 **docker deployment preparations...**
 
 

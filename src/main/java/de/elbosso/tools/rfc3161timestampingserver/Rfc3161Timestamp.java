@@ -8,8 +8,9 @@ import java.util.Date;
 @Entity
 @Table(name = "rfc3161timestamp")
 @NamedQuery(name = "Rfc3161Timestamp.findById", query = "SELECT u FROM Rfc3161Timestamp u WHERE u.id=:Id")
-@NamedQuery(name = "Rfc3161Timestamp.findYoungestByMsgImprint", query = "SELECT u FROM Rfc3161Timestamp u WHERE u.messageImprintDigestBase64=:Imprint ORDER BY u.creationDate DESC")
-@NamedQuery(name = "Rfc3161Timestamp.findYoungestByMsgDigestAndImprint", query = "SELECT u FROM Rfc3161Timestamp u WHERE u.messageImprintAlgOID=:Alg AND u.messageImprintDigestBase64=:Imprint ORDER BY u.creationDate DESC")
+@NamedQuery(name = "Rfc3161Timestamp.findYoungestByMsgImprintBase64", query = "SELECT u FROM Rfc3161Timestamp u WHERE u.messageImprintDigestBase64=:Imprint ORDER BY u.creationDate DESC")
+@NamedQuery(name = "Rfc3161Timestamp.findYoungestByMsgDigestAndImprintBase64", query = "SELECT u FROM Rfc3161Timestamp u WHERE u.messageImprintAlgOID=:Alg AND u.messageImprintDigestBase64=:Imprint ORDER BY u.creationDate DESC")
+@NamedQuery(name = "Rfc3161Timestamp.findYoungestByMsgImprintHex", query = "SELECT u FROM Rfc3161Timestamp u WHERE u.messageImprintDigestHex=:Imprint ORDER BY u.creationDate DESC")
 public class Rfc3161Timestamp extends de.elbosso.util.beans.EventHandlingSupport
 {
 	@Id
@@ -56,6 +57,21 @@ public class Rfc3161Timestamp extends de.elbosso.util.beans.EventHandlingSupport
 		String old = getMessageImprintDigestBase64();
 		this.messageImprintDigestBase64 = messageImprintDigestBase64;
 		send("messageImprintDigestBase64", old, getMessageImprintDigestBase64());
+	}
+
+	@Column(name="MESSAGE_IMPRINT_DIGEST_HEX", length=1024, nullable=true, unique=false)
+	java.lang.String messageImprintDigestHex;
+
+	public String getMessageImprintDigestHex()
+	{
+		return messageImprintDigestHex;
+	}
+
+	public void setMessageImprintDigestHex(String messageImprintDigestHex)
+	{
+		String old = getMessageImprintDigestHex();
+		this.messageImprintDigestHex = messageImprintDigestHex;
+		send("messageImprintDigestHex", old, getMessageImprintDigestHex());
 	}
 
 	@Column(name="CREATION_DATE")

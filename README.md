@@ -96,17 +96,28 @@ To verify the timestamp, OpenSSL can help too:
 openssl ts -verify -config tsa.conf -queryfile <request>.tsq -in <reply>.tsr -CAfile chain.pem
 ```
 
-The server offers the possibility to search for a hash value - either
+The server offers the possibility to search for a message digest - either
 with 
 
 ```shell script
-curl -F "algoid=x.y.z" -F "msgDigest=<base64encodedDigest>" http://<host>:<port>/query --output <queried>.tsr
+curl -F "algoid=x.y.z" -F "msgDigestBase64=<base64encodedDigest>" http://<host>:<port>/query --output <queried>.tsr
 ```
 
 or without specifying the message digest algorithm for computing it:
 
 ```shell script
-curl -F "msgDigest=<base64encodedDigest>" http://<host>:<port>/query --output <queried>.tsr
+curl -F "msgDigestBase64=<base64encodedDigest>" http://<host>:<port>/query --output <queried>.tsr
+```
+
+Alternatively it is possible to search for a message digest formatted as hexdump
+without colons as for example sha512 generates:
+
+```shell script
+sha512sum <path>/<some_file>
+```
+
+```shell script
+curl -F "msgDigestHex=<msgDigestAsHexdump>" http://<host>:<port>/query --output <queried>.tsr
 ```
 
 This project offers a server that adheres to standards - this way, it
