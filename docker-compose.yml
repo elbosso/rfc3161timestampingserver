@@ -18,11 +18,12 @@ services:
       - "traefik.docker.network=traefik_proxy"
     networks:
       - traefik_proxy
-#  postgresqlserver:
-#    image: postgresqlserver
-#    container_name: postgresqlserver
-#    env_file:
-#      - postgres.env
+#      - timestamping_network
+  postgresqlserver:
+    image: postgres
+    container_name: postgresqlserver
+    env_file:
+      - postgres.env
 
 networks:
   traefik_proxy:
