@@ -3,6 +3,37 @@
 Changelog of this project.
 
 
+**re #9**
+
+
+[8f16e9c7450b76e](https://github.com/<user>/<project>>/commit/8f16e9c7450b76e) Juergen Key *2019-11-19 16:37:17*
+
+
+
+**now it is possible to search for the actual message digest and there is a form now for searching for timestamps and for applying for one (uploading the timestamp request and getting the reply)**
+
+
+[fa7d1e74cd11c46](https://github.com/<user>/<project>>/commit/fa7d1e74cd11c46) Juergen Key *2019-11-19 16:19:49*
+
+**housekeeing**
+
+
+[b545f2badbe65ac](https://github.com/<user>/<project>>/commit/b545f2badbe65ac) Juergen Key *2019-11-19 08:40:22*
+
+
+
+**re #1**
+
+
+[9e0c965c35f6981](https://github.com/<user>/<project>>/commit/9e0c965c35f6981) Juergen Key *2019-10-31 17:59:00*
+
+**re #1**
+
+
+[73641bf30f06bea](https://github.com/<user>/<project>>/commit/73641bf30f06bea) Juergen Key *2019-10-31 15:52:52*
+
+
+
 **search now is possible without the need to specify the message digest algorithm**
 
 
@@ -27,44 +58,6 @@ Changelog of this project.
 
 
 [db0db1039694cc3](https://github.com/<user>/<project>>/commit/db0db1039694cc3) Juergen Key *2019-11-02 09:25:13*
-
-
-
-**fixes #1**
-
-
-[38b099f7e8708e5](https://github.com/<user>/<project>>/commit/38b099f7e8708e5) Juergen Key *2019-11-02 05:43:12*
-
-**re #1**
-
-
-[dc6973ab044a700](https://github.com/<user>/<project>>/commit/dc6973ab044a700) Juergen Key *2019-11-01 08:59:19*
-
-**re #1**
-
-
-[9e0c965c35f6981](https://github.com/<user>/<project>>/commit/9e0c965c35f6981) Juergen Key *2019-10-31 17:59:00*
-
-**re #1**
-
-
-[73641bf30f06bea](https://github.com/<user>/<project>>/commit/73641bf30f06bea) Juergen Key *2019-10-31 15:52:52*
-
-
-
-**fixes #2**
-
-
-[bef08ee1f0c789e](https://github.com/<user>/<project>>/commit/bef08ee1f0c789e) Juergen Key *2019-10-31 18:20:48*
-
-
-
-**fixes #3**
-
-
-[0a0f345e3de0cc4](https://github.com/<user>/<project>>/commit/0a0f345e3de0cc4) Juergen Key *2019-11-02 09:18:19*
-
-
 
 **preparations for docker**
 
@@ -95,5 +88,31 @@ Changelog of this project.
 
 
 [065631c5a7208ad](https://github.com/<user>/<project>>/commit/065631c5a7208ad) Juergen Key *2019-10-31 15:06:58*
+
+
+
+**fixes #1**
+
+
+[38b099f7e8708e5](https://github.com/<user>/<project>>/commit/38b099f7e8708e5) Juergen Key *2019-11-02 05:43:12*
+
+**re #1**
+
+
+[dc6973ab044a700](https://github.com/<user>/<project>>/commit/dc6973ab044a700) Juergen Key *2019-11-01 08:59:19*
+
+
+
+**fixes #2**
+
+
+[bef08ee1f0c789e](https://github.com/<user>/<project>>/commit/bef08ee1f0c789e) Juergen Key *2019-10-31 18:20:48*
+
+
+
+**fixes #3**
+
+
+[0a0f345e3de0cc4](https://github.com/<user>/<project>>/commit/0a0f345e3de0cc4) Juergen Key *2019-11-02 09:18:19*
 
 
