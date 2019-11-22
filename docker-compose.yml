@@ -24,6 +24,8 @@ services:
   postgresqlserver:
     image: postgres
     container_name: postgresqlserver
+    volumes:
+      - ./postgres-data:/var/lib/postgresql/data      
     env_file:
       - postgres.env
 
