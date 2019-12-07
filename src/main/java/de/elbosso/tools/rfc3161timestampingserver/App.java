@@ -376,7 +376,7 @@ public class App {
 				catch(java.lang.Throwable t)
 				{
 					ctx.status(500);
-					Metrics.counter("rfc3161timestampingserver.post", "resourcename","/","httpstatus",java.lang.Integer.toString(ctx.status()),"error",t.getMessage(),"contentType",contentType,"remoteAddr",ctx.req.getRemoteAddr(),"remoteHost",ctx.req.getRemoteHost(),"localAddr",ctx.req.getLocalAddr(),"localName",ctx.req.getLocalName()).increment();
+					Metrics.counter("rfc3161timestampingserver.post", "resourcename","/","httpstatus",java.lang.Integer.toString(ctx.status()),"error",(t.getMessage()!=null?t.getMessage():"NPE"),"contentType",contentType,"remoteAddr",ctx.req.getRemoteAddr(),"remoteHost",ctx.req.getRemoteHost(),"localAddr",ctx.req.getLocalAddr(),"localName",ctx.req.getLocalName()).increment();
 					em.getTransaction().rollback();
 				}
 				finally
