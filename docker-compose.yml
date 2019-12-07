@@ -26,6 +26,7 @@ services:
       - chain.pem
       - tsa.crt
       - tsa.key
+      - javax.persistence.jdbc.password_FILE
     networks:
       - traefik_proxy
 #      - timestamping_network
@@ -36,6 +37,8 @@ services:
       - ./postgres-data:/var/lib/postgresql/data      
     env_file:
       - postgres.env
+    secrets:
+      - POSTGRES_PASSWORD_FILE
 #    healthcheck:
 #      test: ["CMD-SHELL", "pg_isready -U jdbctestuser"]
 #      interval: 10s
@@ -54,5 +57,8 @@ secrets:
     file: ./crypto/tsa.crt
   tsa.key:
     file: ./crypto/tsa.key
-
+  javax.persistence.jdbc.password_FILE:
+    file: ./crypto/javax.persistence.jdbc.password_FILE
+  POSTGRES_PASSWORD_FILE:
+    file: ./crypto/javax.persistence.jdbc.password_FILE
 
