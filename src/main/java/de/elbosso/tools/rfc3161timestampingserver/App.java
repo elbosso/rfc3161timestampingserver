@@ -90,7 +90,9 @@ public class App {
 		app.config.addStaticFiles("/site");
 		if(CLASS_LOGGER.isDebugEnabled())CLASS_LOGGER.debug("added path for static contents: /site (allowed methods: GET)");
 		app.get("/chain.pem", ctx -> {
-			java.net.URL url=de.netsysit.util.ResourceLoader.getResource("rfc3161timestampingserver/priv/chain.pem");
+			java.net.URL url=de.netsysit.util.ResourceLoader.getDockerSecretResource("chain.pem");
+			if(url==null)
+				url=de.netsysit.util.ResourceLoader.getResource("rfc3161timestampingserver/priv/chain.pem");
 			java.io.InputStream is=url.openStream();
 			java.io.ByteArrayOutputStream baos=new java.io.ByteArrayOutputStream();
 			de.elbosso.util.Utilities.copyBetweenStreams(is,baos,true);
@@ -102,7 +104,9 @@ public class App {
 		});
 		if(CLASS_LOGGER.isDebugEnabled())CLASS_LOGGER.debug("added path for cert chain: /chain.pem (allowed methods: GET)");
 		app.get("/tsa.crt", ctx -> {
-			java.net.URL url=de.netsysit.util.ResourceLoader.getResource("rfc3161timestampingserver/priv/tsa.crt");
+			java.net.URL url=de.netsysit.util.ResourceLoader.getDockerSecretResource("tsa.crt");
+			if(url==null)
+				url=de.netsysit.util.ResourceLoader.getResource("rfc3161timestampingserver/priv/tsa.crt");
 			java.io.InputStream is=url.openStream();
 			java.io.ByteArrayOutputStream baos=new java.io.ByteArrayOutputStream();
 			de.elbosso.util.Utilities.copyBetweenStreams(is,baos,true);
@@ -291,14 +295,18 @@ public class App {
 					if (CLASS_LOGGER.isDebugEnabled()) CLASS_LOGGER.debug("timestamp query found");
 					CertificateFactory cf = CertificateFactory.getInstance("X.509");
 
-					java.net.URL url = de.netsysit.util.ResourceLoader.getResource("rfc3161timestampingserver/priv/tsa.crt");
+					java.net.URL url = de.netsysit.util.ResourceLoader.getDockerSecretResource("tsa.crt");
+					if(url==null)
+						url=de.netsysit.util.ResourceLoader.getResource("rfc3161timestampingserver/priv/tsa.crt");
 					if (CLASS_LOGGER.isDebugEnabled()) CLASS_LOGGER.debug("Loading TSA cert from " + url);
 
 					java.io.InputStream is = url.openStream();
 					X509Certificate rsaSigningCert = (X509Certificate) cf.generateCertificate(is);
 					is.close();
 
-					url = de.netsysit.util.ResourceLoader.getResource("rfc3161timestampingserver/priv/tsa.key");
+					url=de.netsysit.util.ResourceLoader.getDockerSecretResource("tsa.key");
+					if(url==null)
+						url = de.netsysit.util.ResourceLoader.getResource("rfc3161timestampingserver/priv/tsa.key");
 					if (CLASS_LOGGER.isDebugEnabled()) CLASS_LOGGER.debug("Loading TSA private key from " + url);
 					is = url.openStream();
 					java.lang.String privateKeyPEM = de.elbosso.util.Utilities.readIntoString(is, StandardCharsets.UTF_8);

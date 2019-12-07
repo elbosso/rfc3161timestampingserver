@@ -3,12 +3,34 @@
 Changelog of this project.
 
 
+**fixes #8**
+
+
+[afcef9fbec3a8f1](https://github.com/<user>/<project>>/commit/afcef9fbec3a8f1) Juergen Key *2019-11-20 17:49:38*
+
+
+
+**fixes #9**
+
+
+[3c254aac11f9559](https://github.com/<user>/<project>>/commit/3c254aac11f9559) Juergen Key *2019-11-19 16:45:50*
+
 **re #9**
 
 
 [8f16e9c7450b76e](https://github.com/<user>/<project>>/commit/8f16e9c7450b76e) Juergen Key *2019-11-19 16:37:17*
 
 
+
+**made postgres data persistent**
+
+
+[49234688cd288a3](https://github.com/<user>/<project>>/commit/49234688cd288a3) Juergen Key *2019-11-22 15:50:50*
+
+**config**
+
+
+[9e310feeced8d57](https://github.com/<user>/<project>>/commit/9e310feeced8d57) Juergen Key *2019-11-20 18:03:42*
 
 **now it is possible to search for the actual message digest and there is a form now for searching for timestamps and for applying for one (uploading the timestamp request and getting the reply)**
 
