@@ -186,6 +186,13 @@ Changelog of this project.
 		</repository>
     </repositories>
     <dependencies>
+    <!-- https://mvnrepository.com/artifact/org.beanshell/bsh -->
+<dependency>
+    <groupId>org.beanshell</groupId>
+    <artifactId>bsh</artifactId>
+    <version>2.0b5</version>
+</dependency>
+
         <dependency>
             <groupId>de.elbosso</groupId>
             <artifactId>algorithms</artifactId>
