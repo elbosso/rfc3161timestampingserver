@@ -1,7 +1,7 @@
 version: '3.1'
 
 services:
-  rfc3161timestampingserver:
+  pi-rfc3161timestampingserver:
     build:
       context: ./ # Local
       dockerfile: Dockerfile_armhf
@@ -10,16 +10,16 @@ services:
     hostname: rfc3161timestampingserver
 #    ports:
 #      - 7000:7000
-    restart: always
+    restart: unless-stopped
     env_file:
       - environment.env
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.rfc3161timestampingserver.rule=Host(`rfc3161timestampingserver.docker.lab`)"
+      - "traefik.http.routers.rfc3161timestampingserver.rule=Host(`rfc3161timestampingserver.pi-docker.lab`)"
       - "traefik.http.services.rfc3161timestampingserver.loadbalancer.server.port=7000"
-      - "traefik.docker.network=traefik_proxy"
+      - "traefik.docker.network=pi_traefik_proxy"
     depends_on:
-      - rfc3161serialnumberprovider
+      - pi-rfc3161serialnumberprovider
 #      "rfc3161serialnumberprovider":
 #        condition: service_healthy
     secrets:
@@ -31,10 +31,10 @@ services:
       - traefik_proxy
       - default
 #      - timestamping_network
-  rfc3161serialnumberprovider:
+  pi-rfc3161serialnumberprovider:
     image: postgres
-    container_name: rfc3161serialnumberprovider
-    restart: always
+    container_name: pi-rfc3161serialnumberprovider
+    restart: unless-stopped
     volumes:
       - ./postgres-data:/var/lib/postgresql/data      
     env_file:
@@ -52,7 +52,7 @@ services:
 networks:
   traefik_proxy:
     external:
-      name: traefik_proxy
+      name: pi_traefik_proxy
 
 secrets:
   chain.pem:
