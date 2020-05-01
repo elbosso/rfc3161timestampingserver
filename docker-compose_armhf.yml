@@ -4,7 +4,7 @@ services:
   rfc3161timestampingserver:
     build:
       context: ./ # Local
-      dockerfile: Dockerfile
+      dockerfile: Dockerfile_armhf
     #      context: https://github.com/elbosso/rfc3161timestampingserver.git # Build from Github
     container_name: rfc3161timestampingserver
     hostname: rfc3161timestampingserver

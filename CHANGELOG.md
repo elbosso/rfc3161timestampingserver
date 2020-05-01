@@ -3,6 +3,28 @@
 Changelog of this project.
 
 
+**fixes #10**
+
+
+[84d9c9b537895ee](https://github.com/<user>/<project>>/commit/84d9c9b537895ee) Juergen Key *2019-12-07 19:13:45*
+
+**re #10**
+
+
+[1b52ac7f229d257](https://github.com/<user>/<project>>/commit/1b52ac7f229d257) Juergen Key *2019-12-07 19:01:03*
+
+**re #10**
+
+
+[6be30a5715379b5](https://github.com/<user>/<project>>/commit/6be30a5715379b5) Juergen Key *2019-12-07 18:07:56*
+
+**re #10**
+
+
+[3a2209089dd533c](https://github.com/<user>/<project>>/commit/3a2209089dd533c) Juergen Key *2019-12-07 17:42:22*
+
+
+
 **fixes #8**
 
 
@@ -21,6 +43,26 @@ Changelog of this project.
 [8f16e9c7450b76e](https://github.com/<user>/<project>>/commit/8f16e9c7450b76e) Juergen Key *2019-11-19 16:37:17*
 
 
+
+**maven central completely blocks http now**
+
+
+[9bbd5082b4bf0b1](https://github.com/<user>/<project>>/commit/9bbd5082b4bf0b1) Jürgen Key *2020-01-24 17:36:11*
+
+**migration to traefik v2.0**
+
+
+[a9ad21819c43289](https://github.com/<user>/<project>>/commit/a9ad21819c43289) Juergen Key *2020-01-21 16:32:09*
+
+**name conflict resolved**
+
+
+[19183fe0202b647](https://github.com/<user>/<project>>/commit/19183fe0202b647) Juergen Key *2019-12-12 14:08:33*
+
+**ignore pattern updated**
+
+
+[f0f44a836b85668](https://github.com/<user>/<project>>/commit/f0f44a836b85668) Juergen Key *2019-11-23 16:35:13*
 
 **made postgres data persistent**
 
