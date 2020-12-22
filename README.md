@@ -47,18 +47,19 @@ mvn compile exec:java
 ```
 
 In both cases, the server starts on port 7000 - at the moment
-only POST requests are supported - either with a body of mimetype
+only POST  and GET requests are supported. POSTs accept either a body of mimetype
 `application/timestamp-query` consisting as the name hints an timestamping request
 or if the mimetype is `multipart/form-data`, the form must contain a file
 named _tsq_ again being a timestamp request. In case the request brings with it
 a valid timestamp request - it is then answered with a matching timestamp reply.
+GET is available to search for timestamp replies for checking the integrity.
 
-At the moment, this is a prototype. It still lacks support for TLS and - most
-crucial - it does not give out serial numbers: every timestamp gets serial number
-`23`.
+At the moment, this is a prototype. It still lacks support for TLS.
+Serial numbers are stored in a relational database.
 
-However the recommended mode of using this is to use the provided Dockerfile 
-and docker-compose.yml file. It is probably better 
+The recommended mode of using this is to use the provided Dockerfile 
+and docker-compose.yml file. It already brings a correctly configured postgres
+instance with it. It is probably better 
 to actually use a proxy solution like traefik (the docker-compose is 
 already prepared for this) or similar
 solutions so the services are actually accessible with a sound hostname and 

@@ -52,6 +52,7 @@ public class App {
 
 			@Override
 			public String get(String k) {
+				props = new java.util.Properties();
 				if(props==null)
 				{
 					java.net.URL url=de.netsysit.util.ResourceLoader.getResource("influxdb_micrometer.properties");
@@ -62,7 +63,6 @@ public class App {
 						try
 						{
 							java.io.InputStream is = url.openStream();
-							props = new java.util.Properties();
 							props.load(is);
 							is.close();
 						}
