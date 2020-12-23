@@ -3,6 +3,18 @@
 Changelog of this project.
 
 
+**several small bugfixes**
+
+
+[9d954762f007ef0](https://github.com/<user>/<project>>/commit/9d954762f007ef0) Jürgen Key *2020-12-22 16:15:54*
+
+**Update LICENSE**
+
+
+[1e575cd9bd2d7d2](https://github.com/<user>/<project>>/commit/1e575cd9bd2d7d2) Jürgen Key *2020-10-25 07:44:01*
+
+
+
 **fixes #10**
 
 
@@ -43,6 +55,31 @@ Changelog of this project.
 [8f16e9c7450b76e](https://github.com/<user>/<project>>/commit/8f16e9c7450b76e) Juergen Key *2019-11-19 16:37:17*
 
 
+
+**preparation for deployment on raspi**
+
+
+[4d94f56481ee5d3](https://github.com/<user>/<project>>/commit/4d94f56481ee5d3) root *2020-05-01 17:20:29*
+
+**preparing for docker on arm**
+
+
+[eedaf349ea2b5e4](https://github.com/<user>/<project>>/commit/eedaf349ea2b5e4) Jürgen Key *2020-05-01 14:51:04*
+
+**preparing for docker on arm**
+
+
+[7fdc3fe808027a4](https://github.com/<user>/<project>>/commit/7fdc3fe808027a4) Jürgen Key *2020-05-01 14:47:59*
+
+**preparing for docker on arm**
+
+
+[66985845110ae5c](https://github.com/<user>/<project>>/commit/66985845110ae5c) Jürgen Key *2020-05-01 14:44:36*
+
+**preparing for docker on arm**
+
+
+[a2201cd1c323212](https://github.com/<user>/<project>>/commit/a2201cd1c323212) Jürgen Key *2020-05-01 14:41:03*
 
 **maven central completely blocks http now**
 
