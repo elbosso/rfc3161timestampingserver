@@ -5,6 +5,7 @@
 --->
 [![GitHub release](https://img.shields.io/github/release/elbosso/rfc3161timestampingserver/all.svg?maxAge=1)](https://GitHub.com/elbosso/rfc3161timestampingserver/releases/)
 [![GitHub tag](https://img.shields.io/github/tag/elbosso/rfc3161timestampingserver.svg)](https://GitHub.com/elbosso/rfc3161timestampingserver/tags/)
+[![made-with-jasva](https://img.shields.io/badge/Made%20with-Java-9cf)](https://www.java.com)
 [![GitHub license](https://img.shields.io/github/license/elbosso/rfc3161timestampingserver.svg)](https://github.com/elbosso/rfc3161timestampingserver/blob/master/LICENSE)
 [![GitHub issues](https://img.shields.io/github/issues/elbosso/rfc3161timestampingserver.svg)](https://GitHub.com/elbosso/rfc3161timestampingserver/issues/)
 [![GitHub issues-closed](https://img.shields.io/github/issues-closed/elbosso/rfc3161timestampingserver.svg)](https://GitHub.com/elbosso/rfc3161timestampingserver/issues?q=is%3Aissue+is%3Aclosed)
