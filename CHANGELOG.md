@@ -3,6 +3,11 @@
 Changelog of this project.
 
 
+**automated maven release management**
+
+
+[b9b25697b763aa6](https://github.com/<user>/<project>>/commit/b9b25697b763aa6) Jürgen Key *2020-12-23 12:22:09*
+
 **several small bugfixes**
 
 
