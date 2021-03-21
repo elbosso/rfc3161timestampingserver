@@ -14,6 +14,8 @@
 [![Github All Releases](https://img.shields.io/github/downloads/elbosso/rfc3161timestampingserver/total.svg)](https://github.com/elbosso/rfc3161timestampingserver)
 [![Website elbosso.github.io](https://img.shields.io/website-up-down-green-red/https/elbosso.github.io.svg)](https://elbosso.github.io/)
 
+![rfc3161timestampingserver_logo](src/main/resources/site/rfc3161timestampingserver_logo.png)
+
 ## Overview
 
 This project offers a [RFC 3161](https://tools.ietf.org/html/rfc3161) compliant timestamping authority/server - you can build it by issuing
