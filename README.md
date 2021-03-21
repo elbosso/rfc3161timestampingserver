@@ -16,7 +16,7 @@
 
 ## Overview
 
-This project offers a rfc 3161 compliant timestamping authority/server - you can build it by issuing
+This project offers a [RFC 3161](https://tools.ietf.org/html/rfc3161) compliant timestamping authority/server - you can build it by issuing
 
 ```
 mvn compile package
