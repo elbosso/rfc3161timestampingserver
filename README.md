@@ -136,3 +136,15 @@ the signing certificate is expired: Ordinarily, the app would not start anymore
 but the timestamp guarantees that the certificate was valid at the time 
 the timestamp was created and so the application can be used after expiration of the signing
 certificate up to the expiration of the timestamping certificate.
+
+## Web Frontend
+
+The solution offers a simple Web Frontend for creation of timestamps and query of created timestamps as
+well as for downloading resources such as the signer certificate or the certificate chain. It is 
+reachable via `http://<host>:<port>/` using any web browser. The landing page also gives some hints about working
+with the service using curl as given above.
+
+## Java Client
+
+There is a new companion project https://github.com/elbosso/rfc3161client that demonstrates the use of
+any RFC 3161 compliant server from within Java applications for creation and verification of timestamps.
