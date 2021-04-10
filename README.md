@@ -148,3 +148,28 @@ with the service using curl as given above.
 
 There is a new companion project https://github.com/elbosso/rfc3161client that demonstrates the use of
 any RFC 3161 compliant server from within Java applications for creation and verification of timestamps.
+
+## Python Client
+
+There is a library called (rfc3161ng)[https://github.com/trbs/rfc3161ng] for using an RFC 3161 compliant server
+for the creation of timestamps as well as for cthe verification of such timestamps. It offers examples of
+its usage in its README.md - howeve, there is a (pull request)[https://github.com/trbs/rfc3161ng/pull/21] out
+because i found that in one particular usage scenario it throws an exception during verification of a timestamp. This scenario is 
+the verification of the timestamp using the certificate contained within it, not having it downloaded beforehand. So 
+I propose - until the said pull request is merged - to verify a timestamp not as show in the README of the project but to do it like so:
+
+    >>> import rfc3161ng
+    >>> rt = rfc3161ng.RemoteTimestamper('http://time.certum.pl', include_tsa_certificate=True, certificate=b"", )
+    >>> tst = rt.timestamp(data=b'John Doe')
+    >>> rt.check(tst, data=b'John Doe')
+    True
+    >>> rfc3161ng.get_timestamp(tst)
+    datetime.datetime(2017, 8, 31, 15, 42, 58, tzinfo=tzutc())
+    
+The difference here is to specify that the timestamping server should include the certificate. The certificate during construction of
+`RemoteTimestamper` is not left unspecified (the default value for the unspecified parameter `certrificate` being `None`) - this
+would result in the mentioned exception. Rather, it is explicitly set to an empty string, suppressing the exception and verifying the
+timestamp as intended.
+
+*Note, though, that this library does nothing to actually check the validity of the certificate - this is something that the user has to
+do by himself by - for example - implementing a full-fledged PKIX chain verification with revocation checks.*
