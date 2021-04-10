@@ -151,9 +151,9 @@ any RFC 3161 compliant server from within Java applications for creation and ver
 
 ## Python Client
 
-There is a library called (rfc3161ng)[https://github.com/trbs/rfc3161ng] for using an RFC 3161 compliant server
+There is a library called  [rfc3161ng](https://github.com/trbs/rfc3161ng) for using an RFC 3161 compliant server
 for the creation of timestamps as well as for cthe verification of such timestamps. It offers examples of
-its usage in its README.md - howeve, there is a (pull request)[https://github.com/trbs/rfc3161ng/pull/21] out
+its usage in its README.md - howeve, there is a [pull request](https://github.com/trbs/rfc3161ng/pull/21) out
 because i found that in one particular usage scenario it throws an exception during verification of a timestamp. This scenario is 
 the verification of the timestamp using the certificate contained within it, not having it downloaded beforehand. So 
 I propose - until the said pull request is merged - to verify a timestamp not as show in the README of the project but to do it like so:
