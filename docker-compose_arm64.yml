@@ -15,8 +15,16 @@ services:
       - environment.env
     labels:
       - "traefik.enable=true"
+      - "traefik.http.routers.rfc3161timestampingserver-http.entrypoints=http"
+      - "traefik.http.routers.rfc3161timestampingserver-http.rule=Host(`rfc3161timestampingserver.pi-docker.lab`)"
+#      - "traefik.http.routers.rfc3161timestampingserver-http.middlewares=rfc3161timestampingserver-https"
+      - "traefik.http.services.rfc3161timestampingserver-http.loadbalancer.server.port=7000"
+      - "traefik.http.middlewares.rfc3161timestampingserver-https.redirectscheme.scheme=https"
+      - "traefik.http.routers.rfc3161timestampingserver.entrypoints=https"
       - "traefik.http.routers.rfc3161timestampingserver.rule=Host(`rfc3161timestampingserver.pi-docker.lab`)"
-      - "traefik.http.services.rfc3161timestampingserver.loadbalancer.server.port=7000"
+      - "traefik.http.routers.rfc3161timestampingserver.tls=true"
+#      - "traefik.http.routers.rfc3161timestampingserver.rule=Host(`rfc3161timestampingserver.pi-docker.lab`)"
+#      - "traefik.http.services.rfc3161timestampingserver.loadbalancer.server.port=7000"
       - "traefik.docker.network=pi_traefik_proxy"
     depends_on:
       - rfc3161serialnumberprovider
