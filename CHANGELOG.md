@@ -3,6 +3,14 @@
 Changelog of this project.
 
 ## Unreleased
+### GitHub [#11](https://github.com/elbosso/rfc3161timestampingserver/issues/11)  Could not resolve dependencies for project
+
+**re #11**
+
+
+[32a85ef85218f99](https://github.com/elbosso//commit/32a85ef85218f99) Jürgen Key *2021-06-24 10:26:00*
+
+
 ### No issue
 
 **housekeeping**

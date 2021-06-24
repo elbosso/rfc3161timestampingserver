@@ -4,3 +4,4 @@ crypto
 postgres-data
 /.idea/
 /target/
+/.okhttpcache/
