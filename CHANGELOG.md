@@ -16,10 +16,35 @@ Changelog of this project.
 **re #17**
 
 
-[d2017e35758efb0](https://github.com/elbosso//commit/d2017e35758efb0) Juergen Key *2022-04-27 16:06:21*
+[2d926f3188cd8f1](https://github.com/elbosso//commit/2d926f3188cd8f1) Juergen Key *2022-04-27 16:07:39*
+
+**re #17**
+
+
+[12e77aa4b183623](https://github.com/elbosso//commit/12e77aa4b183623) Juergen Key *2022-04-27 16:07:39*
 
 
 ### No issue
+
+**new badges sourced from https://github.com/Louis3797/awesome-readme-template/**
+
+
+[a02af53eee3a618](https://github.com/elbosso//commit/a02af53eee3a618) Jürgen Key *2022-04-10 15:42:19*
+
+**Bump postgresql from 42.2.8 to 42.3.3**
+
+* Bumps [postgresql](https://github.com/pgjdbc/pgjdbc) from 42.2.8 to 42.3.3.
+* - [Release notes](https://github.com/pgjdbc/pgjdbc/releases)
+* - [Changelog](https://github.com/pgjdbc/pgjdbc/blob/master/CHANGELOG.md)
+* - [Commits](https://github.com/pgjdbc/pgjdbc/compare/REL42.2.8...REL42.3.3)
+* ---
+* updated-dependencies:
+* - dependency-name: org.postgresql:postgresql
+* dependency-type: direct:production
+* ...
+* Signed-off-by: dependabot[bot] &lt;support@github.com&gt;
+
+[f23fd07868c50fc](https://github.com/elbosso//commit/f23fd07868c50fc) dependabot[bot] *2022-02-16 01:02:31*
 
 **change of repository location for de.elbosso artifacts**
 
