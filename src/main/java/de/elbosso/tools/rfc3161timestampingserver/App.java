@@ -1,12 +1,11 @@
 package de.elbosso.tools.rfc3161timestampingserver;
+import ch.qos.logback.classic.Level;
 import io.javalin.Javalin;
 import io.micrometer.core.instrument.Clock;
 import io.micrometer.core.instrument.MeterRegistry;
 import io.micrometer.core.instrument.Metrics;
 import io.micrometer.influx.InfluxConfig;
 import io.micrometer.influx.InfluxMeterRegistry;
-import org.apache.log4j.Level;
-import org.apache.log4j.Priority;
 import org.bouncycastle.asn1.ASN1ObjectIdentifier;
 import org.bouncycastle.asn1.nist.NISTObjectIdentifiers;
 import org.bouncycastle.asn1.x509.AlgorithmIdentifier;
@@ -31,8 +30,8 @@ import java.util.Base64;
 import java.util.Collections;
 
 public class App {
-	private final static org.apache.log4j.Logger CLASS_LOGGER=org.apache.log4j.Logger.getLogger(App.class);
-	private final static org.apache.log4j.Logger EXCEPTION_LOGGER=org.apache.log4j.Logger.getLogger("ExceptionCatcher");
+	private final static org.slf4j.Logger CLASS_LOGGER=org.slf4j.LoggerFactory.getLogger(App.class);
+	private final static org.slf4j.Logger EXCEPTION_LOGGER=org.slf4j.LoggerFactory.getLogger("ExceptionCatcher");
 
 	public static void main(String[] args)
 	{
@@ -141,7 +140,7 @@ public class App {
 				}
 				else
 				{
-					if (CLASS_LOGGER.isEnabledFor(Priority.WARN)) CLASS_LOGGER.warn("did not find algoid");
+					if (CLASS_LOGGER.isWarnEnabled()) CLASS_LOGGER.warn("did not find algoid");
 				}
 				String msgDigestBase64 = ctx.formParam("msgDigestBase64");
 				if(msgDigestBase64!=null)
@@ -150,7 +149,7 @@ public class App {
 				}
 				else
 				{
-					if (CLASS_LOGGER.isEnabledFor(Priority.WARN)) CLASS_LOGGER.warn("did not find msgDigestBase64");
+					if (CLASS_LOGGER.isWarnEnabled()) CLASS_LOGGER.warn("did not find msgDigestBase64");
 				}
 				String msgDigestHex = ctx.formParam("msgDigestHex");
 				if(msgDigestHex!=null)
@@ -159,7 +158,7 @@ public class App {
 				}
 				else
 				{
-					if (CLASS_LOGGER.isEnabledFor(Priority.WARN)) CLASS_LOGGER.warn("did not find msgDigestHex");
+					if (CLASS_LOGGER.isWarnEnabled()) CLASS_LOGGER.warn("did not find msgDigestHex");
 				}
 				if((algoid!=null)&&(msgDigestBase64!=null))
 				{
@@ -239,7 +238,7 @@ public class App {
 				}
 				else
 				{
-					if (CLASS_LOGGER.isEnabledFor(Priority.ERROR)) CLASS_LOGGER.error("Not all needed information present");
+					if (CLASS_LOGGER.isErrorEnabled()) CLASS_LOGGER.error("Not all needed information present");
 					ctx.status(500);
 					Metrics.counter("rfc3161timestampingserver.post", "resourcename","query","httpstatus",java.lang.Integer.toString(ctx.status()),"error","params","contentType",contentType,"remoteAddr",ctx.req.getRemoteAddr(),"remoteHost",ctx.req.getRemoteHost(),"localAddr",ctx.req.getLocalAddr(),"localName",ctx.req.getLocalName()).increment();
 				}
@@ -277,7 +276,7 @@ public class App {
 				//curl -F "file=@../../work/expect-dialog-ca.git/_priv/create_ca.sh.tsq" http://localhost:7000/
 				else
 				{
-					if(CLASS_LOGGER.isEnabledFor(Priority.ERROR))CLASS_LOGGER.error("no field named \"tsq\" found in form data . corrupted request?");
+					if(CLASS_LOGGER.isErrorEnabled())CLASS_LOGGER.error("no field named \"tsq\" found in form data . corrupted request?");
 					Metrics.counter("rfc3161timestampingserver.post", "resourcename","/","httpstatus","500","error","tsq not found","contentType",contentType,"remoteAddr",ctx.req.getRemoteAddr(),"remoteHost",ctx.req.getRemoteHost(),"localAddr",ctx.req.getLocalAddr(),"localName",ctx.req.getLocalName()).increment();
 				}
 			}

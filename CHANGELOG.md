@@ -11,6 +11,29 @@ Changelog of this project.
 [e2755cf5c01bbc2](https://github.com/elbosso//commit/e2755cf5c01bbc2) Jürgen Key *2021-06-24 10:27:11*
 
 
+### No issue
+
+**change of repository location for de.elbosso artifacts**
+
+
+[df2b0ee9c8cd785](https://github.com/elbosso//commit/df2b0ee9c8cd785) Jürgen Key *2021-09-12 08:36:42*
+
+**Bump bcprov-jdk15on from 1.64 to 1.67**
+
+* Bumps [bcprov-jdk15on](https://github.com/bcgit/bc-java) from 1.64 to 1.67.
+* - [Release notes](https://github.com/bcgit/bc-java/releases)
+* - [Changelog](https://github.com/bcgit/bc-java/blob/master/docs/releasenotes.html)
+* - [Commits](https://github.com/bcgit/bc-java/commits)
+* ---
+* updated-dependencies:
+* - dependency-name: org.bouncycastle:bcprov-jdk15on
+* dependency-type: direct:production
+* ...
+* Signed-off-by: dependabot[bot] &lt;support@github.com&gt;
+
+[f54984d5d368a6d](https://github.com/elbosso//commit/f54984d5d368a6d) dependabot[bot] *2021-08-13 15:34:40*
+
+
 ## 1.1.0
 ### GitHub [#11](https://github.com/elbosso/rfc3161timestampingserver/issues/11)  Could not resolve dependencies for project
 
