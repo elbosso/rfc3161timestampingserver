@@ -11,6 +11,14 @@ Changelog of this project.
 [e2755cf5c01bbc2](https://github.com/elbosso//commit/e2755cf5c01bbc2) Jürgen Key *2021-06-24 10:27:11*
 
 
+### GitHub [#17](https://github.com/elbosso/rfc3161timestampingserver/issues/17) get rid of log4j and use the new bom dependency
+
+**re #17**
+
+
+[d2017e35758efb0](https://github.com/elbosso//commit/d2017e35758efb0) Juergen Key *2022-04-27 16:06:21*
+
+
 ### No issue
 
 **change of repository location for de.elbosso artifacts**
