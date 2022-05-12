@@ -176,3 +176,36 @@ timestamp as intended.
 
 *Note, though, that this library does nothing to actually check the validity of the certificate - this is something that the user has to
 do by himself by - for example - implementing a full-fledged PKIX chain verification with revocation checks.*
+
+## Migration between Postgres versions
+
+If you use this solution from scratch, you can just edit the file _docker-compose.yml_ matching your target architecture if you want to use a different
+version of the Postgres database - currently versions 12, 13 and 14 are supported.
+
+If you are however already running this solution and want to change the database version - simply changing the file _docker-compose.yml_ matching your target architecture will not help: Postgres changes the layout and format of its data files between major versions - the service will not come up if you do so. However, there is a relatively easy way to overcome this:
+
+You should of course make a backup of your persistent volumen for the database before trying any migration work. To do so, you have to stop the service first. Then you can make a backup and start working on the migration. There are many resources concerning upgrading Postgres in Docker - feel free to compare them with the proceedings laid out here.
+
+Word to the wise: it is always a good idea to have some tests ready that can help you validate that the migration was successful. One such test is of course checking if the service still creates timestamps after the migration is finished. Another strongly recommended test is to try out the search for a timestamp using a known valid hash as key - this should produce the same result before and after the migration.
+
+Now, let us get to the actual steps needed to nigrate to a different major version of Postgres while keeping all data intact:
+First, lets create a backup of the database in the version currently used by starting the service again and the executing
+```
+docker-compose exec rfc3161serialnumberprovider pg_dumpall -U jdbctestuser > backup/dump_13.sql
+```
+
+This creates a dump file in subdirectory _backup_ - you can of course change the destination file.
+Now, the service is stopped.
+Afterwards, the volume is deleted. If you use a directory as volume for Postgres data, you can simply rename it (thus having another backup if needed) and
+create one with the same name (and attributes and owner) as the original one.
+The file _docker-compose.yml_ matching your target architecture is modified - the version of the docker image for Postgres needs to be changed.
+Now, the service ist started again - it now starts Postgres in the version wanted but with no data. To populate the database with the backup, issue the following command:
+```
+docker exec -i rfc3161serialnumberprovider psql -U jdbctestuser -d jdbctest < backup/dump_13.sql
+```
+
+Of course, the name and path of the dump file must be the same as given when the dump file was created.
+
+After this command finishes, you can test the solution and you will find that it works as before and has not lost any data. If something should
+go wrong and the tests are not successful - shut down the service and undo any changes in the file _docker-compose.yml_ matching your target architecture,
+reactivate the backup of the data volume you made earlier and the service will work as before after restarting.
