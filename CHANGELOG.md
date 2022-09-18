@@ -3,6 +3,15 @@
 Changelog of this project.
 
 ## Unreleased
+### GitHub [#17](https://github.com/elbosso/rfc3161timestampingserver/issues/17) get rid of log4j and use the new bom dependency
+
+**fixes #17**
+
+
+[714dd128707f500](https://github.com/elbosso//commit/714dd128707f500) Juergen Key *2022-04-27 16:08:32*
+
+
+## 1.2.0
 ### GitHub [#11](https://github.com/elbosso/rfc3161timestampingserver/issues/11)  Could not resolve dependencies for project
 
 **re #11**

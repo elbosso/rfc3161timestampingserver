@@ -79,9 +79,10 @@ WENN SIE AUF DIE MOEGLICHKEIT EINES SOLCHEN SCHADENS HINGEWIESEN WORDEN SIND.
                                 </mainClass>
                             </manifest>
                         </archive>
-                        <descriptorRefs>
-                            <descriptorRef>jar-with-dependencies</descriptorRef>
-                        </descriptorRefs>
+                        <appendAssemblyId>true</appendAssemblyId>
+                        <descriptors>
+                            <descriptor>${basedir}/src/assembly/assembly.xml</descriptor>
+                        </descriptors>
                     </configuration>
                     <executions>
                         <execution>

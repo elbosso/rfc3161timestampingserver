@@ -89,6 +89,8 @@ public class App {
 		app.config.addStaticFiles("/site");
 		if(CLASS_LOGGER.isDebugEnabled())CLASS_LOGGER.debug("added path for static contents: /site (allowed methods: GET)");
 		app.get("/chain.pem", ctx -> {
+			System.out.println("GET for chain.pem "+CLASS_LOGGER.isDebugEnabled());
+			if(CLASS_LOGGER.isDebugEnabled())CLASS_LOGGER.debug("GET for chain.pem");
 			java.net.URL url=de.netsysit.util.ResourceLoader.getDockerSecretResource("chain.pem");
 			if(url==null)
 				url=de.netsysit.util.ResourceLoader.getResource("rfc3161timestampingserver/priv/chain.pem");
@@ -103,6 +105,7 @@ public class App {
 		});
 		if(CLASS_LOGGER.isDebugEnabled())CLASS_LOGGER.debug("added path for cert chain: /chain.pem (allowed methods: GET)");
 		app.get("/tsa.crt", ctx -> {
+			if(CLASS_LOGGER.isDebugEnabled())CLASS_LOGGER.debug("GET for tsa.crt");
 			java.net.URL url=de.netsysit.util.ResourceLoader.getDockerSecretResource("tsa.crt");
 			if(url==null)
 				url=de.netsysit.util.ResourceLoader.getResource("rfc3161timestampingserver/priv/tsa.crt");
@@ -117,6 +120,7 @@ public class App {
 		});
 		if(CLASS_LOGGER.isDebugEnabled())CLASS_LOGGER.debug("added path for cert: /tsa.cert (allowed methods: GET)");
 		app.get("/tsa.conf", ctx -> {
+			if(CLASS_LOGGER.isDebugEnabled())CLASS_LOGGER.debug("GET for tsa.conf");
 			java.net.URL url=de.netsysit.util.ResourceLoader.getResource("rfc3161timestampingserver/etc/tsa.conf");
 			java.io.InputStream is=url.openStream();
 			java.io.ByteArrayOutputStream baos=new java.io.ByteArrayOutputStream();
@@ -300,6 +304,7 @@ public class App {
 					if (CLASS_LOGGER.isDebugEnabled()) CLASS_LOGGER.debug("Loading TSA cert from " + url);
 
 					java.io.InputStream is = url.openStream();
+					java.util.Collection<X509Certificate> certs=(java.util.Collection<X509Certificate>) cf.generateCertificates(is);
 					X509Certificate rsaSigningCert = (X509Certificate) cf.generateCertificate(is);
 					is.close();
 
@@ -333,7 +338,8 @@ public class App {
 					if (CLASS_LOGGER.isDebugEnabled())
 						CLASS_LOGGER.debug("TimeStampTokenGenerator successfully instantiated");
 
-					tsTokenGen.addCertificates(new JcaCertStore(Collections.singleton(rsaSigningCert)));
+//					tsTokenGen.addCertificates(new JcaCertStore(Collections.singleton(rsaSigningCert)));
+					tsTokenGen.addCertificates(new JcaCertStore(certs));
 					if (CLASS_LOGGER.isDebugEnabled()) CLASS_LOGGER.debug("added certificates");
 
 					TimeStampResponseGenerator tsRespGen = new TimeStampResponseGenerator(tsTokenGen, TSPAlgorithms.ALLOWED);
