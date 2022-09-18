@@ -305,6 +305,8 @@ public class App {
 
 					java.io.InputStream is = url.openStream();
 					java.util.Collection<X509Certificate> certs=(java.util.Collection<X509Certificate>) cf.generateCertificates(is);
+					is.close();
+					is = url.openStream();
 					X509Certificate rsaSigningCert = (X509Certificate) cf.generateCertificate(is);
 					is.close();
 

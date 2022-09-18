@@ -3,12 +3,36 @@
 Changelog of this project.
 
 ## Unreleased
+### GitHub [#13](https://github.com/elbosso/rfc3161timestampingserver/issues/13) making migration between databases possible
+
+**fixes #13**
+
+
+[7f13db678ad6389](https://github.com/elbosso//commit/7f13db678ad6389) Jürgen Key *2022-05-12 17:07:29*
+
+
 ### GitHub [#17](https://github.com/elbosso/rfc3161timestampingserver/issues/17) get rid of log4j and use the new bom dependency
 
 **fixes #17**
 
 
 [714dd128707f500](https://github.com/elbosso//commit/714dd128707f500) Juergen Key *2022-04-27 16:08:32*
+
+
+### GitHub [#18](https://github.com/elbosso/rfc3161timestampingserver/issues/18) fix class not found exception with standalone jar with dependencies
+
+**fixes #18**
+
+
+[f4c026d3bdc5e0a](https://github.com/elbosso//commit/f4c026d3bdc5e0a) Juergen Key *2022-05-05 16:56:06*
+
+
+### No issue
+
+**preparation of inclusion of full chain in response**
+
+
+[c092aa2e80a9ab4](https://github.com/elbosso//commit/c092aa2e80a9ab4) Jürgen Key *2022-09-18 06:05:46*
 
 
 ## 1.2.0
