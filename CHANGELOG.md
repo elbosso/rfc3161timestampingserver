@@ -32,6 +32,11 @@ Changelog of this project.
 **preparation of inclusion of full chain in response**
 
 
+[fed797572e98b84](https://github.com/elbosso//commit/fed797572e98b84) Jürgen Key *2022-09-18 06:31:51*
+
+**preparation of inclusion of full chain in response**
+
+
 [c092aa2e80a9ab4](https://github.com/elbosso//commit/c092aa2e80a9ab4) Jürgen Key *2022-09-18 06:05:46*
 
 

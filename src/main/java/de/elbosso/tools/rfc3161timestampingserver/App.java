@@ -30,6 +30,7 @@ import java.util.Base64;
 import java.util.Collections;
 
 public class App {
+	private final static java.lang.String INCLUDE_FULL_CHAIN="de.elbosso.tools.rfc3161timestampingserver.App.includeFullChain";
 	private final static org.slf4j.Logger CLASS_LOGGER=org.slf4j.LoggerFactory.getLogger(App.class);
 	private final static org.slf4j.Logger EXCEPTION_LOGGER=org.slf4j.LoggerFactory.getLogger("ExceptionCatcher");
 
@@ -340,8 +341,13 @@ public class App {
 					if (CLASS_LOGGER.isDebugEnabled())
 						CLASS_LOGGER.debug("TimeStampTokenGenerator successfully instantiated");
 
-//					tsTokenGen.addCertificates(new JcaCertStore(Collections.singleton(rsaSigningCert)));
-					tsTokenGen.addCertificates(new JcaCertStore(certs));
+					boolean includeFullChain=false;
+					if(System.getenv(INCLUDE_FULL_CHAIN)!=null)
+						includeFullChain=java.lang.Boolean.valueOf(System.getenv(INCLUDE_FULL_CHAIN));
+					if(includeFullChain)
+						tsTokenGen.addCertificates(new JcaCertStore(certs));
+					else
+						tsTokenGen.addCertificates(new JcaCertStore(Collections.singleton(rsaSigningCert)));
 					if (CLASS_LOGGER.isDebugEnabled()) CLASS_LOGGER.debug("added certificates");
 
 					TimeStampResponseGenerator tsRespGen = new TimeStampResponseGenerator(tsTokenGen, TSPAlgorithms.ALLOWED);
