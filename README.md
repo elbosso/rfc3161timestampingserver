@@ -63,13 +63,29 @@ GET is available to search for timestamp replies for checking the integrity.
 At the moment, this is a prototype. It still lacks support for TLS.
 Serial numbers are stored in a relational database.
 
-The recommended mode of using this is to use the provided Dockerfile 
-and docker-compose.yml file. It already brings a correctly configured postgres
+The recommended mode of using this is to use the provided _Dockerfile_ 
+and _docker-compose.yml_ file. It already brings a correctly configured postgres
 instance with it. It is probably better 
 to actually use a proxy solution like traefik (the docker-compose is 
 already prepared for this) or similar
 solutions so the services are actually accessible with a sound hostname and 
 some default port.
+
+If you use the provided _docker-compose.yml_ file, you must provide some secrets and a file
+named _environment.env_ holding some configuration items. They are:
+
+* `javax.persistence.jdbc.url` - JDBC connection URL for the database persisting generated timestamps 
+* `javax.persistence.jdbc.user` - DB user
+* `influx.uri` - URL of the influxdb for the monitoring data
+* `de.elbosso.tools.rfc3161timestampingserver.App.includeFullChain` - Determines if all certificates of the chain are to be included in the 
+response (if set to `true`) or not (otherwise, the default)
+
+Additionally, there are some secrets you also have to provide:
+
+* `chain.pem` - chain with all CA certificates
+* `tsa.crt` - certificate
+* `tsa.key` - private key
+* `javax.persistence.jdbc.password_FILE` - File holding the DB password for `javax.persistence.jdbc.user` (see above)
 
 ## Working with it
 

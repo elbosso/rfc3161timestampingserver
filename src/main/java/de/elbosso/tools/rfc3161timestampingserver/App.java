@@ -305,10 +305,16 @@ public class App {
 					if (CLASS_LOGGER.isDebugEnabled()) CLASS_LOGGER.debug("Loading TSA cert from " + url);
 
 					java.io.InputStream is = url.openStream();
-					java.util.Collection<X509Certificate> certs=(java.util.Collection<X509Certificate>) cf.generateCertificates(is);
-					is.close();
-					is = url.openStream();
 					X509Certificate rsaSigningCert = (X509Certificate) cf.generateCertificate(is);
+					is.close();
+
+					url = de.netsysit.util.ResourceLoader.getDockerSecretResource("chain.pem");
+					if(url==null)
+						url=de.netsysit.util.ResourceLoader.getResource("rfc3161timestampingserver/priv/chain.pem");
+					if (CLASS_LOGGER.isDebugEnabled()) CLASS_LOGGER.debug("Loading chain from " + url);
+
+					is = url.openStream();
+					java.util.Collection<X509Certificate> certs=(java.util.Collection<X509Certificate>) cf.generateCertificates(is);
 					is.close();
 
 					url=de.netsysit.util.ResourceLoader.getDockerSecretResource("tsa.key");
