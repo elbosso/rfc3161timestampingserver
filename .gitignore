@@ -5,3 +5,6 @@ postgres-data
 /.idea/
 /target/
 /.okhttpcache/
+/dependency-reduced-pom.xml
+/deps
+/logging_config.xml
