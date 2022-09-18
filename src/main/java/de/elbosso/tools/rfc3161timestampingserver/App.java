@@ -314,7 +314,8 @@ public class App {
 					if (CLASS_LOGGER.isDebugEnabled()) CLASS_LOGGER.debug("Loading chain from " + url);
 
 					is = url.openStream();
-					java.util.Collection<X509Certificate> certs=(java.util.Collection<X509Certificate>) cf.generateCertificates(is);
+					java.util.List<X509Certificate> certs=new java.util.LinkedList((java.util.Collection<X509Certificate>) cf.generateCertificates(is));
+					certs.add(rsaSigningCert);
 					is.close();
 
 					url=de.netsysit.util.ResourceLoader.getDockerSecretResource("tsa.key");

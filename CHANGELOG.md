@@ -29,6 +29,16 @@ Changelog of this project.
 
 ### No issue
 
+**documentation augmented**
+
+
+[0d0b927cb14b4ae](https://github.com/elbosso//commit/0d0b927cb14b4ae) Jürgen Key *2022-09-18 07:23:17*
+
+**inclusion of full chain in response controlled via environment variable**
+
+
+[f97ed64a9930135](https://github.com/elbosso//commit/f97ed64a9930135) Jürgen Key *2022-09-18 07:00:51*
+
 **preparation of inclusion of full chain in response**
 
 
