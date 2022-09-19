@@ -3,6 +3,20 @@
 Changelog of this project.
 
 ## Unreleased
+### No issue
+
+**new config option to control inclusion of CRLs in responses**
+
+
+[85de8ef09e86710](https://github.com/elbosso//commit/85de8ef09e86710) Jürgen Key *2022-09-19 09:09:49*
+
+**default policy for reply changed to 0.4.0.2023.1.1 if no policy was specified in request**
+
+
+[ee550b7c45daf1f](https://github.com/elbosso//commit/ee550b7c45daf1f) Jürgen Key *2022-09-19 08:12:17*
+
+
+## 1.3.0
 ### GitHub [#13](https://github.com/elbosso/rfc3161timestampingserver/issues/13) making migration between databases possible
 
 **fixes #13**
@@ -28,6 +42,16 @@ Changelog of this project.
 
 
 ### No issue
+
+**housekeeping**
+
+
+[ca6059437ace4e9](https://github.com/elbosso//commit/ca6059437ace4e9) Jürgen Key *2022-09-18 07:52:44*
+
+**inclusion of full chain in response controlled via environment variable**
+
+
+[0fd603d1c2ff885](https://github.com/elbosso//commit/0fd603d1c2ff885) Jürgen Key *2022-09-18 07:41:00*
 
 **documentation augmented**
 

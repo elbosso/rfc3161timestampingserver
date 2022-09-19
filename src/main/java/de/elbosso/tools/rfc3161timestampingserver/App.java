@@ -370,7 +370,7 @@ public class App {
 						if (CLASS_LOGGER.isDebugEnabled()) CLASS_LOGGER.debug("added certificates");
 						boolean includeCRLs=false;
 						if(System.getenv(INCLUDE_CRLS)!=null)
-							includeFullChain=java.lang.Boolean.valueOf(System.getenv(INCLUDE_CRLS));
+							includeCRLs=java.lang.Boolean.valueOf(System.getenv(INCLUDE_CRLS));
 
 						if(includeCRLs)
 						{
