@@ -341,10 +341,13 @@ public class App {
 
 					AlgorithmIdentifier digestAlgorithm = new AlgorithmIdentifier(NISTObjectIdentifiers.id_sha384);
 					DigestCalculatorProvider digProvider = new JcaDigestCalculatorProviderBuilder().setProvider(BouncyCastleProvider.PROVIDER_NAME).build();
+
+					TimeStampRequest timeStampRequest = new TimeStampRequest(tsq);
+
 					TimeStampTokenGenerator tsTokenGen = new TimeStampTokenGenerator(
 							new JcaSimpleSignerInfoGeneratorBuilder().build("SHA384withRSA", privateKey, rsaSigningCert),
 							digProvider.get(digestAlgorithm),
-							new ASN1ObjectIdentifier("1.2"));
+							timeStampRequest.getReqPolicy()!=null?timeStampRequest.getReqPolicy():new ASN1ObjectIdentifier("0.4.0.2023.1.1"));
 					if (CLASS_LOGGER.isDebugEnabled())
 						CLASS_LOGGER.debug("TimeStampTokenGenerator successfully instantiated");
 
@@ -361,8 +364,6 @@ public class App {
 					if (CLASS_LOGGER.isDebugEnabled())
 						CLASS_LOGGER.debug("TimeStampResponseGenerator successfully instantiated");
 
-					TimeStampRequest timeStampRequest = new TimeStampRequest(tsq);
-
 					if (CLASS_LOGGER.isDebugEnabled())
 						CLASS_LOGGER.debug("Message imprint: " + timeStampRequest.getMessageImprintAlgOID().getId() + " " + de.elbosso.util.Utilities.formatHexDump(timeStampRequest.getMessageImprintDigest(), true));
 					if (CLASS_LOGGER.isDebugEnabled())
@@ -375,7 +376,7 @@ public class App {
 					rfc3161Timestamp.setMessageImprintDigestHex(de.elbosso.util.Utilities.formatHexDump(timeStampRequest.getMessageImprintDigest(),false).toUpperCase());
 					em.persist(rfc3161Timestamp);
 
-					byte[] tsr = tsRespGen.generate(timeStampRequest, rfc3161Timestamp.getId(), rfc3161Timestamp.getCreationDate()).getEncoded();
+					byte[] tsr = tsRespGen.generateGrantedResponse(timeStampRequest, rfc3161Timestamp.getId(), rfc3161Timestamp.getCreationDate()).getEncoded();
 
 					rfc3161Timestamp.setTsrData(tsr);
 					em.persist(rfc3161Timestamp);
