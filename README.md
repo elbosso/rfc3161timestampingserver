@@ -77,8 +77,11 @@ named _environment.env_ holding some configuration items. They are:
 * `javax.persistence.jdbc.url` - JDBC connection URL for the database persisting generated timestamps 
 * `javax.persistence.jdbc.user` - DB user
 * `influx.uri` - URL of the influxdb for the monitoring data
-* `de.elbosso.tools.rfc3161timestampingserver.App.includeFullChain` - Determines if all certificates of the chain are to be included in the 
-response (if set to `true`) or not (otherwise, the default)
+* `de.elbosso.tools.rfc3161timestampingserver.App.includeFullChain` - Determines if all certificates of the chain are to be included in the
+  response (if set to `true`) or not (otherwise, the default). Certificates are only included if the request wants them. 
+* `de.elbosso.tools.rfc3161timestampingserver.App.includeCRLs` - Determines if CRLs of the included certificates should be included in the
+ response (if set to `true`) or not (otherwise, the default). If no certificates are included in the response, no CRLs are
+* included as well - regardless of the value of this configuration item
 
 Additionally, there are some secrets you also have to provide:
 

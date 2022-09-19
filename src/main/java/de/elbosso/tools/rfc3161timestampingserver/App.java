@@ -9,12 +9,14 @@ import io.micrometer.influx.InfluxMeterRegistry;
 import org.bouncycastle.asn1.ASN1ObjectIdentifier;
 import org.bouncycastle.asn1.nist.NISTObjectIdentifiers;
 import org.bouncycastle.asn1.x509.AlgorithmIdentifier;
+import org.bouncycastle.cert.jcajce.JcaCRLStore;
 import org.bouncycastle.cert.jcajce.JcaCertStore;
 import org.bouncycastle.cms.jcajce.JcaSimpleSignerInfoGeneratorBuilder;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.bouncycastle.operator.DigestCalculatorProvider;
 import org.bouncycastle.operator.jcajce.JcaDigestCalculatorProviderBuilder;
 import org.bouncycastle.tsp.*;
+import org.bouncycastle.util.Store;
 
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
@@ -23,6 +25,7 @@ import java.security.KeyFactory;
 import java.security.PrivateKey;
 import java.security.Security;
 import java.security.cert.CertificateFactory;
+import java.security.cert.X509CRL;
 import java.security.cert.X509Certificate;
 import java.security.spec.PKCS8EncodedKeySpec;
 import java.time.Duration;
@@ -31,6 +34,7 @@ import java.util.Collections;
 
 public class App {
 	private final static java.lang.String INCLUDE_FULL_CHAIN="de.elbosso.tools.rfc3161timestampingserver.App.includeFullChain";
+	private final static java.lang.String INCLUDE_CRLS="de.elbosso.tools.rfc3161timestampingserver.App.includeCRLs";
 	private final static org.slf4j.Logger CLASS_LOGGER=org.slf4j.LoggerFactory.getLogger(App.class);
 	private final static org.slf4j.Logger EXCEPTION_LOGGER=org.slf4j.LoggerFactory.getLogger("ExceptionCatcher");
 
@@ -354,11 +358,40 @@ public class App {
 					boolean includeFullChain=false;
 					if(System.getenv(INCLUDE_FULL_CHAIN)!=null)
 						includeFullChain=java.lang.Boolean.valueOf(System.getenv(INCLUDE_FULL_CHAIN));
-					if(includeFullChain)
+
+					if(includeFullChain==false)
+					{
+						certs.clear();
+						certs.add(rsaSigningCert);
+					}
+					if(timeStampRequest.getCertReq())
+					{
 						tsTokenGen.addCertificates(new JcaCertStore(certs));
+						if (CLASS_LOGGER.isDebugEnabled()) CLASS_LOGGER.debug("added certificates");
+						boolean includeCRLs=false;
+						if(System.getenv(INCLUDE_CRLS)!=null)
+							includeFullChain=java.lang.Boolean.valueOf(System.getenv(INCLUDE_CRLS));
+
+						if(includeCRLs)
+						{
+							java.util.List<X509CRL> crls = new java.util.LinkedList();
+							for (X509Certificate cert : certs)
+							{
+								crls.addAll(de.elbosso.util.security.Utilities.getCRLs(cert));
+							}
+							JcaCRLStore store = new JcaCRLStore(crls);
+							tsTokenGen.addCRLs(store);
+							if (CLASS_LOGGER.isDebugEnabled()) CLASS_LOGGER.debug("added CRLs");
+						}
+						else
+						{
+							if (CLASS_LOGGER.isDebugEnabled()) CLASS_LOGGER.debug("CRLs not included (as requested)");
+						}
+					}
 					else
-						tsTokenGen.addCertificates(new JcaCertStore(Collections.singleton(rsaSigningCert)));
-					if (CLASS_LOGGER.isDebugEnabled()) CLASS_LOGGER.debug("added certificates");
+					{
+						if (CLASS_LOGGER.isDebugEnabled()) CLASS_LOGGER.debug("No certificates and no CRLs added (as requested)");
+					}
 
 					TimeStampResponseGenerator tsRespGen = new TimeStampResponseGenerator(tsTokenGen, TSPAlgorithms.ALLOWED);
 					if (CLASS_LOGGER.isDebugEnabled())
