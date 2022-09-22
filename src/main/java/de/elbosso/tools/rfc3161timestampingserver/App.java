@@ -61,9 +61,9 @@ public class App {
 
 			@Override
 			public String get(String k) {
-				props = new java.util.Properties();
 				if(props==null)
 				{
+					props = new java.util.Properties();
 					java.net.URL url=de.netsysit.util.ResourceLoader.getResource("influxdb_micrometer.properties");
 					if(url==null)
 						CLASS_LOGGER.error("could not load default influxdb monitoring properties!");

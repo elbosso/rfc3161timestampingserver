@@ -5,6 +5,11 @@ Changelog of this project.
 ## Unreleased
 ### No issue
 
+**TSA field is now filled, too**
+
+
+[d7aff41fc1a7be1](https://github.com/elbosso//commit/d7aff41fc1a7be1) Jürgen Key *2022-09-22 07:13:37*
+
 **new config option to control inclusion of CRLs in responses**
 
 
