@@ -8,3 +8,4 @@ postgres-data
 /dependency-reduced-pom.xml
 /deps
 /logging_config.xml
+environment.env
