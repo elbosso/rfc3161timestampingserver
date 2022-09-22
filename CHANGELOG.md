@@ -5,6 +5,11 @@ Changelog of this project.
 ## Unreleased
 ### No issue
 
+**deprecation addressed**
+
+
+[8ca9e07241a981d](https://github.com/elbosso//commit/8ca9e07241a981d) Jürgen Key *2022-09-22 11:45:04*
+
 **explicit postgrews version in docker-compose**
 
 
