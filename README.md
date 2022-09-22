@@ -65,9 +65,10 @@ Serial numbers are stored in a relational database.
 
 The recommended mode of using this is to use the provided _Dockerfile_ 
 and _docker-compose.yml_ file. It already brings a correctly configured postgres
-instance with it. **The `master` branch uses a postgres version 12 for this. If you start from scratch, you probably want
+instance with it. **The `master` branch uses a PostgreSQL version 12 for this. If you start from scratch, you probably want
 to use the 'postgres14` branch - if you are already a user of the naster branch and want to
-switch to PostreSQL 14 - xou should read the section about migrating further down here!** It is probably better 
+switch to PostreSQL 14 - you should read the section about migrating further down here!** 
+It is probably better 
 to actually use a proxy solution like traefik (the docker-compose is 
 already prepared for this) or similar
 solutions so the services are actually accessible with a sound hostname and 
