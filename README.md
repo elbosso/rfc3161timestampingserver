@@ -90,6 +90,10 @@ Additionally, there are some secrets you also have to provide:
 * `tsa.key` - private key
 * `javax.persistence.jdbc.password_FILE` - File holding the DB password for `javax.persistence.jdbc.user` (see above)
 
+Monitoring can be adjusted by setting environment variables also - 
+using the properties in [influxdb_micrometer.properties](src/main/resources/influxdb_micrometer.properties)
+as names of the environment variables.
+
 ## Working with it
 
 The project offers some resources to make it easier working with timestamps:
