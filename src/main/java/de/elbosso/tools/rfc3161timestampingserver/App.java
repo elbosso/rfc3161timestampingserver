@@ -16,6 +16,7 @@ import org.bouncycastle.asn1.x509.GeneralName;
 import org.bouncycastle.asn1.x509.X509Name;
 import org.bouncycastle.cert.jcajce.JcaCRLStore;
 import org.bouncycastle.cert.jcajce.JcaCertStore;
+import org.bouncycastle.cert.jcajce.JcaX500NameUtil;
 import org.bouncycastle.cms.jcajce.JcaSimpleSignerInfoGeneratorBuilder;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.bouncycastle.operator.DigestCalculatorProvider;
@@ -397,10 +398,8 @@ public class App {
 					{
 						if (CLASS_LOGGER.isDebugEnabled()) CLASS_LOGGER.debug("No certificates and no CRLs added (as requested)");
 					}
-					GeneralName gn=new GeneralName(new X500Name(new BCStrictStyle(),rsaSigningCert.getSubjectX500Principal().toString()));
-//					tsTokenGen.setTSA(new GeneralName(GeneralName.otherName,rsaSigningCert.getSubjectX500Principal().toString()));
-					tsTokenGen.setTSA(new GeneralName(new X509Name(true,rsaSigningCert.getSubjectX500Principal().toString())));
-//					tsTokenGen.setTSA(gn);
+					GeneralName gn= new GeneralName(JcaX500NameUtil.getSubject(rsaSigningCert));
+					tsTokenGen.setTSA(gn);
 
 					TimeStampResponseGenerator tsRespGen = new TimeStampResponseGenerator(tsTokenGen, TSPAlgorithms.ALLOWED);
 					if (CLASS_LOGGER.isDebugEnabled())

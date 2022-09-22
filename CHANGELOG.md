@@ -5,6 +5,36 @@ Changelog of this project.
 ## Unreleased
 ### No issue
 
+**explicit postgrews version in docker-compose**
+
+
+[56293a05ccbad4f](https://github.com/elbosso//commit/56293a05ccbad4f) Jürgen Key *2022-09-22 08:19:10*
+
+**fixed typos**
+
+
+[e87a81ae6b0837c](https://github.com/elbosso//commit/e87a81ae6b0837c) Jürgen Key *2022-09-22 08:09:48*
+
+**Clarification added re the new postgres14 branch**
+
+
+[f0e3b775c8c4e1f](https://github.com/elbosso//commit/f0e3b775c8c4e1f) Jürgen Key *2022-09-22 08:08:48*
+
+**housekeeping**
+
+
+[0bfae3a8c6e54fb](https://github.com/elbosso//commit/0bfae3a8c6e54fb) Jürgen Key *2022-09-22 07:49:07*
+
+**pointer to monitoring configuration**
+
+
+[4f05ddc9734c30c](https://github.com/elbosso//commit/4f05ddc9734c30c) Jürgen Key *2022-09-22 07:45:05*
+
+**small bug concerning monitoring fixed**
+
+
+[e11ae67df7203e4](https://github.com/elbosso//commit/e11ae67df7203e4) Jürgen Key *2022-09-22 07:41:36*
+
 **TSA field is now filled, too**
 
 
@@ -24,6 +54,21 @@ Changelog of this project.
 
 
 [ee550b7c45daf1f](https://github.com/elbosso//commit/ee550b7c45daf1f) Jürgen Key *2022-09-19 08:12:17*
+
+**Bump postgresql from 42.3.3 to 42.4.1**
+
+* Bumps [postgresql](https://github.com/pgjdbc/pgjdbc) from 42.3.3 to 42.4.1.
+* - [Release notes](https://github.com/pgjdbc/pgjdbc/releases)
+* - [Changelog](https://github.com/pgjdbc/pgjdbc/blob/master/CHANGELOG.md)
+* - [Commits](https://github.com/pgjdbc/pgjdbc/compare/REL42.3.3...REL42.4.1)
+* ---
+* updated-dependencies:
+* - dependency-name: org.postgresql:postgresql
+* dependency-type: direct:production
+* ...
+* Signed-off-by: dependabot[bot] &lt;support@github.com&gt;
+
+[895d241a89947cc](https://github.com/elbosso//commit/895d241a89947cc) dependabot[bot] *2022-08-06 05:59:59*
 
 
 ## 1.3.0
