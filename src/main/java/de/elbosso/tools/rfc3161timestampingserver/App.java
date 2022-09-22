@@ -8,7 +8,12 @@ import io.micrometer.influx.InfluxConfig;
 import io.micrometer.influx.InfluxMeterRegistry;
 import org.bouncycastle.asn1.ASN1ObjectIdentifier;
 import org.bouncycastle.asn1.nist.NISTObjectIdentifiers;
+import org.bouncycastle.asn1.x500.X500Name;
+import org.bouncycastle.asn1.x500.style.BCStrictStyle;
+import org.bouncycastle.asn1.x500.style.RFC4519Style;
 import org.bouncycastle.asn1.x509.AlgorithmIdentifier;
+import org.bouncycastle.asn1.x509.GeneralName;
+import org.bouncycastle.asn1.x509.X509Name;
 import org.bouncycastle.cert.jcajce.JcaCRLStore;
 import org.bouncycastle.cert.jcajce.JcaCertStore;
 import org.bouncycastle.cms.jcajce.JcaSimpleSignerInfoGeneratorBuilder;
@@ -392,6 +397,10 @@ public class App {
 					{
 						if (CLASS_LOGGER.isDebugEnabled()) CLASS_LOGGER.debug("No certificates and no CRLs added (as requested)");
 					}
+					GeneralName gn=new GeneralName(new X500Name(new BCStrictStyle(),rsaSigningCert.getSubjectX500Principal().toString()));
+//					tsTokenGen.setTSA(new GeneralName(GeneralName.otherName,rsaSigningCert.getSubjectX500Principal().toString()));
+					tsTokenGen.setTSA(new GeneralName(new X509Name(true,rsaSigningCert.getSubjectX500Principal().toString())));
+//					tsTokenGen.setTSA(gn);
 
 					TimeStampResponseGenerator tsRespGen = new TimeStampResponseGenerator(tsTokenGen, TSPAlgorithms.ALLOWED);
 					if (CLASS_LOGGER.isDebugEnabled())
@@ -429,6 +438,7 @@ public class App {
 				}
 				catch(java.lang.Throwable t)
 				{
+					CLASS_LOGGER.error(t.getMessage(),t);
 					ctx.status(500);
 					Metrics.counter("rfc3161timestampingserver.post", "resourcename","/","httpstatus",java.lang.Integer.toString(ctx.status()),"error",(t.getMessage()!=null?t.getMessage():"NPE"),"contentType",contentType,"remoteAddr",ctx.req.getRemoteAddr(),"remoteHost",ctx.req.getRemoteHost(),"localAddr",ctx.req.getLocalAddr(),"localName",ctx.req.getLocalName()).increment();
 					em.getTransaction().rollback();

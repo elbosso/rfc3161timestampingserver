@@ -8,6 +8,11 @@ Changelog of this project.
 **new config option to control inclusion of CRLs in responses**
 
 
+[6ebe50edc400faa](https://github.com/elbosso//commit/6ebe50edc400faa) Jürgen Key *2022-09-19 09:32:06*
+
+**new config option to control inclusion of CRLs in responses**
+
+
 [85de8ef09e86710](https://github.com/elbosso//commit/85de8ef09e86710) Jürgen Key *2022-09-19 09:09:49*
 
 **default policy for reply changed to 0.4.0.2023.1.1 if no policy was specified in request**
