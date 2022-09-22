@@ -32,7 +32,7 @@ services:
       - default
 #      - timestamping_network
   rfc3161serialnumberprovider:
-    image: postgres:14
+    image: postgres:12
     container_name: rfc3161serialnumberprovider
     restart: unless-stopped
     volumes:
