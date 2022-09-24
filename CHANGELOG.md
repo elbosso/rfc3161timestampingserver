@@ -11,6 +11,14 @@ Changelog of this project.
 [2768eea2f5b573b](https://github.com/elbosso//commit/2768eea2f5b573b) Jürgen Key *2022-09-22 12:21:54*
 
 
+### GitHub [#23](https://github.com/elbosso/rfc3161timestampingserver/issues/23) publish unit tests
+
+**re #23**
+
+
+[361de2c281176fc](https://github.com/elbosso//commit/361de2c281176fc) Jürgen Key *2022-09-24 16:02:52*
+
+
 ### No issue
 
 **bumped bouncycastle version(s)**
