@@ -1,7 +1,7 @@
 package de.elbosso.tools.rfc3161timestampingserver;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
@@ -19,14 +19,14 @@ public class TestPostQuery
     private Query findYoungestByMsgImprintHex=mock(Query.class);
     private Handlers handlers;
 
-    @Before
-    public void setup()
+    @BeforeEach
+    void init()
     {
         handlers=new Handlers(em);
     }
 
     @Test
-    public void POST_to_query_unsupportedContentType() throws Exception
+    public void test_POST_to_query_unsupportedContentType() throws Exception
     {
         when(ctx.contentType()).thenReturn("multipart/form");
         when(ctx.ip()).thenReturn("127.0.0.1");
@@ -35,7 +35,7 @@ public class TestPostQuery
         verify(ctx).status(500);
     }
     @Test
-    public void POST_to_query_no_algoId_nothingFoundInDatabase() throws Exception
+    public void test_POST_to_query_no_algoId_nothingFoundInDatabase() throws Exception
     {
         when(ctx.contentType()).thenReturn("multipart/form-data");
         when(ctx.formParam("algoid")).thenReturn(null);
@@ -51,7 +51,7 @@ public class TestPostQuery
         verify(ctx).status(404);
     }
     @Test
-    public void POST_to_query_no_algoId_msgDigestBase64_foundInDatabase() throws Exception
+    public void test_POST_to_query_no_algoId_msgDigestBase64_foundInDatabase() throws Exception
     {
         when(ctx.contentType()).thenReturn("multipart/form-data");
         when(ctx.formParam("algoid")).thenReturn(null);
@@ -74,7 +74,7 @@ public class TestPostQuery
         verify(ctx).result(any(java.io.InputStream.class));
     }
     @Test
-    public void POST_to_query_algoId_msgDigestBase64_nothingFoundInDatabase() throws Exception
+    public void test_POST_to_query_algoId_msgDigestBase64_nothingFoundInDatabase() throws Exception
     {
         when(ctx.contentType()).thenReturn("multipart/form-data");
         when(ctx.formParam("algoid")).thenReturn("algoid");
@@ -91,7 +91,7 @@ public class TestPostQuery
         verify(ctx).status(404);
     }
     @Test
-    public void POST_to_query_algoId_msgDigestBase64_foundInDatabase() throws Exception
+    public void test_POST_to_query_algoId_msgDigestBase64_foundInDatabase() throws Exception
     {
         when(ctx.contentType()).thenReturn("multipart/form-data");
         when(ctx.formParam("algoid")).thenReturn("algoid");
@@ -115,7 +115,7 @@ public class TestPostQuery
         verify(ctx).result(any(java.io.InputStream.class));
     }
     @Test
-    public void POST_to_query_no_algoId_no_msgDigestBase64_no_msgDigestHex() throws Exception
+    public void test_POST_to_query_no_algoId_no_msgDigestBase64_no_msgDigestHex() throws Exception
     {
         when(ctx.contentType()).thenReturn("multipart/form-data");
         when(ctx.formParam("algoid")).thenReturn(null);
@@ -127,7 +127,7 @@ public class TestPostQuery
         verify(ctx).status(500);
     }
     @Test
-    public void POST_to_query_msgDigestHex_nothingFoundInDatabase() throws Exception
+    public void test_POST_to_query_msgDigestHex_nothingFoundInDatabase() throws Exception
     {
         when(ctx.contentType()).thenReturn("multipart/form-data");
         when(ctx.formParam("algoid")).thenReturn(null);
@@ -143,7 +143,7 @@ public class TestPostQuery
         verify(ctx).status(404);
     }
     @Test
-    public void POST_to_query_msgDigestHex_foundInDatabase() throws Exception
+    public void test_POST_to_query_msgDigestHex_foundInDatabase() throws Exception
     {
         when(ctx.contentType()).thenReturn("multipart/form-data");
         when(ctx.formParam("algoid")).thenReturn(null);

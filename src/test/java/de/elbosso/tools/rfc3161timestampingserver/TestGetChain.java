@@ -1,7 +1,7 @@
 package de.elbosso.tools.rfc3161timestampingserver;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import javax.persistence.EntityManager;
 
@@ -14,14 +14,14 @@ public class TestGetChain
 
     private Handlers handlers;
 
-    @Before
-    public void setup()
+    @BeforeEach
+    void init()
     {
         handlers=new Handlers(em);
     }
 
     @Test
-    public void GET_to_chain() throws Exception
+    public void test_GET_to_chain() throws Exception
     {
         when(ctx.ip()).thenReturn("127.0.0.1");
         when(ctx.host()).thenReturn("localhost");
