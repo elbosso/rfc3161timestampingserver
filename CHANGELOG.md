@@ -13,6 +13,11 @@ Changelog of this project.
 
 ### No issue
 
+**bumped bouncycastle version(s)**
+
+
+[31a4bfb39cf935d](https://github.com/elbosso//commit/31a4bfb39cf935d) Jürgen Key *2022-09-24 04:48:31*
+
 **deprecation addressed**
 
 

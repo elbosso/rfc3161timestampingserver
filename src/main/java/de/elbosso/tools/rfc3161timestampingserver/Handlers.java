@@ -21,7 +21,6 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.security.KeyFactory;
 import java.security.NoSuchAlgorithmException;
-import java.security.PrivateKey;
 import java.security.cert.*;
 import java.security.spec.InvalidKeySpecException;
 import java.security.spec.PKCS8EncodedKeySpec;
@@ -33,6 +32,13 @@ public class Handlers
 	private final static org.slf4j.Logger EXCEPTION_LOGGER=org.slf4j.LoggerFactory.getLogger("ExceptionCatcher");
     private final static java.lang.String INCLUDE_FULL_CHAIN="de.elbosso.tools.rfc3161timestampingserver.App.includeFullChain";
     private final static java.lang.String INCLUDE_CRLS="de.elbosso.tools.rfc3161timestampingserver.App.includeCRLs";
+    private EntityManager emm;
+
+    Handlers(EntityManager em)
+    {
+        super();
+        this.emm =em;
+    }
 
     public void handleGetChain(io.javalin.http.Context ctx) throws java.lang.Exception
     {
@@ -47,7 +53,7 @@ public class Handlers
         ctx.status(201);
         ctx.contentType("application/pkcs7-mime");
         ctx.result(new java.io.ByteArrayInputStream(content));
-        Metrics.counter("rfc3161timestampingserver.get", "resourcename","chain.pem","remoteAddr",ctx.req.getRemoteAddr(),"remoteHost",ctx.req.getRemoteHost(),"localAddr",ctx.req.getLocalAddr(),"localName",ctx.req.getLocalName()).increment();
+        Metrics.counter("rfc3161timestampingserver.get", "resourcename","chain.pem", "remoteAddr",ctx.ip(),"remoteHost",ctx.ip(), "localAddr",ctx.host(), "localName",ctx.host()).increment();
     }
     public void handleGetSignerCert(io.javalin.http.Context ctx) throws java.lang.Exception
     {
@@ -62,7 +68,7 @@ public class Handlers
         ctx.status(201);
         ctx.contentType("application/pkix-cert");
         ctx.result(new java.io.ByteArrayInputStream(content));
-        Metrics.counter("rfc3161timestampingserver.get", "resourcename","tsa.crt","remoteAddr",ctx.req.getRemoteAddr(),"remoteHost",ctx.req.getRemoteHost(),"localAddr",ctx.req.getLocalAddr(),"localName",ctx.req.getLocalName()).increment();
+        Metrics.counter("rfc3161timestampingserver.get", "resourcename","tsa.crt","remoteAddr",ctx.ip(),"remoteHost",ctx.ip(), "localAddr",ctx.host(), "localName",ctx.host()).increment();
     }
     public void handleGetTsaConf(io.javalin.http.Context ctx) throws java.lang.Exception
     {
@@ -75,12 +81,12 @@ public class Handlers
         ctx.status(201);
         ctx.contentType("text/plain");
         ctx.result(new java.io.ByteArrayInputStream(content));
-        Metrics.counter("rfc3161timestampingserver.get", "resourcename","tsa.conf","remoteAddr",ctx.req.getRemoteAddr(),"remoteHost",ctx.req.getRemoteHost(),"localAddr",ctx.req.getLocalAddr(),"localName",ctx.req.getLocalName()).increment();
+        Metrics.counter("rfc3161timestampingserver.get", "resourcename","tsa.conf","remoteAddr",ctx.ip(),"remoteHost",ctx.ip(), "localAddr",ctx.host(), "localName",ctx.host()).increment();
     }
     public void handlePostQuery(io.javalin.http.Context ctx) throws java.lang.Exception
     {
         java.lang.String contentType=ctx.contentType();
-        if((ctx.contentType().startsWith("multipart/form-data"))||(ctx.contentType().startsWith("application/x-www-form-urlencoded")))
+        if((contentType.startsWith("multipart/form-data"))||(contentType.startsWith("application/x-www-form-urlencoded")))
         {
             if(CLASS_LOGGER.isDebugEnabled())CLASS_LOGGER.debug("request is multipart/form-data or application/x-www-form-urlencoded - searching for parameters algoid and msgDigest");
             String algoid=ctx.formParam("algoid");
@@ -113,8 +119,7 @@ public class Handlers
             if((algoid!=null)&&(msgDigestBase64!=null))
             {
                 if (CLASS_LOGGER.isDebugEnabled()) CLASS_LOGGER.debug("searching using message digest algorithm and message digest (Base64) imprint as parameters");
-                EntityManager em = PersistenceManager.INSTANCE.getEntityManager();
-                Query namedQuery = em.createNamedQuery("Rfc3161Timestamp.findYoungestByMsgDigestAndImprintBase64");
+                Query namedQuery = emm.createNamedQuery("Rfc3161Timestamp.findYoungestByMsgDigestAndImprintBase64");
                 namedQuery.setParameter("Alg", algoid);
                 namedQuery.setParameter("Imprint", msgDigestBase64);
                 namedQuery.setMaxResults(1);
@@ -127,20 +132,19 @@ public class Handlers
                     ctx.contentType("application/timestamp-reply");
                     ctx.header("Content-Disposition","filename=\"queried.tsr\"");
                     ctx.result(new java.io.ByteArrayInputStream(rfc3161Timestamp.getTsrData()));
-                    Metrics.counter("rfc3161timestampingserver.post", "resourcename","query","httpstatus",java.lang.Integer.toString(ctx.status()),"params","alg+base64","success","true","contentType",contentType,"remoteAddr",ctx.req.getRemoteAddr(),"remoteHost",ctx.req.getRemoteHost(),"localAddr",ctx.req.getLocalAddr(),"localName",ctx.req.getLocalName()).increment();
+                    Metrics.counter("rfc3161timestampingserver.post", "resourcename","query","httpstatus",java.lang.Integer.toString(ctx.status()),"params","alg+base64","success","true","contentType",contentType,"remoteAddr",ctx.ip(),"remoteHost",ctx.ip(), "localAddr",ctx.host(), "localName",ctx.host()).increment();
                 }
                 else
                 {
                     if (CLASS_LOGGER.isInfoEnabled()) CLASS_LOGGER.info("No entry found in database");
                     ctx.status(404);
-                    Metrics.counter("rfc3161timestampingserver.post", "resourcename","query","httpstatus",java.lang.Integer.toString(ctx.status()),"params","alg+base64","success","false","contentType",contentType,"remoteAddr",ctx.req.getRemoteAddr(),"remoteHost",ctx.req.getRemoteHost(),"localAddr",ctx.req.getLocalAddr(),"localName",ctx.req.getLocalName()).increment();
+                    Metrics.counter("rfc3161timestampingserver.post", "resourcename","query","httpstatus",java.lang.Integer.toString(ctx.status()),"params","alg+base64","success","false","contentType",contentType,"remoteAddr",ctx.ip(),"remoteHost",ctx.ip(), "localAddr",ctx.host(), "localName",ctx.host()).increment();
                 }
             }
             else if(msgDigestBase64!=null)
             {
                 if (CLASS_LOGGER.isDebugEnabled()) CLASS_LOGGER.debug("searching using only message digest (Base64) imprint as parameter");
-                EntityManager em = PersistenceManager.INSTANCE.getEntityManager();
-                Query namedQuery = em.createNamedQuery("Rfc3161Timestamp.findYoungestByMsgImprintBase64");
+                Query namedQuery = emm.createNamedQuery("Rfc3161Timestamp.findYoungestByMsgImprintBase64");
                 namedQuery.setParameter("Imprint", msgDigestBase64);
                 namedQuery.setMaxResults(1);
                 java.util.List resultList= namedQuery.getResultList();
@@ -152,20 +156,19 @@ public class Handlers
                     ctx.contentType("application/timestamp-reply");
                     ctx.header("Content-Disposition","filename=\"queried.tsr\"");
                     ctx.result(new java.io.ByteArrayInputStream(rfc3161Timestamp.getTsrData()));
-                    Metrics.counter("rfc3161timestampingserver.post", "resourcename","query","httpstatus",java.lang.Integer.toString(ctx.status()),"params","base64","success","true","contentType",contentType,"remoteAddr",ctx.req.getRemoteAddr(),"remoteHost",ctx.req.getRemoteHost(),"localAddr",ctx.req.getLocalAddr(),"localName",ctx.req.getLocalName()).increment();
+                    Metrics.counter("rfc3161timestampingserver.post", "resourcename","query","httpstatus",java.lang.Integer.toString(ctx.status()),"params","base64","success","true","contentType",contentType,"remoteAddr",ctx.ip(),"remoteHost",ctx.ip(), "localAddr",ctx.host(), "localName",ctx.host()).increment();
                 }
                 else
                 {
                     if (CLASS_LOGGER.isInfoEnabled()) CLASS_LOGGER.info("No entry found in database");
                     ctx.status(404);
-                    Metrics.counter("rfc3161timestampingserver.post", "resourcename","query","httpstatus",java.lang.Integer.toString(ctx.status()),"params","base64","success","false","contentType",contentType,"remoteAddr",ctx.req.getRemoteAddr(),"remoteHost",ctx.req.getRemoteHost(),"localAddr",ctx.req.getLocalAddr(),"localName",ctx.req.getLocalName()).increment();
+                    Metrics.counter("rfc3161timestampingserver.post", "resourcename","query","httpstatus",java.lang.Integer.toString(ctx.status()),"params","base64","success","false","contentType",contentType,"remoteAddr",ctx.ip(),"remoteHost",ctx.ip(), "localAddr",ctx.host(), "localName",ctx.host()).increment();
                 }
             }
             else if(msgDigestHex!=null)
             {
                 if (CLASS_LOGGER.isDebugEnabled()) CLASS_LOGGER.debug("searching using only message digest (hex) imprint as parameter");
-                EntityManager em = PersistenceManager.INSTANCE.getEntityManager();
-                Query namedQuery = em.createNamedQuery("Rfc3161Timestamp.findYoungestByMsgImprintHex");
+                Query namedQuery = emm.createNamedQuery("Rfc3161Timestamp.findYoungestByMsgImprintHex");
                 namedQuery.setParameter("Imprint", msgDigestHex.toUpperCase());
                 namedQuery.setMaxResults(1);
                 java.util.List resultList= namedQuery.getResultList();
@@ -177,27 +180,27 @@ public class Handlers
                     ctx.contentType("application/timestamp-reply");
                     ctx.header("Content-Disposition","filename=\"queried.tsr\"");
                     ctx.result(new java.io.ByteArrayInputStream(rfc3161Timestamp.getTsrData()));
-                    Metrics.counter("rfc3161timestampingserver.post", "resourcename","query","httpstatus",java.lang.Integer.toString(ctx.status()),"params","hex","success","true","contentType",contentType,"remoteAddr",ctx.req.getRemoteAddr(),"remoteHost",ctx.req.getRemoteHost(),"localAddr",ctx.req.getLocalAddr(),"localName",ctx.req.getLocalName()).increment();
+                    Metrics.counter("rfc3161timestampingserver.post", "resourcename","query","httpstatus",java.lang.Integer.toString(ctx.status()),"params","hex","success","true","contentType",contentType,"remoteAddr",ctx.ip(),"remoteHost",ctx.ip(), "localAddr",ctx.host(), "localName",ctx.host()).increment();
                 }
                 else
                 {
                     if (CLASS_LOGGER.isInfoEnabled()) CLASS_LOGGER.info("No entry found in database");
                     ctx.status(404);
-                    Metrics.counter("rfc3161timestampingserver.post", "resourcename","query","httpstatus",java.lang.Integer.toString(ctx.status()),"params","hex","success","false","contentType",contentType,"remoteAddr",ctx.req.getRemoteAddr(),"remoteHost",ctx.req.getRemoteHost(),"localAddr",ctx.req.getLocalAddr(),"localName",ctx.req.getLocalName()).increment();
+                    Metrics.counter("rfc3161timestampingserver.post", "resourcename","query","httpstatus",java.lang.Integer.toString(ctx.status()),"params","hex","success","false","contentType",contentType,"remoteAddr",ctx.ip(),"remoteHost",ctx.ip(), "localAddr",ctx.host(), "localName",ctx.host()).increment();
                 }
             }
             else
             {
                 if (CLASS_LOGGER.isErrorEnabled()) CLASS_LOGGER.error("Not all needed information present");
                 ctx.status(500);
-                Metrics.counter("rfc3161timestampingserver.post", "resourcename","query","httpstatus",java.lang.Integer.toString(ctx.status()),"error","params","contentType",contentType,"remoteAddr",ctx.req.getRemoteAddr(),"remoteHost",ctx.req.getRemoteHost(),"localAddr",ctx.req.getLocalAddr(),"localName",ctx.req.getLocalName()).increment();
+                Metrics.counter("rfc3161timestampingserver.post", "resourcename","query","httpstatus",java.lang.Integer.toString(ctx.status()),"error","params","contentType",contentType,"remoteAddr",ctx.ip(),"remoteHost",ctx.ip(), "localAddr",ctx.host(), "localName",ctx.host()).increment();
             }
         }
         else
         {
             if (CLASS_LOGGER.isDebugEnabled()) CLASS_LOGGER.error("request is not multipart/form-data or application/x-www-form-urlencoded");
             ctx.status(500);
-            Metrics.counter("rfc3161timestampingserver.post", "resourcename","query","httpstatus",java.lang.Integer.toString(ctx.status()),"error","encoding","contentType",contentType,"remoteAddr",ctx.req.getRemoteAddr(),"remoteHost",ctx.req.getRemoteHost(),"localAddr",ctx.req.getLocalAddr(),"localName",ctx.req.getLocalName()).increment();
+            Metrics.counter("rfc3161timestampingserver.post", "resourcename","query","httpstatus",java.lang.Integer.toString(ctx.status()),"error","encoding","contentType",contentType,"remoteAddr",ctx.ip(),"remoteHost",ctx.ip(), "localAddr",ctx.host(), "localName",ctx.host()).increment();
         }
     }
     public void handlePost(io.javalin.http.Context ctx) throws java.lang.Exception
@@ -228,13 +231,13 @@ public class Handlers
             else
             {
                 if(CLASS_LOGGER.isErrorEnabled())CLASS_LOGGER.error("no field named \"tsq\" found in form data . corrupted request?");
-                Metrics.counter("rfc3161timestampingserver.post", "resourcename","/","httpstatus","500","error","tsq not found","contentType",contentType,"remoteAddr",ctx.req.getRemoteAddr(),"remoteHost",ctx.req.getRemoteHost(),"localAddr",ctx.req.getLocalAddr(),"localName",ctx.req.getLocalName()).increment();
+                Metrics.counter("rfc3161timestampingserver.post", "resourcename","/","httpstatus","500","error","tsq not found","contentType",contentType,"remoteAddr",ctx.ip(),"remoteHost",ctx.ip(), "localAddr",ctx.host(), "localName",ctx.host()).increment();
             }
         }
         else
         {
             if (CLASS_LOGGER.isDebugEnabled()) CLASS_LOGGER.error("request is not multipart/form-data or application/x-www-form-urlencoded");
-            Metrics.counter("rfc3161timestampingserver.post", "resourcename","/","httpstatus","500","error","encoding","contentType",contentType,"remoteAddr",ctx.req.getRemoteAddr(),"remoteHost",ctx.req.getRemoteHost(),"localAddr",ctx.req.getLocalAddr(),"localName",ctx.req.getLocalName()).increment();
+            Metrics.counter("rfc3161timestampingserver.post", "resourcename","/","httpstatus","500","error","encoding","contentType",contentType,"remoteAddr",ctx.ip(),"remoteHost",ctx.ip(), "localAddr",ctx.host(), "localName",ctx.host()).increment();
         }
         if(tsq!=null)
         {
@@ -269,13 +272,13 @@ public class Handlers
                 ctx.header("Content-Disposition","filename=\"reply.tsr\"");
                 ctx.result(new java.io.ByteArrayInputStream(tsr));
                 em.getTransaction().commit();
-                Metrics.counter("rfc3161timestampingserver.post", "resourcename","/","httpstatus",java.lang.Integer.toString(ctx.status()),"success","true","contentType",contentType,"remoteAddr",ctx.req.getRemoteAddr(),"remoteHost",ctx.req.getRemoteHost(),"localAddr",ctx.req.getLocalAddr(),"localName",ctx.req.getLocalName()).increment();
+                Metrics.counter("rfc3161timestampingserver.post", "resourcename","/","httpstatus",java.lang.Integer.toString(ctx.status()),"success","true","contentType",contentType,"remoteAddr",ctx.ip(),"remoteHost",ctx.ip(), "localAddr",ctx.host(), "localName",ctx.host()).increment();
             }
             catch(java.lang.Throwable t)
             {
                 CLASS_LOGGER.error(t.getMessage(),t);
                 ctx.status(500);
-                Metrics.counter("rfc3161timestampingserver.post", "resourcename","/","httpstatus",java.lang.Integer.toString(ctx.status()),"error",(t.getMessage()!=null?t.getMessage():"NPE"),"contentType",contentType,"remoteAddr",ctx.req.getRemoteAddr(),"remoteHost",ctx.req.getRemoteHost(),"localAddr",ctx.req.getLocalAddr(),"localName",ctx.req.getLocalName()).increment();
+                Metrics.counter("rfc3161timestampingserver.post", "resourcename","/","httpstatus",java.lang.Integer.toString(ctx.status()),"error",(t.getMessage()!=null?t.getMessage():"NPE"),"contentType",contentType,"remoteAddr",ctx.ip(),"remoteHost",ctx.ip(), "localAddr",ctx.host(), "localName",ctx.host()).increment();
                 em.getTransaction().rollback();
             }
             finally
