@@ -86,7 +86,7 @@ public class App {
 					}
 				}
 				String rv=System.getenv(k)!=null?System.getenv(k):props.getProperty(k);
-				if(CLASS_LOGGER.isDebugEnabled())CLASS_LOGGER.debug("getting value of "+k+": "+rv);
+				CLASS_LOGGER.debug("getting value of "+k+": "+rv);
 				return rv;
 			}
 		};
@@ -96,38 +96,38 @@ public class App {
 	}
 	private static final Javalin init()
 	{
-		if(CLASS_LOGGER.isDebugEnabled())CLASS_LOGGER.debug("adding BouncyCastle crypto provider");
+		CLASS_LOGGER.debug("adding BouncyCastle crypto provider");
 		Security.addProvider(new BouncyCastleProvider());
 		Javalin app = Javalin.create().start(7000);
-		if(CLASS_LOGGER.isDebugEnabled())CLASS_LOGGER.debug("started app - listening on port 7000");
+		CLASS_LOGGER.debug("started app - listening on port 7000");
 		app.config.addStaticFiles("/site");
-		if(CLASS_LOGGER.isDebugEnabled())CLASS_LOGGER.debug("added path for static contents: /site (allowed methods: GET)");
+		CLASS_LOGGER.debug("added path for static contents: /site (allowed methods: GET)");
 		Handlers handlers=new Handlers(PersistenceManager.INSTANCE.getEntityManager());
 		app.get("/chain.pem", handlers::handleGetChain);
-		if(CLASS_LOGGER.isDebugEnabled())CLASS_LOGGER.debug("added path for cert chain: /chain.pem (allowed methods: GET)");
+		CLASS_LOGGER.debug("added path for cert chain: /chain.pem (allowed methods: GET)");
 		app.get("/tsa.crt", handlers::handleGetSignerCert);
-		if(CLASS_LOGGER.isDebugEnabled())CLASS_LOGGER.debug("added path for cert: /tsa.cert (allowed methods: GET)");
+		CLASS_LOGGER.debug("added path for cert: /tsa.cert (allowed methods: GET)");
 		app.get("/tsa.conf", handlers::handleGetTsaConf);
-		if(CLASS_LOGGER.isDebugEnabled())CLASS_LOGGER.debug("added path for tsa configuration: /tsa.conf (allowed methods: GET)");
+		CLASS_LOGGER.debug("added path for tsa configuration: /tsa.conf (allowed methods: GET)");
 		app.post("/query", handlers::handlePostQuery);
 		app.post("/", handlers::handlePost);
-		if(CLASS_LOGGER.isDebugEnabled())CLASS_LOGGER.debug("added path for requesting timestamps: / (allowed methods: POST)");
+		CLASS_LOGGER.debug("added path for requesting timestamps: / (allowed methods: POST)");
 		app.before(ctx -> {
-			if(CLASS_LOGGER.isDebugEnabled())CLASS_LOGGER.debug(ctx.req.getMethod()+" "+ctx.contentType());
+			CLASS_LOGGER.debug(ctx.req.getMethod()+" "+ctx.contentType());
 		});
-		if(CLASS_LOGGER.isDebugEnabled())CLASS_LOGGER.debug("added before interceptor");
+		CLASS_LOGGER.debug("added before interceptor");
 		Runtime.getRuntime().addShutdownHook(new Thread(() -> {
 			app.stop();
 		}));
-		if(CLASS_LOGGER.isDebugEnabled())CLASS_LOGGER.debug("added callback for stopping the application");
+		CLASS_LOGGER.debug("added callback for stopping the application");
 		app.events(event -> {
 			event.serverStopping(() -> { /* Your code here */ });
 			event.serverStopped(() -> {
-				if(CLASS_LOGGER.isDebugEnabled())CLASS_LOGGER.debug("Server stopped");
+				CLASS_LOGGER.debug("Server stopped");
 				PersistenceManager.INSTANCE.close();
-				if(CLASS_LOGGER.isDebugEnabled())CLASS_LOGGER.debug("Persistence manager closed");
+				CLASS_LOGGER.debug("Persistence manager closed");
 			});
-			if(CLASS_LOGGER.isDebugEnabled())CLASS_LOGGER.debug("added listener for server stopped event");
+			CLASS_LOGGER.debug("added listener for server stopped event");
 		});
 		return app;
 	}

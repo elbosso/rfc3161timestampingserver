@@ -10,7 +10,7 @@ import java.util.Collections;
 
 import static org.mockito.Mockito.*;
 
-public class TestQuery
+public class TestPostQuery
 {
     private io.javalin.http.Context ctx = mock(io.javalin.http.Context.class); // javalin 2.1.0 or before: "mock-maker-inline" must be enabled
     private EntityManager em = mock(EntityManager.class);
