@@ -3,6 +3,14 @@
 Changelog of this project.
 
 ## Unreleased
+### GitHub [#22](https://github.com/elbosso/rfc3161timestampingserver/issues/22) refactoring
+
+**fixes #22**
+
+
+[2768eea2f5b573b](https://github.com/elbosso//commit/2768eea2f5b573b) Jürgen Key *2022-09-22 12:21:54*
+
+
 ### No issue
 
 **deprecation addressed**
