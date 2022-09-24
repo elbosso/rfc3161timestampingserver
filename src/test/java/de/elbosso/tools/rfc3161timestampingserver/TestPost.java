@@ -2,16 +2,15 @@ package de.elbosso.tools.rfc3161timestampingserver;
 
 import io.javalin.http.UploadedFile;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityTransaction;
 import javax.persistence.Query;
 import java.io.IOException;
 import java.security.Security;
-import java.util.Collections;
 
 import static org.mockito.Mockito.*;
 
@@ -28,14 +27,14 @@ public class TestPost
     private byte[] tsq_nocert;
     private byte[] notsq;
 
-    @BeforeClass
-    public static void setupClass()
+    @BeforeAll
+    static void setup()
     {
         Security.addProvider(new BouncyCastleProvider());
     }
 
-    @Before
-    public void setup() throws IOException
+    @BeforeEach
+    void init() throws IOException
     {
         handlers=new Handlers(em);
         java.io.ByteArrayOutputStream baos=new java.io.ByteArrayOutputStream();
@@ -50,7 +49,7 @@ public class TestPost
     }
 
     @Test
-    public void POST_unsupportedContentType() throws Exception
+    public void test_POST_unsupportedContentType() throws Exception
     {
         when(ctx.contentType()).thenReturn("multipart/form");
         when(ctx.ip()).thenReturn("127.0.0.1");
@@ -59,7 +58,7 @@ public class TestPost
         verify(ctx).status(500);
     }
     @Test
-    public void POST_body() throws Exception
+    public void test_POST_body() throws Exception
     {
         when(ctx.contentType()).thenReturn("application/timestamp-query");
         when(ctx.bodyAsBytes()).thenReturn(tsq);
@@ -81,7 +80,7 @@ public class TestPost
         verify(entityTransaction).commit();
     }
     @Test
-    public void POST_body_invalidRequest() throws Exception
+    public void test_POST_body_invalidRequest() throws Exception
     {
         when(ctx.contentType()).thenReturn("application/timestamp-query");
         when(ctx.bodyAsBytes()).thenReturn(notsq);
@@ -95,7 +94,7 @@ public class TestPost
     }
 
     @Test
-    public void POST_formData_noFile() throws Exception
+    public void test_POST_formData_noFile() throws Exception
     {
         when(ctx.contentType()).thenReturn("multipart/form-dataxyp");
         when(ctx.uploadedFile("tsq")).thenReturn(null);
@@ -106,7 +105,7 @@ public class TestPost
         verify(ctx).status(500);
     }
     @Test
-    public void POST_formData() throws Exception
+    public void test_POST_formData() throws Exception
     {
         when(ctx.contentType()).thenReturn("multipart/form-dataxyp");
         java.io.ByteArrayInputStream bais=new java.io.ByteArrayInputStream(tsq);
@@ -130,7 +129,7 @@ public class TestPost
         verify(entityTransaction).commit();
     }
     @Test
-    public void POST_formData_invalid_request() throws Exception
+    public void test_POST_formData_invalid_request() throws Exception
     {
         when(ctx.contentType()).thenReturn("multipart/form-dataxyp");
         java.io.ByteArrayInputStream bais=new java.io.ByteArrayInputStream(notsq);
@@ -151,7 +150,7 @@ public class TestPost
         verify(entityTransaction).rollback();
     }
     @Test
-    public void POST_formData_nocert() throws Exception
+    public void test_POST_formData_nocert() throws Exception
     {
         when(ctx.contentType()).thenReturn("multipart/form-dataxyp");
         java.io.ByteArrayInputStream bais=new java.io.ByteArrayInputStream(tsq_nocert);
@@ -175,7 +174,7 @@ public class TestPost
         verify(entityTransaction).commit();
     }
     @Test
-    public void POST_formData_includeCRLs() throws Exception
+    public void test_POST_formData_includeCRLs() throws Exception
     {
         when(ctx.contentType()).thenReturn("multipart/form-dataxyp");
         java.io.ByteArrayInputStream bais=new java.io.ByteArrayInputStream(tsq);
