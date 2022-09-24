@@ -27,12 +27,10 @@ import java.security.spec.InvalidKeySpecException;
 import java.security.spec.PKCS8EncodedKeySpec;
 import java.util.Base64;
 
-public class Handlers
+public class Handlers extends java.lang.Object implements Constants
 {
     private final static org.slf4j.Logger CLASS_LOGGER=org.slf4j.LoggerFactory.getLogger(Handlers.class);
 	private final static org.slf4j.Logger EXCEPTION_LOGGER=org.slf4j.LoggerFactory.getLogger("ExceptionCatcher");
-    private final static java.lang.String INCLUDE_FULL_CHAIN="de.elbosso.tools.rfc3161timestampingserver.App.includeFullChain";
-    private final static java.lang.String INCLUDE_CRLS="de.elbosso.tools.rfc3161timestampingserver.App.includeCRLs";
     private EntityManager em;
 
     Handlers(EntityManager em)
