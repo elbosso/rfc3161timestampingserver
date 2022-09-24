@@ -102,7 +102,7 @@ public class App {
 		if(CLASS_LOGGER.isDebugEnabled())CLASS_LOGGER.debug("started app - listening on port 7000");
 		app.config.addStaticFiles("/site");
 		if(CLASS_LOGGER.isDebugEnabled())CLASS_LOGGER.debug("added path for static contents: /site (allowed methods: GET)");
-		Handlers handlers=new Handlers();
+		Handlers handlers=new Handlers(PersistenceManager.INSTANCE.getEntityManager());
 		app.get("/chain.pem", handlers::handleGetChain);
 		if(CLASS_LOGGER.isDebugEnabled())CLASS_LOGGER.debug("added path for cert chain: /chain.pem (allowed methods: GET)");
 		app.get("/tsa.crt", handlers::handleGetSignerCert);
