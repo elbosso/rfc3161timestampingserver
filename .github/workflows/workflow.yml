@@ -25,10 +25,10 @@ jobs:
         if: ${{ github.ref == 'refs/heads/master' }}
         uses: cicirello/jacoco-badge-generator@v2
         with:
-          jacoco-csv-file: build/site/jacoco/jacoco.csv
-          badges-directory: build/site/jacoco/badges
+          jacoco-csv-file: target/site/jacoco/jacoco.csv
+          badges-directory: target/site/jacoco/badges
       - name: Publish coverage report to GitHub Pages
         if: ${{ github.ref == 'refs/heads/master' }}
         uses: JamesIves/github-pages-deploy-action@v4
         with:
-          folder: build/site/jacoco/test/
+          folder: target/site/jacoco/test/
