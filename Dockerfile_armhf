@@ -1,5 +1,5 @@
 #Build stage
-FROM arm32v7/maven AS build-env
+FROM arm32v7/maven:3.6.1-jdk-11 AS build-env
 
 ADD . /rfc3161timestampingserver
 
@@ -8,10 +8,11 @@ WORKDIR rfc3161timestampingserver
 RUN mvn -U compile package assembly:single
 
 # Run it
-FROM bellsoft/liberica-openjdk-alpine
+FROM bellsoft/liberica-openjdk-alpine:11
 
 COPY --from=build-env /rfc3161timestampingserver/target/*-jar-with-dependencies.jar /app/rfc3161timestampingserver.jar
 
 EXPOSE 7000
 
 CMD ["java", "-jar", "/app/rfc3161timestampingserver.jar"]
+
