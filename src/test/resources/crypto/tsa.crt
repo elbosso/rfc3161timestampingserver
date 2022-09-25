@@ -1,0 +1,88 @@
+Certificate:
+    Data:
+        Version: 3 (0x2)
+        Serial Number: 5 (0x5)
+        Signature Algorithm: sha512WithRSAEncryption
+        Issuer: C=DE, O=Damaschkestr. 11, OU=Arbeitszimmer, CN=test comp
+        Validity
+            Not Before: Sep 25 14:00:24 2022 GMT
+            Not After : Sep 25 23:59:59 2025 GMT
+        Subject: C=DE, ST=Thueringen, L=Rudolstadt, O=Damaschkestr. 11, OU=Arbeitszimmer, CN=rfc3161timestampingserver_QA_TEST_TSA
+        Subject Public Key Info:
+            Public Key Algorithm: rsaEncryption
+                RSA Public-Key: (2048 bit)
+                Modulus:
+                    00:d3:46:8a:39:ce:92:67:11:57:76:10:53:48:a0:
+                    81:4b:58:29:dc:b2:da:f2:b4:3a:98:5b:08:24:a1:
+                    3d:c4:6b:0d:40:94:6d:79:06:34:cc:7f:7e:3f:6a:
+                    13:dd:22:2a:1f:b0:24:74:ed:58:7a:9f:8c:a0:cd:
+                    fa:5e:dc:ab:7f:04:a7:57:e6:af:70:63:59:4b:69:
+                    d6:26:de:10:60:3f:ea:a9:c2:6d:1c:d5:d4:56:cb:
+                    99:63:67:6f:8e:bf:cf:5e:a2:1f:d8:b5:62:24:7a:
+                    77:ac:c8:69:80:5f:73:12:af:0c:3e:ab:aa:1d:99:
+                    19:2b:33:6d:40:c2:1f:bd:6a:7f:72:20:08:96:8c:
+                    49:12:20:81:91:d1:10:87:55:35:34:74:f2:19:a9:
+                    c6:0f:fa:28:24:6f:1c:8c:22:fc:37:6b:da:38:36:
+                    1e:4e:6f:43:4e:7c:41:96:d6:06:6f:c1:c5:7c:3d:
+                    28:fe:1f:98:fc:da:74:79:cb:22:25:62:c1:0b:64:
+                    05:62:41:7d:80:8b:1e:c5:d0:78:1d:8d:20:d5:5f:
+                    b5:93:80:e6:5a:d3:52:e5:e9:8e:e1:49:06:52:7f:
+                    0f:36:e4:90:da:81:7b:53:dc:8b:52:f3:f1:25:d1:
+                    78:95:fe:d8:b0:03:2c:ba:52:97:64:0e:79:ce:1d:
+                    d9:af
+                Exponent: 65537 (0x10001)
+        X509v3 extensions:
+            X509v3 Key Usage: critical
+                Digital Signature, Non Repudiation
+            X509v3 Basic Constraints: 
+                CA:FALSE
+            X509v3 Extended Key Usage: critical
+                Time Stamping
+            X509v3 Subject Key Identifier: 
+                23:D5:28:7A:69:1E:55:EF:DA:9B:5C:C5:84:32:97:A9:85:BD:70:11
+            X509v3 Authority Key Identifier: 
+                keyid:58:BB:4C:11:9B:02:17:F1:93:EA:EE:FC:D7:D0:E0:38:28:2F:E9:9A
+
+            Authority Information Access: 
+                CA Issuers - URI:https://elbosso.github.io/x509//test_component-ca.crt
+
+            X509v3 CRL Distribution Points: 
+
+                Full Name:
+                  URI:https://elbosso.github.io/x509//test_component-ca.crl
+
+            CT Precertificate Poison: critical
+                NULL
+    Signature Algorithm: sha512WithRSAEncryption
+         39:04:cd:ce:ba:16:05:fc:d0:f6:c0:5b:9e:b4:22:4c:9d:f6:
+         96:34:3a:13:b2:9e:34:11:b4:e6:72:75:1b:1f:6d:b7:2a:21:
+         0b:3e:be:9c:92:ed:55:f5:e7:68:7e:fe:e1:62:4c:ff:4b:2c:
+         9f:29:b7:a0:ac:e2:a1:b9:27:c2:b4:38:37:4d:24:31:19:df:
+         21:d2:70:d3:c0:8e:21:e6:93:ee:8e:46:b6:65:4b:ca:48:c6:
+         86:1d:10:db:94:2b:85:d5:2b:c9:1e:6c:17:ed:0d:1c:1d:be:
+         da:9e:97:19:93:56:dd:b0:f7:5e:55:0b:f9:3f:58:28:b1:94:
+         6b:ed
+-----BEGIN CERTIFICATE-----
+MIIEEjCCA3ugAwIBAgIBBTANBgkqhkiG9w0BAQ0FADBUMQswCQYDVQQGEwJERTEZ
+MBcGA1UECgwQRGFtYXNjaGtlc3RyLiAxMTEWMBQGA1UECwwNQXJiZWl0c3ppbW1l
+cjESMBAGA1UEAwwJdGVzdCBjb21wMB4XDTIyMDkyNTE0MDAyNFoXDTI1MDkyNTIz
+NTk1OVowgZoxCzAJBgNVBAYTAkRFMRMwEQYDVQQIDApUaHVlcmluZ2VuMRMwEQYD
+VQQHDApSdWRvbHN0YWR0MRkwFwYDVQQKDBBEYW1hc2Noa2VzdHIuIDExMRYwFAYD
+VQQLDA1BcmJlaXRzemltbWVyMS4wLAYDVQQDDCVyZmMzMTYxdGltZXN0YW1waW5n
+c2VydmVyX1FBX1RFU1RfVFNBMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKC
+AQEA00aKOc6SZxFXdhBTSKCBS1gp3LLa8rQ6mFsIJKE9xGsNQJRteQY0zH9+P2oT
+3SIqH7AkdO1Yep+MoM36XtyrfwSnV+avcGNZS2nWJt4QYD/qqcJtHNXUVsuZY2dv
+jr/PXqIf2LViJHp3rMhpgF9zEq8MPquqHZkZKzNtQMIfvWp/ciAIloxJEiCBkdEQ
+h1U1NHTyGanGD/ooJG8cjCL8N2vaODYeTm9DTnxBltYGb8HFfD0o/h+Y/Np0ecsi
+JWLBC2QFYkF9gIsexdB4HY0g1V+1k4DmWtNS5emO4UkGUn8PNuSQ2oF7U9yLUvPx
+JdF4lf7YsAMsulKXZA55zh3ZrwIDAQABo4IBJzCCASMwDgYDVR0PAQH/BAQDAgbA
+MAkGA1UdEwQCMAAwFgYDVR0lAQH/BAwwCgYIKwYBBQUHAwgwHQYDVR0OBBYEFCPV
+KHppHlXv2ptcxYQyl6mFvXARMB8GA1UdIwQYMBaAFFi7TBGbAhfxk+ru/NfQ4Dgo
+L+maMFEGCCsGAQUFBwEBBEUwQzBBBggrBgEFBQcwAoY1aHR0cHM6Ly9lbGJvc3Nv
+LmdpdGh1Yi5pby94NTA5Ly90ZXN0X2NvbXBvbmVudC1jYS5jcnQwRgYDVR0fBD8w
+PTA7oDmgN4Y1aHR0cHM6Ly9lbGJvc3NvLmdpdGh1Yi5pby94NTA5Ly90ZXN0X2Nv
+bXBvbmVudC1jYS5jcmwwEwYKKwYBBAHWeQIEAwEB/wQCBQAwDQYJKoZIhvcNAQEN
+BQADgYEAOQTNzroWBfzQ9sBbnrQiTJ32ljQ6E7KeNBG05nJ1Gx9ttyohCz6+nJLt
+VfXnaH7+4WJM/0ssnym3oKziobknwrQ4N00kMRnfIdJw08COIeaT7o5GtmVLykjG
+hh0Q25QrhdUryR5sF+0NHB2+2p6XGZNW3bD3XlUL+T9YKLGUa+0=
+-----END CERTIFICATE-----
