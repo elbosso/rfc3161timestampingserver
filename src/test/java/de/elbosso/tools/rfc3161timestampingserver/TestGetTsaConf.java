@@ -11,13 +11,14 @@ public class TestGetTsaConf
 {
     private io.javalin.http.Context ctx = mock(io.javalin.http.Context.class); // javalin 2.1.0 or before: "mock-maker-inline" must be enabled
     private EntityManager em = mock(EntityManager.class);
+    private CryptoResourceManager cryptoResourceManager=mock(CryptoResourceManager.class);
 
     private Handlers handlers;
 
     @BeforeEach
     void init()
     {
-        handlers=new Handlers(em);
+        handlers=new Handlers(em,cryptoResourceManager);
     }
 
     @Test
@@ -25,6 +26,7 @@ public class TestGetTsaConf
     {
         when(ctx.ip()).thenReturn("127.0.0.1");
         when(ctx.host()).thenReturn("localhost");
+        when(cryptoResourceManager.getTsaConf()).thenReturn(de.netsysit.util.ResourceLoader.getResource("crypto/tsa.conf"));
         handlers.handleGetTsaConf(ctx);
         verify(ctx).status(201);
         verify(ctx).contentType("text/plain");

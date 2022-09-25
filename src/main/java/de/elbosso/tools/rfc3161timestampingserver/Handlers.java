@@ -31,20 +31,20 @@ public class Handlers extends java.lang.Object implements Constants
 {
     private final static org.slf4j.Logger CLASS_LOGGER=org.slf4j.LoggerFactory.getLogger(Handlers.class);
 	private final static org.slf4j.Logger EXCEPTION_LOGGER=org.slf4j.LoggerFactory.getLogger("ExceptionCatcher");
-    private EntityManager em;
+    private final EntityManager em;
+    private final CryptoResourceManager cryptoResourceManager;
 
-    Handlers(EntityManager em)
+    Handlers(EntityManager em,CryptoResourceManager cryptoResourceManager)
     {
         super();
         this.em =em;
+        this.cryptoResourceManager=cryptoResourceManager;
     }
 
     public void handleGetChain(io.javalin.http.Context ctx) throws java.lang.Exception
     {
         CLASS_LOGGER.debug("GET for chain.pem");
-        java.net.URL url=de.netsysit.util.ResourceLoader.getDockerSecretResource("chain.pem");
-        if(url==null)
-            url=de.netsysit.util.ResourceLoader.getResource("rfc3161timestampingserver/priv/chain.pem");
+        java.net.URL url=cryptoResourceManager.getChainPem();
         java.io.InputStream is=url.openStream();
         java.io.ByteArrayOutputStream baos=new java.io.ByteArrayOutputStream();
         de.elbosso.util.Utilities.copyBetweenStreams(is,baos,true);
@@ -57,9 +57,7 @@ public class Handlers extends java.lang.Object implements Constants
     public void handleGetSignerCert(io.javalin.http.Context ctx) throws java.lang.Exception
     {
         CLASS_LOGGER.debug("GET for tsa.crt");
-        java.net.URL url=de.netsysit.util.ResourceLoader.getDockerSecretResource("tsa.crt");
-        if(url==null)
-            url=de.netsysit.util.ResourceLoader.getResource("rfc3161timestampingserver/priv/tsa.crt");
+        java.net.URL url=cryptoResourceManager.getTsaCert();
         java.io.InputStream is=url.openStream();
         java.io.ByteArrayOutputStream baos=new java.io.ByteArrayOutputStream();
         de.elbosso.util.Utilities.copyBetweenStreams(is,baos,true);
@@ -72,7 +70,7 @@ public class Handlers extends java.lang.Object implements Constants
     public void handleGetTsaConf(io.javalin.http.Context ctx) throws java.lang.Exception
     {
         CLASS_LOGGER.debug("GET for tsa.conf");
-        java.net.URL url=de.netsysit.util.ResourceLoader.getResource("rfc3161timestampingserver/etc/tsa.conf");
+        java.net.URL url=cryptoResourceManager.getTsaConf();
         java.io.InputStream is=url.openStream();
         java.io.ByteArrayOutputStream baos=new java.io.ByteArrayOutputStream();
         de.elbosso.util.Utilities.copyBetweenStreams(is,baos,true);
@@ -359,18 +357,14 @@ public class Handlers extends java.lang.Object implements Constants
          CLASS_LOGGER.debug("timestamp query found");
         CertificateFactory cf = CertificateFactory.getInstance("X.509");
 
-        java.net.URL url = de.netsysit.util.ResourceLoader.getDockerSecretResource("tsa.crt");
-        if(url==null)
-            url=de.netsysit.util.ResourceLoader.getResource("rfc3161timestampingserver/priv/tsa.crt");
+        java.net.URL url = cryptoResourceManager.getTsaCert();
          CLASS_LOGGER.debug("Loading TSA cert from " + url);
 
         java.io.InputStream is = url.openStream();
         rre.rsaSigningCert = (X509Certificate) cf.generateCertificate(is);
         is.close();
 
-        url = de.netsysit.util.ResourceLoader.getDockerSecretResource("chain.pem");
-        if(url==null)
-            url=de.netsysit.util.ResourceLoader.getResource("rfc3161timestampingserver/priv/chain.pem");
+        url = cryptoResourceManager.getChainPem();
          CLASS_LOGGER.debug("Loading chain from " + url);
 
         is = url.openStream();
@@ -378,9 +372,7 @@ public class Handlers extends java.lang.Object implements Constants
         rre.certs.add(rre.rsaSigningCert);
         is.close();
 
-        url=de.netsysit.util.ResourceLoader.getDockerSecretResource("tsa.key");
-        if(url==null)
-            url = de.netsysit.util.ResourceLoader.getResource("rfc3161timestampingserver/priv/tsa.key");
+        url=cryptoResourceManager.getPrivateKey();
          CLASS_LOGGER.debug("Loading TSA private key from " + url);
         is = url.openStream();
         java.lang.String privateKeyPEM = de.elbosso.util.Utilities.readIntoString(is, StandardCharsets.UTF_8);
