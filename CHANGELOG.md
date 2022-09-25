@@ -13,6 +13,11 @@ Changelog of this project.
 
 ### GitHub [#23](https://github.com/elbosso/rfc3161timestampingserver/issues/23) publish unit tests
 
+**fixes #23 code coverage sufficient (...?)**
+
+
+[c9e67d8d0808ba9](https://github.com/elbosso//commit/c9e67d8d0808ba9) Jürgen Key *2022-09-24 18:31:05*
+
 **re #23 migrated to JUnit5**
 
 

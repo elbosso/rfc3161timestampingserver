@@ -2,6 +2,7 @@ package de.elbosso.tools.rfc3161timestampingserver;
 
 import io.javalin.http.UploadedFile;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
+import org.junit.jupiter.api.Assumptions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -23,6 +24,8 @@ public class TestPost
     private Query findYoungestByMsgDigestAndImprintBase64=mock(Query.class);
     private Query findYoungestByMsgImprintHex=mock(Query.class);
     private EntityTransaction entityTransaction=mock(EntityTransaction.class);
+    private CryptoResourceManager cryptoResourceManager=mock(CryptoResourceManager.class);
+    private CryptoResourceManager defCryptoResourceManager=new DefaultCryptoResourceManager();
     private Handlers handlers;
     private byte[] tsq;
     private byte[] tsq_nocert;
@@ -37,7 +40,7 @@ public class TestPost
     @BeforeEach
     void init() throws IOException
     {
-        handlers=new Handlers(em);
+        handlers=new Handlers(em,cryptoResourceManager);
         java.io.ByteArrayOutputStream baos=new java.io.ByteArrayOutputStream();
         java.io.InputStream is=de.netsysit.util.ResourceLoader.getResourceAsStream("example.tsq");
         de.elbosso.util.Utilities.copyBetweenStreams(is,baos,true);
@@ -65,6 +68,12 @@ public class TestPost
         when(ctx.bodyAsBytes()).thenReturn(tsq);
         when(em.getTransaction()).thenReturn(entityTransaction);
         doNothing().when(entityTransaction).begin();
+        Assumptions.assumeTrue(defCryptoResourceManager.getTsaCert()!=null,"You must provide valid crypto material to execute this test!");
+        Assumptions.assumeTrue(defCryptoResourceManager.getChainPem()!=null,"You must provide valid crypto material to execute this test!");
+        Assumptions.assumeTrue(defCryptoResourceManager.getPrivateKey()!=null,"You must provide valid crypto material to execute this test!");
+        when(cryptoResourceManager.getTsaCert()).thenReturn(defCryptoResourceManager.getTsaCert());
+        when(cryptoResourceManager.getChainPem()).thenReturn(defCryptoResourceManager.getChainPem());
+        when(cryptoResourceManager.getPrivateKey()).thenReturn(defCryptoResourceManager.getPrivateKey());
         doAnswer(invocation -> {
             Rfc3161Timestamp arg0 = invocation.getArgument(0);
             arg0.setId(java.math.BigInteger.valueOf(1));
@@ -73,6 +82,7 @@ public class TestPost
 
         when(ctx.ip()).thenReturn("127.0.0.1");
         when(ctx.host()).thenReturn("localhost");
+
         handlers.handlePost(ctx);
         verify(ctx).status(201);
         verify(ctx).contentType("application/timestamp-reply");
@@ -113,6 +123,12 @@ public class TestPost
         UploadedFile uploadedFile=new UploadedFile(bais,"application/timestamp-query",tsq.length,"example.tsq",".tsq");
         when(ctx.uploadedFile("tsq")).thenReturn(uploadedFile);
         when(em.getTransaction()).thenReturn(entityTransaction);
+        Assumptions.assumeTrue(defCryptoResourceManager.getTsaCert()!=null,"You must provide valid crypto material to execute this test!");
+        Assumptions.assumeTrue(defCryptoResourceManager.getChainPem()!=null,"You must provide valid crypto material to execute this test!");
+        Assumptions.assumeTrue(defCryptoResourceManager.getPrivateKey()!=null,"You must provide valid crypto material to execute this test!");
+        when(cryptoResourceManager.getTsaCert()).thenReturn(defCryptoResourceManager.getTsaCert());
+        when(cryptoResourceManager.getChainPem()).thenReturn(defCryptoResourceManager.getChainPem());
+        when(cryptoResourceManager.getPrivateKey()).thenReturn(defCryptoResourceManager.getPrivateKey());
         doNothing().when(entityTransaction).begin();
         doAnswer(invocation -> {
             Rfc3161Timestamp arg0 = invocation.getArgument(0);
@@ -159,6 +175,12 @@ public class TestPost
         when(ctx.uploadedFile("tsq")).thenReturn(uploadedFile);
         when(em.getTransaction()).thenReturn(entityTransaction);
         doNothing().when(entityTransaction).begin();
+        Assumptions.assumeTrue(defCryptoResourceManager.getTsaCert()!=null,"You must provide valid crypto material to execute this test!");
+        Assumptions.assumeTrue(defCryptoResourceManager.getChainPem()!=null,"You must provide valid crypto material to execute this test!");
+        Assumptions.assumeTrue(defCryptoResourceManager.getPrivateKey()!=null,"You must provide valid crypto material to execute this test!");
+        when(cryptoResourceManager.getTsaCert()).thenReturn(defCryptoResourceManager.getTsaCert());
+        when(cryptoResourceManager.getChainPem()).thenReturn(defCryptoResourceManager.getChainPem());
+        when(cryptoResourceManager.getPrivateKey()).thenReturn(defCryptoResourceManager.getPrivateKey());
         doAnswer(invocation -> {
             Rfc3161Timestamp arg0 = invocation.getArgument(0);
             arg0.setId(java.math.BigInteger.valueOf(1));
@@ -184,6 +206,12 @@ public class TestPost
         when(ctx.uploadedFile("tsq")).thenReturn(uploadedFile);
         when(em.getTransaction()).thenReturn(entityTransaction);
         doNothing().when(entityTransaction).begin();
+        Assumptions.assumeTrue(defCryptoResourceManager.getTsaCert()!=null,"You must provide valid crypto material to execute this test!");
+        Assumptions.assumeTrue(defCryptoResourceManager.getChainPem()!=null,"You must provide valid crypto material to execute this test!");
+        Assumptions.assumeTrue(defCryptoResourceManager.getPrivateKey()!=null,"You must provide valid crypto material to execute this test!");
+        when(cryptoResourceManager.getTsaCert()).thenReturn(defCryptoResourceManager.getTsaCert());
+        when(cryptoResourceManager.getChainPem()).thenReturn(defCryptoResourceManager.getChainPem());
+        when(cryptoResourceManager.getPrivateKey()).thenReturn(defCryptoResourceManager.getPrivateKey());
         doAnswer(invocation -> {
             Rfc3161Timestamp arg0 = invocation.getArgument(0);
             arg0.setId(java.math.BigInteger.valueOf(1));
@@ -209,6 +237,12 @@ public class TestPost
         when(ctx.uploadedFile("tsq")).thenReturn(uploadedFile);
         when(em.getTransaction()).thenReturn(entityTransaction);
         doNothing().when(entityTransaction).begin();
+        Assumptions.assumeTrue(defCryptoResourceManager.getTsaCert()!=null,"You must provide valid crypto material to execute this test!");
+        Assumptions.assumeTrue(defCryptoResourceManager.getChainPem()!=null,"You must provide valid crypto material to execute this test!");
+        Assumptions.assumeTrue(defCryptoResourceManager.getPrivateKey()!=null,"You must provide valid crypto material to execute this test!");
+        when(cryptoResourceManager.getTsaCert()).thenReturn(defCryptoResourceManager.getTsaCert());
+        when(cryptoResourceManager.getChainPem()).thenReturn(defCryptoResourceManager.getChainPem());
+        when(cryptoResourceManager.getPrivateKey()).thenReturn(defCryptoResourceManager.getPrivateKey());
         doAnswer(invocation -> {
             Rfc3161Timestamp arg0 = invocation.getArgument(0);
             arg0.setId(java.math.BigInteger.valueOf(1));

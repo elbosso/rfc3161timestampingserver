@@ -17,12 +17,13 @@ public class TestPostQuery
     private Query findYoungestByMsgImprintBase64=mock(Query.class);
     private Query findYoungestByMsgDigestAndImprintBase64=mock(Query.class);
     private Query findYoungestByMsgImprintHex=mock(Query.class);
+    private CryptoResourceManager cryptoResourceManager=mock(CryptoResourceManager.class);
     private Handlers handlers;
 
     @BeforeEach
     void init()
     {
-        handlers=new Handlers(em);
+        handlers=new Handlers(em,cryptoResourceManager);
     }
 
     @Test
