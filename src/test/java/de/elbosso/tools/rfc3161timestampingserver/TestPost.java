@@ -67,9 +67,9 @@ public class TestPost
         when(ctx.bodyAsBytes()).thenReturn(tsq);
         when(em.getTransaction()).thenReturn(entityTransaction);
         doNothing().when(entityTransaction).begin();
-        when(cryptoResourceManager.getTsaCert()).thenReturn(defCryptoResourceManager.getTsaCert());
-        when(cryptoResourceManager.getChainPem()).thenReturn(defCryptoResourceManager.getChainPem());
-        when(cryptoResourceManager.getPrivateKey()).thenReturn(defCryptoResourceManager.getPrivateKey());
+        when(cryptoResourceManager.getChainPem()).thenReturn(de.netsysit.util.ResourceLoader.getResource("crypto/chain.pem"));
+        when(cryptoResourceManager.getTsaCert()).thenReturn(de.netsysit.util.ResourceLoader.getResource("crypto/tsa.crt"));
+        when(cryptoResourceManager.getPrivateKey()).thenReturn(de.netsysit.util.ResourceLoader.getResource("crypto/tsa.key"));
         doAnswer(invocation -> {
             Rfc3161Timestamp arg0 = invocation.getArgument(0);
             arg0.setId(java.math.BigInteger.valueOf(1));
@@ -119,9 +119,9 @@ public class TestPost
         UploadedFile uploadedFile=new UploadedFile(bais,"application/timestamp-query",tsq.length,"example.tsq",".tsq");
         when(ctx.uploadedFile("tsq")).thenReturn(uploadedFile);
         when(em.getTransaction()).thenReturn(entityTransaction);
-        when(cryptoResourceManager.getTsaCert()).thenReturn(defCryptoResourceManager.getTsaCert());
-        when(cryptoResourceManager.getChainPem()).thenReturn(defCryptoResourceManager.getChainPem());
-        when(cryptoResourceManager.getPrivateKey()).thenReturn(defCryptoResourceManager.getPrivateKey());
+        when(cryptoResourceManager.getChainPem()).thenReturn(de.netsysit.util.ResourceLoader.getResource("crypto/chain.pem"));
+        when(cryptoResourceManager.getTsaCert()).thenReturn(de.netsysit.util.ResourceLoader.getResource("crypto/tsa.crt"));
+        when(cryptoResourceManager.getPrivateKey()).thenReturn(de.netsysit.util.ResourceLoader.getResource("crypto/tsa.key"));
         doNothing().when(entityTransaction).begin();
         doAnswer(invocation -> {
             Rfc3161Timestamp arg0 = invocation.getArgument(0);
@@ -168,9 +168,9 @@ public class TestPost
         when(ctx.uploadedFile("tsq")).thenReturn(uploadedFile);
         when(em.getTransaction()).thenReturn(entityTransaction);
         doNothing().when(entityTransaction).begin();
-        when(cryptoResourceManager.getTsaCert()).thenReturn(defCryptoResourceManager.getTsaCert());
-        when(cryptoResourceManager.getChainPem()).thenReturn(defCryptoResourceManager.getChainPem());
-        when(cryptoResourceManager.getPrivateKey()).thenReturn(defCryptoResourceManager.getPrivateKey());
+        when(cryptoResourceManager.getChainPem()).thenReturn(de.netsysit.util.ResourceLoader.getResource("crypto/chain.pem"));
+        when(cryptoResourceManager.getTsaCert()).thenReturn(de.netsysit.util.ResourceLoader.getResource("crypto/tsa.crt"));
+        when(cryptoResourceManager.getPrivateKey()).thenReturn(de.netsysit.util.ResourceLoader.getResource("crypto/tsa.key"));
         doAnswer(invocation -> {
             Rfc3161Timestamp arg0 = invocation.getArgument(0);
             arg0.setId(java.math.BigInteger.valueOf(1));
@@ -196,9 +196,9 @@ public class TestPost
         when(ctx.uploadedFile("tsq")).thenReturn(uploadedFile);
         when(em.getTransaction()).thenReturn(entityTransaction);
         doNothing().when(entityTransaction).begin();
-        when(cryptoResourceManager.getTsaCert()).thenReturn(defCryptoResourceManager.getTsaCert());
-        when(cryptoResourceManager.getChainPem()).thenReturn(defCryptoResourceManager.getChainPem());
-        when(cryptoResourceManager.getPrivateKey()).thenReturn(defCryptoResourceManager.getPrivateKey());
+        when(cryptoResourceManager.getChainPem()).thenReturn(de.netsysit.util.ResourceLoader.getResource("crypto/chain.pem"));
+        when(cryptoResourceManager.getTsaCert()).thenReturn(de.netsysit.util.ResourceLoader.getResource("crypto/tsa.crt"));
+        when(cryptoResourceManager.getPrivateKey()).thenReturn(de.netsysit.util.ResourceLoader.getResource("crypto/tsa.key"));
         doAnswer(invocation -> {
             Rfc3161Timestamp arg0 = invocation.getArgument(0);
             arg0.setId(java.math.BigInteger.valueOf(1));
@@ -224,9 +224,9 @@ public class TestPost
         when(ctx.uploadedFile("tsq")).thenReturn(uploadedFile);
         when(em.getTransaction()).thenReturn(entityTransaction);
         doNothing().when(entityTransaction).begin();
-        when(cryptoResourceManager.getTsaCert()).thenReturn(defCryptoResourceManager.getTsaCert());
-        when(cryptoResourceManager.getChainPem()).thenReturn(defCryptoResourceManager.getChainPem());
-        when(cryptoResourceManager.getPrivateKey()).thenReturn(defCryptoResourceManager.getPrivateKey());
+        when(cryptoResourceManager.getChainPem()).thenReturn(de.netsysit.util.ResourceLoader.getResource("crypto/chain.pem"));
+        when(cryptoResourceManager.getTsaCert()).thenReturn(de.netsysit.util.ResourceLoader.getResource("crypto/tsa.crt"));
+        when(cryptoResourceManager.getPrivateKey()).thenReturn(de.netsysit.util.ResourceLoader.getResource("crypto/tsa.key"));
         doAnswer(invocation -> {
             Rfc3161Timestamp arg0 = invocation.getArgument(0);
             arg0.setId(java.math.BigInteger.valueOf(1));
