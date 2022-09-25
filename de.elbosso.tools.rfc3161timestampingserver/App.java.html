@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>App.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">rfc3161timestampingserver</a> &gt; <a href="index.source.html" class="el_package">de.elbosso.tools.rfc3161timestampingserver</a> &gt; <span class="el_source">App.java</span></div><h1>App.java</h1><pre class="source lang-java linenums">package de.elbosso.tools.rfc3161timestampingserver;
+import ch.qos.logback.classic.Level;
+import io.javalin.Javalin;
+import io.javalin.http.Handler;
+import io.micrometer.core.instrument.Clock;
+import io.micrometer.core.instrument.MeterRegistry;
+import io.micrometer.core.instrument.Metrics;
+import io.micrometer.influx.InfluxConfig;
+import io.micrometer.influx.InfluxMeterRegistry;
+import org.bouncycastle.asn1.ASN1ObjectIdentifier;
+import org.bouncycastle.asn1.nist.NISTObjectIdentifiers;
+import org.bouncycastle.asn1.x500.X500Name;
+import org.bouncycastle.asn1.x500.style.BCStrictStyle;
+import org.bouncycastle.asn1.x500.style.RFC4519Style;
+import org.bouncycastle.asn1.x509.AlgorithmIdentifier;
+import org.bouncycastle.asn1.x509.GeneralName;
+import org.bouncycastle.asn1.x509.X509Name;
+import org.bouncycastle.cert.jcajce.JcaCRLStore;
+import org.bouncycastle.cert.jcajce.JcaCertStore;
+import org.bouncycastle.cert.jcajce.JcaX500NameUtil;
+import org.bouncycastle.cms.jcajce.JcaSimpleSignerInfoGeneratorBuilder;
+import org.bouncycastle.jce.provider.BouncyCastleProvider;
+import org.bouncycastle.operator.DigestCalculatorProvider;
+import org.bouncycastle.operator.jcajce.JcaDigestCalculatorProviderBuilder;
+import org.bouncycastle.tsp.*;
+import org.bouncycastle.util.Store;
+
+import javax.persistence.EntityManager;
+import javax.persistence.Query;
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.security.KeyFactory;
+import java.security.NoSuchAlgorithmException;
+import java.security.PrivateKey;
+import java.security.Security;
+import java.security.cert.CertificateException;
+import java.security.cert.CertificateFactory;
+import java.security.cert.X509CRL;
+import java.security.cert.X509Certificate;
+import java.security.spec.InvalidKeySpecException;
+import java.security.spec.PKCS8EncodedKeySpec;
+import java.time.Duration;
+import java.util.Base64;
+import java.util.Collections;
+
+<span class="nc" id="L46">public class App {</span>
+<span class="nc" id="L47">	private final static org.slf4j.Logger CLASS_LOGGER=org.slf4j.LoggerFactory.getLogger(App.class);</span>
+<span class="nc" id="L48">	private final static org.slf4j.Logger EXCEPTION_LOGGER=org.slf4j.LoggerFactory.getLogger(&quot;ExceptionCatcher&quot;);</span>
+
+	public static void main(String[] args)
+	{
+<span class="nc" id="L52">		de.elbosso.util.Utilities.configureBasicStdoutLogging(Level.ALL);</span>
+<span class="nc" id="L53">		InfluxConfig config = new InfluxConfig() {</span>
+			java.util.Properties props;
+
+			@Override
+			public Duration step() {
+<span class="nc" id="L58">				return Duration.ofSeconds(10);</span>
+			}
+
+			@Override
+			public String db() {
+<span class="nc" id="L63">				return &quot;monitoring&quot;;</span>
+			}
+
+			@Override
+			public String get(String k) {
+<span class="nc bnc" id="L68" title="All 2 branches missed.">				if(props==null)</span>
+				{
+<span class="nc" id="L70">					props = new java.util.Properties();</span>
+<span class="nc" id="L71">					java.net.URL url=de.netsysit.util.ResourceLoader.getResource(&quot;influxdb_micrometer.properties&quot;);</span>
+<span class="nc bnc" id="L72" title="All 2 branches missed.">					if(url==null)</span>
+<span class="nc" id="L73">						CLASS_LOGGER.error(&quot;could not load default influxdb monitoring properties!&quot;);</span>
+					else
+					{
+						try
+						{
+<span class="nc" id="L78">							java.io.InputStream is = url.openStream();</span>
+<span class="nc" id="L79">							props.load(is);</span>
+<span class="nc" id="L80">							is.close();</span>
+						}
+<span class="nc" id="L82">						catch(java.io.IOException exp)</span>
+						{
+<span class="nc" id="L84">							CLASS_LOGGER.error(exp.getMessage(),exp);</span>
+<span class="nc" id="L85">						}</span>
+					}
+				}
+<span class="nc bnc" id="L88" title="All 2 branches missed.">				String rv=System.getenv(k)!=null?System.getenv(k):props.getProperty(k);</span>
+<span class="nc" id="L89">				CLASS_LOGGER.debug(&quot;getting value of &quot;+k+&quot;: &quot;+rv);</span>
+<span class="nc" id="L90">				return rv;</span>
+			}
+		};
+<span class="nc" id="L93">		MeterRegistry registry = new InfluxMeterRegistry(config, Clock.SYSTEM);</span>
+<span class="nc" id="L94">		Metrics.globalRegistry.add(registry);</span>
+<span class="nc" id="L95">		App.init();</span>
+<span class="nc" id="L96">	}</span>
+	private static final Javalin init()
+	{
+<span class="nc" id="L99">		CLASS_LOGGER.debug(&quot;adding BouncyCastle crypto provider&quot;);</span>
+<span class="nc" id="L100">		Security.addProvider(new BouncyCastleProvider());</span>
+<span class="nc" id="L101">		Javalin app = Javalin.create().start(7000);</span>
+<span class="nc" id="L102">		CLASS_LOGGER.debug(&quot;started app - listening on port 7000&quot;);</span>
+<span class="nc" id="L103">		app.config.addStaticFiles(&quot;/site&quot;);</span>
+<span class="nc" id="L104">		CLASS_LOGGER.debug(&quot;added path for static contents: /site (allowed methods: GET)&quot;);</span>
+<span class="nc" id="L105">		Handlers handlers=new Handlers(PersistenceManager.INSTANCE.getEntityManager(),new DefaultCryptoResourceManager());</span>
+<span class="nc" id="L106">		app.get(&quot;/chain.pem&quot;, handlers::handleGetChain);</span>
+<span class="nc" id="L107">		CLASS_LOGGER.debug(&quot;added path for cert chain: /chain.pem (allowed methods: GET)&quot;);</span>
+<span class="nc" id="L108">		app.get(&quot;/tsa.crt&quot;, handlers::handleGetSignerCert);</span>
+<span class="nc" id="L109">		CLASS_LOGGER.debug(&quot;added path for cert: /tsa.cert (allowed methods: GET)&quot;);</span>
+<span class="nc" id="L110">		app.get(&quot;/tsa.conf&quot;, handlers::handleGetTsaConf);</span>
+<span class="nc" id="L111">		CLASS_LOGGER.debug(&quot;added path for tsa configuration: /tsa.conf (allowed methods: GET)&quot;);</span>
+<span class="nc" id="L112">		app.post(&quot;/query&quot;, handlers::handlePostQuery);</span>
+<span class="nc" id="L113">		app.post(&quot;/&quot;, handlers::handlePost);</span>
+<span class="nc" id="L114">		CLASS_LOGGER.debug(&quot;added path for requesting timestamps: / (allowed methods: POST)&quot;);</span>
+<span class="nc" id="L115">		app.before(ctx -&gt; {</span>
+<span class="nc" id="L116">			CLASS_LOGGER.debug(ctx.req.getMethod()+&quot; &quot;+ctx.contentType());</span>
+<span class="nc" id="L117">		});</span>
+<span class="nc" id="L118">		CLASS_LOGGER.debug(&quot;added before interceptor&quot;);</span>
+<span class="nc" id="L119">		Runtime.getRuntime().addShutdownHook(new Thread(() -&gt; {</span>
+<span class="nc" id="L120">			app.stop();</span>
+<span class="nc" id="L121">		}));</span>
+<span class="nc" id="L122">		CLASS_LOGGER.debug(&quot;added callback for stopping the application&quot;);</span>
+<span class="nc" id="L123">		app.events(event -&gt; {</span>
+<span class="nc" id="L124">			event.serverStopping(() -&gt; { /* Your code here */ });</span>
+<span class="nc" id="L125">			event.serverStopped(() -&gt; {</span>
+<span class="nc" id="L126">				CLASS_LOGGER.debug(&quot;Server stopped&quot;);</span>
+<span class="nc" id="L127">				PersistenceManager.INSTANCE.close();</span>
+<span class="nc" id="L128">				CLASS_LOGGER.debug(&quot;Persistence manager closed&quot;);</span>
+<span class="nc" id="L129">			});</span>
+<span class="nc" id="L130">			CLASS_LOGGER.debug(&quot;added listener for server stopped event&quot;);</span>
+<span class="nc" id="L131">		});</span>
+<span class="nc" id="L132">		return app;</span>
+	}
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.3.201901230119</span></div></body></html>
