@@ -2,7 +2,31 @@
 
 Changelog of this project.
 
-## Unreleased
+## 1.4.0
+### GitHub [#13](https://github.com/elbosso/rfc3161timestampingserver/issues/13) making migration between databases possible
+
+**fixes #13**
+
+
+[7f13db678ad6389](https://github.com/elbosso//commit/7f13db678ad6389) Jürgen Key *2022-05-12 17:07:29*
+
+
+### GitHub [#17](https://github.com/elbosso/rfc3161timestampingserver/issues/17) get rid of log4j and use the new bom dependency
+
+**fixes #17**
+
+
+[714dd128707f500](https://github.com/elbosso//commit/714dd128707f500) Juergen Key *2022-04-27 16:08:32*
+
+
+### GitHub [#18](https://github.com/elbosso/rfc3161timestampingserver/issues/18) fix class not found exception with standalone jar with dependencies
+
+**fixes #18**
+
+
+[f4c026d3bdc5e0a](https://github.com/elbosso//commit/f4c026d3bdc5e0a) Juergen Key *2022-05-05 16:56:06*
+
+
 ### GitHub [#22](https://github.com/elbosso/rfc3161timestampingserver/issues/22) refactoring
 
 **fixes #22**
@@ -58,6 +82,16 @@ Changelog of this project.
 
 
 ### No issue
+
+**regression issue: entity manager was closed after issuing timestamp - now that there is a globally managed entity manager - this is no longer needed and in fact breaks the system**
+
+
+[2a8cc998aeec030](https://github.com/elbosso//commit/2a8cc998aeec030) Jürgen Key *2022-09-25 06:36:42*
+
+**pinned java versions to java 11 for arm flavours**
+
+
+[769aa2f4a5decfd](https://github.com/elbosso//commit/769aa2f4a5decfd) Juergen Key *2022-09-25 06:35:04*
 
 **housekeeping**
 
@@ -151,30 +185,6 @@ Changelog of this project.
 
 
 ## 1.3.0
-### GitHub [#13](https://github.com/elbosso/rfc3161timestampingserver/issues/13) making migration between databases possible
-
-**fixes #13**
-
-
-[7f13db678ad6389](https://github.com/elbosso//commit/7f13db678ad6389) Jürgen Key *2022-05-12 17:07:29*
-
-
-### GitHub [#17](https://github.com/elbosso/rfc3161timestampingserver/issues/17) get rid of log4j and use the new bom dependency
-
-**fixes #17**
-
-
-[714dd128707f500](https://github.com/elbosso//commit/714dd128707f500) Juergen Key *2022-04-27 16:08:32*
-
-
-### GitHub [#18](https://github.com/elbosso/rfc3161timestampingserver/issues/18) fix class not found exception with standalone jar with dependencies
-
-**fixes #18**
-
-
-[f4c026d3bdc5e0a](https://github.com/elbosso//commit/f4c026d3bdc5e0a) Juergen Key *2022-05-05 16:56:06*
-
-
 ### No issue
 
 **housekeeping**

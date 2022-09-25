@@ -2,7 +2,6 @@ package de.elbosso.tools.rfc3161timestampingserver;
 
 import io.javalin.http.UploadedFile;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
-import org.junit.jupiter.api.Assumptions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -68,9 +67,6 @@ public class TestPost
         when(ctx.bodyAsBytes()).thenReturn(tsq);
         when(em.getTransaction()).thenReturn(entityTransaction);
         doNothing().when(entityTransaction).begin();
-        Assumptions.assumeTrue(defCryptoResourceManager.getTsaCert()!=null,"You must provide valid crypto material to execute this test!");
-        Assumptions.assumeTrue(defCryptoResourceManager.getChainPem()!=null,"You must provide valid crypto material to execute this test!");
-        Assumptions.assumeTrue(defCryptoResourceManager.getPrivateKey()!=null,"You must provide valid crypto material to execute this test!");
         when(cryptoResourceManager.getTsaCert()).thenReturn(defCryptoResourceManager.getTsaCert());
         when(cryptoResourceManager.getChainPem()).thenReturn(defCryptoResourceManager.getChainPem());
         when(cryptoResourceManager.getPrivateKey()).thenReturn(defCryptoResourceManager.getPrivateKey());
@@ -123,9 +119,6 @@ public class TestPost
         UploadedFile uploadedFile=new UploadedFile(bais,"application/timestamp-query",tsq.length,"example.tsq",".tsq");
         when(ctx.uploadedFile("tsq")).thenReturn(uploadedFile);
         when(em.getTransaction()).thenReturn(entityTransaction);
-        Assumptions.assumeTrue(defCryptoResourceManager.getTsaCert()!=null,"You must provide valid crypto material to execute this test!");
-        Assumptions.assumeTrue(defCryptoResourceManager.getChainPem()!=null,"You must provide valid crypto material to execute this test!");
-        Assumptions.assumeTrue(defCryptoResourceManager.getPrivateKey()!=null,"You must provide valid crypto material to execute this test!");
         when(cryptoResourceManager.getTsaCert()).thenReturn(defCryptoResourceManager.getTsaCert());
         when(cryptoResourceManager.getChainPem()).thenReturn(defCryptoResourceManager.getChainPem());
         when(cryptoResourceManager.getPrivateKey()).thenReturn(defCryptoResourceManager.getPrivateKey());
@@ -175,9 +168,6 @@ public class TestPost
         when(ctx.uploadedFile("tsq")).thenReturn(uploadedFile);
         when(em.getTransaction()).thenReturn(entityTransaction);
         doNothing().when(entityTransaction).begin();
-        Assumptions.assumeTrue(defCryptoResourceManager.getTsaCert()!=null,"You must provide valid crypto material to execute this test!");
-        Assumptions.assumeTrue(defCryptoResourceManager.getChainPem()!=null,"You must provide valid crypto material to execute this test!");
-        Assumptions.assumeTrue(defCryptoResourceManager.getPrivateKey()!=null,"You must provide valid crypto material to execute this test!");
         when(cryptoResourceManager.getTsaCert()).thenReturn(defCryptoResourceManager.getTsaCert());
         when(cryptoResourceManager.getChainPem()).thenReturn(defCryptoResourceManager.getChainPem());
         when(cryptoResourceManager.getPrivateKey()).thenReturn(defCryptoResourceManager.getPrivateKey());
@@ -206,9 +196,6 @@ public class TestPost
         when(ctx.uploadedFile("tsq")).thenReturn(uploadedFile);
         when(em.getTransaction()).thenReturn(entityTransaction);
         doNothing().when(entityTransaction).begin();
-        Assumptions.assumeTrue(defCryptoResourceManager.getTsaCert()!=null,"You must provide valid crypto material to execute this test!");
-        Assumptions.assumeTrue(defCryptoResourceManager.getChainPem()!=null,"You must provide valid crypto material to execute this test!");
-        Assumptions.assumeTrue(defCryptoResourceManager.getPrivateKey()!=null,"You must provide valid crypto material to execute this test!");
         when(cryptoResourceManager.getTsaCert()).thenReturn(defCryptoResourceManager.getTsaCert());
         when(cryptoResourceManager.getChainPem()).thenReturn(defCryptoResourceManager.getChainPem());
         when(cryptoResourceManager.getPrivateKey()).thenReturn(defCryptoResourceManager.getPrivateKey());
@@ -237,9 +224,6 @@ public class TestPost
         when(ctx.uploadedFile("tsq")).thenReturn(uploadedFile);
         when(em.getTransaction()).thenReturn(entityTransaction);
         doNothing().when(entityTransaction).begin();
-        Assumptions.assumeTrue(defCryptoResourceManager.getTsaCert()!=null,"You must provide valid crypto material to execute this test!");
-        Assumptions.assumeTrue(defCryptoResourceManager.getChainPem()!=null,"You must provide valid crypto material to execute this test!");
-        Assumptions.assumeTrue(defCryptoResourceManager.getPrivateKey()!=null,"You must provide valid crypto material to execute this test!");
         when(cryptoResourceManager.getTsaCert()).thenReturn(defCryptoResourceManager.getTsaCert());
         when(cryptoResourceManager.getChainPem()).thenReturn(defCryptoResourceManager.getChainPem());
         when(cryptoResourceManager.getPrivateKey()).thenReturn(defCryptoResourceManager.getPrivateKey());
