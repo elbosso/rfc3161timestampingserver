@@ -280,7 +280,6 @@ public class Handlers extends java.lang.Object implements Constants
             }
             finally
             {
-                em.close();
             }
         }
         else

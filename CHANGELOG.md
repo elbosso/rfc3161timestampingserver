@@ -49,7 +49,25 @@ Changelog of this project.
 [361de2c281176fc](https://github.com/elbosso//commit/361de2c281176fc) Jürgen Key *2022-09-24 16:02:52*
 
 
+### GitHub [#24](https://github.com/elbosso/rfc3161timestampingserver/issues/24) resolve pipeline fails in GitHubs CI/CD
+
+**re #24**
+
+
+[ba85370bdcf00a5](https://github.com/elbosso//commit/ba85370bdcf00a5) Jürgen Key *2022-09-25 05:29:52*
+
+
 ### No issue
+
+**housekeeping**
+
+
+[83f2920e5c474cd](https://github.com/elbosso//commit/83f2920e5c474cd) Jürgen Key *2022-09-25 05:40:47*
+
+**added badge for CI/CD**
+
+
+[a79e3c9fa485aff](https://github.com/elbosso//commit/a79e3c9fa485aff) Jürgen Key *2022-09-24 18:34:55*
 
 **Update workflow.yml**
 
