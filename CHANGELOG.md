@@ -8,7 +8,50 @@ Changelog of this project.
 **re #25**
 
 
+[151171fea29ee27](https://github.com/elbosso//commit/151171fea29ee27) Jürgen Key *2022-09-25 14:23:39*
+
+**re #25**
+
+
 [98cb2aae9094ae7](https://github.com/elbosso//commit/98cb2aae9094ae7) Jürgen Key *2022-09-25 14:10:09*
+
+
+### No issue
+
+**successfully added the first integration tests**
+
+
+[dce5a31b8229596](https://github.com/elbosso//commit/dce5a31b8229596) Jürgen Key *2022-10-27 17:42:51*
+
+**Preparation of rest testing**
+
+
+[890bc48f8a0bb5a](https://github.com/elbosso//commit/890bc48f8a0bb5a) Jürgen Key *2022-10-27 15:51:02*
+
+**preparations for integration tests**
+
+
+[b05a595c2fa520e](https://github.com/elbosso//commit/b05a595c2fa520e) Jürgen Key *2022-10-27 15:43:01*
+
+**Update README.md**
+
+
+[06b632e6c89dc98](https://github.com/elbosso//commit/06b632e6c89dc98) Jürgen Key *2022-09-25 14:44:10*
+
+**Update workflow.yml**
+
+
+[5feac35ae53244a](https://github.com/elbosso//commit/5feac35ae53244a) Jürgen Key *2022-09-25 14:35:24*
+
+**Update workflow.yml**
+
+
+[dbd0a40c412e907](https://github.com/elbosso//commit/dbd0a40c412e907) Jürgen Key *2022-09-25 14:33:19*
+
+**trying to generate code coverage badge(s)**
+
+
+[9a723b0035ac5b2](https://github.com/elbosso//commit/9a723b0035ac5b2) Jürgen Key *2022-09-25 14:30:51*
 
 
 ## 1.4.0

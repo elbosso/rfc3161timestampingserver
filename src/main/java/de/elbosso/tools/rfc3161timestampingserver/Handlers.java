@@ -198,8 +198,6 @@ public class Handlers extends java.lang.Object implements Constants
                 ctx.status(500);
                 Metrics.counter("rfc3161timestampingserver.post", "resourcename","query","httpstatus",java.lang.Integer.toString(ctx.status()),"error","params","contentType",contentType,"remoteAddr",ctx.ip(),"remoteHost",ctx.ip(), "localAddr",ctx.host(), "localName",ctx.host()).increment();
             }
-            em.flush();
-            em.close();
         }
         else
         {
@@ -291,7 +289,6 @@ public class Handlers extends java.lang.Object implements Constants
             finally
             {
             }
-            em.close();
         }
         else
         {
