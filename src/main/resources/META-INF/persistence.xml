@@ -3,6 +3,32 @@
              xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/persistence
 http://xmlns.jcp.org/xml/ns/persistence/persistence_2_1.xsd"
              version="2.1">
+    <persistence-unit name="rfc3161timestampingserver_test" transaction-type="RESOURCE_LOCAL">
+        <provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
+        <properties>
+            <!-- JDBC Database connection settings -->
+            <property name="connection.driver_class" value="org.h2.Driver"/>
+            <property name="connection.url" value="jdbc:h2:mem:test"/>
+            <property name="connection.username" value="sa"/>
+            <property name="connection.password" value=""/>
+            <!-- JDBC connection pool settings ... using built-in test pool -->
+            <property name="connection.pool_size" value="1"/>
+            <!-- Select our SQL dialect -->
+            <property name="dialect" value="org.hibernate.dialect.H2Dialect"/>
+            <!-- Echo the SQL to stdout -->
+            <property name="show_sql" value="true"/>
+            <!-- Set the current session context -->
+            <property name="current_session_context_class" value="thread"/>
+            <!-- Drop and re-create the database schema on startup -->
+            <property name="hbm2ddl.auto" value="create-drop"/>
+            <!-- dbcp connection pool configuration -->
+            <property name="hibernate.dbcp.initialSize" value="5"/>
+            <property name="hibernate.dbcp.maxTotal" value="20"/>
+            <property name="hibernate.dbcp.maxIdle" value="10"/>
+            <property name="hibernate.dbcp.minIdle" value="5"/>
+            <property name="hibernate.dbcp.maxWaitMillis" value="-1"/>
+        </properties>
+    </persistence-unit>
     <persistence-unit name="rfc3161timestampingserver" transaction-type="RESOURCE_LOCAL">
         <provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
         <properties>

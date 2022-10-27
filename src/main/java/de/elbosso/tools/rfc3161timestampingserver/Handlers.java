@@ -31,13 +31,17 @@ public class Handlers extends java.lang.Object implements Constants
 {
     private final static org.slf4j.Logger CLASS_LOGGER=org.slf4j.LoggerFactory.getLogger(Handlers.class);
 	private final static org.slf4j.Logger EXCEPTION_LOGGER=org.slf4j.LoggerFactory.getLogger("ExceptionCatcher");
-    private final EntityManager em;
+    private EntityManager em;
     private final CryptoResourceManager cryptoResourceManager;
 
+    Handlers(CryptoResourceManager cryptoResourceManager)
+    {
+        this(null,cryptoResourceManager);
+    }
     Handlers(EntityManager em,CryptoResourceManager cryptoResourceManager)
     {
         super();
-        this.em =em;
+        this.em=em;
         this.cryptoResourceManager=cryptoResourceManager;
     }
 
@@ -113,6 +117,8 @@ public class Handlers extends java.lang.Object implements Constants
             {
                  CLASS_LOGGER.warn("did not find msgDigestHex");
             }
+            if(em==null)
+                em=PersistenceManager.getSharedInstance().getEntityManager();
             if((algoid!=null)&&(msgDigestBase64!=null))
             {
                  CLASS_LOGGER.debug("searching using message digest algorithm and message digest (Base64) imprint as parameters");
@@ -192,6 +198,8 @@ public class Handlers extends java.lang.Object implements Constants
                 ctx.status(500);
                 Metrics.counter("rfc3161timestampingserver.post", "resourcename","query","httpstatus",java.lang.Integer.toString(ctx.status()),"error","params","contentType",contentType,"remoteAddr",ctx.ip(),"remoteHost",ctx.ip(), "localAddr",ctx.host(), "localName",ctx.host()).increment();
             }
+            em.flush();
+            em.close();
         }
         else
         {
@@ -239,6 +247,8 @@ public class Handlers extends java.lang.Object implements Constants
         }
         if(tsq!=null)
         {
+            if(em==null)
+                em=PersistenceManager.getSharedInstance().getEntityManager();
             em.getTransaction().begin();
             try
             {
@@ -281,6 +291,7 @@ public class Handlers extends java.lang.Object implements Constants
             finally
             {
             }
+            em.close();
         }
         else
         {
