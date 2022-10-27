@@ -7,45 +7,14 @@ import io.micrometer.core.instrument.MeterRegistry;
 import io.micrometer.core.instrument.Metrics;
 import io.micrometer.influx.InfluxConfig;
 import io.micrometer.influx.InfluxMeterRegistry;
-import org.bouncycastle.asn1.ASN1ObjectIdentifier;
-import org.bouncycastle.asn1.nist.NISTObjectIdentifiers;
-import org.bouncycastle.asn1.x500.X500Name;
-import org.bouncycastle.asn1.x500.style.BCStrictStyle;
-import org.bouncycastle.asn1.x500.style.RFC4519Style;
-import org.bouncycastle.asn1.x509.AlgorithmIdentifier;
-import org.bouncycastle.asn1.x509.GeneralName;
-import org.bouncycastle.asn1.x509.X509Name;
-import org.bouncycastle.cert.jcajce.JcaCRLStore;
-import org.bouncycastle.cert.jcajce.JcaCertStore;
-import org.bouncycastle.cert.jcajce.JcaX500NameUtil;
-import org.bouncycastle.cms.jcajce.JcaSimpleSignerInfoGeneratorBuilder;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
-import org.bouncycastle.operator.DigestCalculatorProvider;
-import org.bouncycastle.operator.jcajce.JcaDigestCalculatorProviderBuilder;
-import org.bouncycastle.tsp.*;
-import org.bouncycastle.util.Store;
-
-import javax.persistence.EntityManager;
-import javax.persistence.Query;
-import java.io.IOException;
-import java.nio.charset.StandardCharsets;
-import java.security.KeyFactory;
-import java.security.NoSuchAlgorithmException;
-import java.security.PrivateKey;
 import java.security.Security;
-import java.security.cert.CertificateException;
-import java.security.cert.CertificateFactory;
-import java.security.cert.X509CRL;
-import java.security.cert.X509Certificate;
-import java.security.spec.InvalidKeySpecException;
-import java.security.spec.PKCS8EncodedKeySpec;
 import java.time.Duration;
-import java.util.Base64;
-import java.util.Collections;
 
 public class App {
 	private final static org.slf4j.Logger CLASS_LOGGER=org.slf4j.LoggerFactory.getLogger(App.class);
 	private final static org.slf4j.Logger EXCEPTION_LOGGER=org.slf4j.LoggerFactory.getLogger("ExceptionCatcher");
+	private static final int DEFAULT_PORT = 7000;
 
 	public static void main(String[] args)
 	{
@@ -92,17 +61,17 @@ public class App {
 		};
 		MeterRegistry registry = new InfluxMeterRegistry(config, Clock.SYSTEM);
 		Metrics.globalRegistry.add(registry);
-		App.init();
+		App.init(DEFAULT_PORT);
 	}
-	private static final Javalin init()
+	static final Javalin init(int port)
 	{
 		CLASS_LOGGER.debug("adding BouncyCastle crypto provider");
 		Security.addProvider(new BouncyCastleProvider());
-		Javalin app = Javalin.create().start(7000);
+		Javalin app = Javalin.create().start(port);
 		CLASS_LOGGER.debug("started app - listening on port 7000");
 		app.config.addStaticFiles("/site");
 		CLASS_LOGGER.debug("added path for static contents: /site (allowed methods: GET)");
-		Handlers handlers=new Handlers(PersistenceManager.INSTANCE.getEntityManager(),new DefaultCryptoResourceManager());
+		Handlers handlers=new Handlers(new DefaultCryptoResourceManager());
 		app.get("/chain.pem", handlers::handleGetChain);
 		CLASS_LOGGER.debug("added path for cert chain: /chain.pem (allowed methods: GET)");
 		app.get("/tsa.crt", handlers::handleGetSignerCert);
@@ -124,7 +93,7 @@ public class App {
 			event.serverStopping(() -> { /* Your code here */ });
 			event.serverStopped(() -> {
 				CLASS_LOGGER.debug("Server stopped");
-				PersistenceManager.INSTANCE.close();
+				PersistenceManager.getSharedInstance().close();
 				CLASS_LOGGER.debug("Persistence manager closed");
 			});
 			CLASS_LOGGER.debug("added listener for server stopped event");
