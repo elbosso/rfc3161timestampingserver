@@ -9,7 +9,8 @@ public interface Constants
     java.lang.String JDBC_USER="javax.persistence.jdbc.user";
     java.lang.String JDBC_DEFAULT_URL="jdbc:postgresql://postgresqlserver/jdbctest";
     java.lang.String JDBC_PASSWORD_FILE="javax.persistence.jdbc.password_FILE";
-    java.lang.String PERSISTENCE_UNIT_NAME="rfc3161timestampingserver";
+    java.lang.String PERSISTENCE_UNIT_NAME="de.elbosso.tools.rfc3161timestampingserver.App.PersistenceUnitName";
+    java.lang.String PERSISTENCE_UNIT_NAME_DEFAULT="rfc3161timestampingserver";
     java.lang.String PERSISTENCE_UNIT_NAME_FOR_TESTS="rfc3161timestampingserver_test";
 
 }

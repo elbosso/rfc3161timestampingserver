@@ -49,7 +49,7 @@ public class PersistenceManager
 			emConfig.put(Constants.JDBC_USER, System.getenv(Constants.JDBC_USER)!=null?System.getenv(Constants.JDBC_USER):"xxx");
 			emConfig.put(Constants.JDBC_PASSWORD, pw);
 			// "rfc3161timestampingserver" is the value of the name attribute of the persistence-unit element.
-			emFactory = Persistence.createEntityManagerFactory(Constants.PERSISTENCE_UNIT_NAME,emConfig);
+			emFactory = Persistence.createEntityManagerFactory(System.getenv(Constants.PERSISTENCE_UNIT_NAME)!=null?System.getenv(Constants.PERSISTENCE_UNIT_NAME):Constants.PERSISTENCE_UNIT_NAME_DEFAULT,emConfig);
 		}
 	}
 
