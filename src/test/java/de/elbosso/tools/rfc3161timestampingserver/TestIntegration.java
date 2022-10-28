@@ -137,6 +137,102 @@ public class TestIntegration
         responseStream.close();
         validate(request,response);
     }
+    @Test
+    @SetEnvironmentVariable(key = Constants.JDBC_URL, value = "jdbc:h2:mem:test")
+    @SetEnvironmentVariable(key = Constants.JDBC_PASSWORD, value = "")
+    @SetEnvironmentVariable(key = Constants.JDBC_USER, value = "sa")
+    @SetEnvironmentVariable(key = Constants.PERSISTENCE_UNIT_NAME, value = Constants.PERSISTENCE_UNIT_NAME_FOR_TESTS)
+    public void test_SuccessMultiPartNoCertificate() throws Exception
+    {
+        HttpPost post = new HttpPost("http://localhost:"+TEST_PORT+"/");
+        java.net.URL url=TestIntegration.class.getClassLoader().getResource("example_nocert.tsq");
+        java.io.ByteArrayOutputStream baos = new java.io.ByteArrayOutputStream();
+        de.elbosso.util.Utilities.copyBetweenStreams(url.openStream(), baos, true);
+        MultipartEntityBuilder builder = MultipartEntityBuilder.create();
+        builder.setMode(HttpMultipartMode.EXTENDED);
+        builder.addBinaryBody("tsq", url.openStream(), ContentType.create("application/timestamp-query"), "query.tsq");
+//
+        HttpEntity entity = builder.build();
+        post.setEntity(entity);
+
+        HttpResponse httpResponse = HttpClientBuilder.create().build().execute( post );
+        // Then
+        Assertions.assertEquals(HttpStatus.SC_CREATED,httpResponse.getCode());
+
+        entity = ((CloseableHttpResponse) httpResponse).getEntity();
+        java.io.ByteArrayInputStream bais = new java.io.ByteArrayInputStream(baos.toByteArray());
+        TimeStampRequest request = new TimeStampRequest(bais);
+        bais.close();
+
+        java.io.InputStream responseStream = entity.getContent();
+        TimeStampResponse response = new TimeStampResponse(responseStream);
+        responseStream.close();
+        validate(request,response);
+    }
+    @Test
+    @SetEnvironmentVariable(key = Constants.JDBC_URL, value = "jdbc:h2:mem:test")
+    @SetEnvironmentVariable(key = Constants.JDBC_PASSWORD, value = "")
+    @SetEnvironmentVariable(key = Constants.JDBC_USER, value = "sa")
+    @SetEnvironmentVariable(key = Constants.PERSISTENCE_UNIT_NAME, value = Constants.PERSISTENCE_UNIT_NAME_FOR_TESTS)
+    public void test_SuccessBodyNoCertificate() throws Exception
+    {
+        HttpPost post = new HttpPost("http://localhost:" + TEST_PORT + "/");
+        java.net.URL url = TestIntegration.class.getClassLoader().getResource("example.tsq");
+        java.io.ByteArrayOutputStream baos = new java.io.ByteArrayOutputStream();
+        de.elbosso.util.Utilities.copyBetweenStreams(url.openStream(), baos, true);
+        post.setHeader("Content-type", "application/timestamp-query");
+
+        post.setEntity(EntityBuilder.create().setBinary(baos.toByteArray()).build());
+
+
+        HttpResponse httpResponse = HttpClientBuilder.create().build().execute(post);
+        // Then
+        Assertions.assertEquals(HttpStatus.SC_CREATED, httpResponse.getCode());
+
+        HttpEntity entity = ((CloseableHttpResponse) httpResponse).getEntity();
+        java.io.ByteArrayInputStream bais = new java.io.ByteArrayInputStream(baos.toByteArray());
+        TimeStampRequest request = new TimeStampRequest(bais);
+        bais.close();
+
+        java.io.InputStream responseStream = entity.getContent();
+        TimeStampResponse response = new TimeStampResponse(responseStream);
+        responseStream.close();
+        validate(request,response);
+    }
+    @Test
+    @SetEnvironmentVariable(key = Constants.JDBC_URL, value = "jdbc:h2:mem:test")
+    @SetEnvironmentVariable(key = Constants.JDBC_PASSWORD, value = "")
+    @SetEnvironmentVariable(key = Constants.JDBC_USER, value = "sa")
+    @SetEnvironmentVariable(key = Constants.PERSISTENCE_UNIT_NAME, value = Constants.PERSISTENCE_UNIT_NAME_FOR_TESTS)
+    public void test_SuccessMultiPartQuery() throws Exception
+    {
+        HttpPost post = new HttpPost("http://localhost:"+TEST_PORT+"/");
+        java.net.URL url=TestIntegration.class.getClassLoader().getResource("example.tsq");
+        java.io.ByteArrayOutputStream baos = new java.io.ByteArrayOutputStream();
+        de.elbosso.util.Utilities.copyBetweenStreams(url.openStream(), baos, true);
+        MultipartEntityBuilder builder = MultipartEntityBuilder.create();
+        builder.setMode(HttpMultipartMode.EXTENDED);
+        builder.addBinaryBody("tsq", url.openStream(), ContentType.create("application/timestamp-query"), "query.tsq");
+//
+        HttpEntity entity = builder.build();
+        post.setEntity(entity);
+
+        HttpResponse httpResponse = HttpClientBuilder.create().build().execute( post );
+        // Then
+        Assertions.assertEquals(HttpStatus.SC_CREATED,httpResponse.getCode());
+
+        
+
+        entity = ((CloseableHttpResponse) httpResponse).getEntity();
+        java.io.ByteArrayInputStream bais = new java.io.ByteArrayInputStream(baos.toByteArray());
+        TimeStampRequest request = new TimeStampRequest(bais);
+        bais.close();
+
+        java.io.InputStream responseStream = entity.getContent();
+        TimeStampResponse response = new TimeStampResponse(responseStream);
+        responseStream.close();
+        validate(request,response);
+    }
 
     private void validate(TimeStampRequest request, TimeStampResponse response) throws TSPException, CertificateException, OperatorCreationException, IOException, CRLException
     {
@@ -155,21 +251,28 @@ public class TestIntegration
         if(request.getCertReq()==false)
             Assertions.assertTrue(signerCertificates.isEmpty());
 
-        X509CertificateHolder certHolder = null;
-        for (Object match : signerCertificates) {
-            certHolder = (X509CertificateHolder) match;
-            break;
+        X509Certificate tsaCert=null;
+
+        if(request.getCertReq()==true)
+        {
+            X509CertificateHolder certHolder = null;
+            for (Object match : signerCertificates)
+            {
+                certHolder = (X509CertificateHolder) match;
+                break;
+            }
+            Assertions.assertNotNull(certHolder);
+            tsaCert = new JcaX509CertificateConverter()
+                    .setProvider(BC).getCertificate(certHolder);
+            SignerInformationVerifier siv = new JcaSimpleSignerInfoVerifierBuilder()
+                    .setProvider(BC).build(tsaCert);
+
+            timeStampToken.validate(siv);
+
         }
 
-        Assertions.assertNotNull(certHolder);
 
-        X509Certificate tsaCert = new JcaX509CertificateConverter()
-                .setProvider(BC).getCertificate(certHolder);
-
-        SignerInformationVerifier siv = new JcaSimpleSignerInfoVerifierBuilder()
-                .setProvider(BC).build(tsaCert);
-
-        timeStampToken.validate(siv);
+        Assertions.assertTrue(System.currentTimeMillis()-2000l<timeStampToken.getTimeStampInfo().getGenTime().getTime());
 
         InputStream chainStream = TestIntegration.class.getClassLoader().getResource("rfc3161timestampingserver/priv/chain.pem").openStream();
         InputStream rootStream = TestIntegration.class.getClassLoader().getResource("crypto/root.pem").openStream();
@@ -185,7 +288,10 @@ public class TestIntegration
         {
             crlUrls.addAll(de.elbosso.util.security.Utilities.getCrlDistributionPoints(cert));
         }
-        crlUrls.addAll(de.elbosso.util.security.Utilities.getCrlDistributionPoints(tsaCert));
+        if(request.getCertReq()==true)
+        {
+            crlUrls.addAll(de.elbosso.util.security.Utilities.getCrlDistributionPoints(tsaCert));
+        }
         Collection<X509CRL> crls=new java.util.LinkedList();
         for (String surl : crlUrls)
         {
@@ -212,19 +318,22 @@ public class TestIntegration
             CLASS_LOGGER.debug("CRL from issuer " + crl.getIssuerDN()
                     + " thisUpdate: " + crl.getThisUpdate());
         }
-        CLASS_LOGGER.info(java.util.Objects.toString(tsaCert));
-        CLASS_LOGGER.info(java.util.Objects.toString(trustedRoots));
-        CLASS_LOGGER.info(java.util.Objects.toString(chainCerts));
-        try
+        if(request.getCertReq()==true)
         {
-        PKIXCertPathBuilderResult result
-                = buildPath(tsaCert, trustedRoots, chainCerts, crls);
+            CLASS_LOGGER.info(java.util.Objects.toString(tsaCert));
+            CLASS_LOGGER.info(java.util.Objects.toString(trustedRoots));
+            CLASS_LOGGER.info(java.util.Objects.toString(chainCerts));
+            try
+            {
+                PKIXCertPathBuilderResult result
+                        = buildPath(tsaCert, trustedRoots, chainCerts, crls);
 
-        String trustAnchor = result.getTrustAnchor().getTrustedCert()
-                .getSubjectDN().getName();
-        }catch(java.lang.Throwable t)
-        {
-            CLASS_LOGGER.warn(t.getMessage(),t);
+                String trustAnchor = result.getTrustAnchor().getTrustedCert()
+                        .getSubjectDN().getName();
+            } catch (java.lang.Throwable t)
+            {
+                CLASS_LOGGER.warn(t.getMessage(), t);
+            }
         }
     }
     /**
