@@ -4,7 +4,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import javax.persistence.EntityManager;
-import javax.persistence.OneToMany;
 
 import static org.mockito.Mockito.*;
 
@@ -27,7 +26,7 @@ public class TestGetChain
     {
         when(ctx.ip()).thenReturn("127.0.0.1");
         when(ctx.host()).thenReturn("localhost");
-        when(cryptoResourceManager.getChainPem()).thenReturn(de.netsysit.util.ResourceLoader.getResource("crypto/chain.pem"));
+        when(cryptoResourceManager.getChainPem()).thenReturn(de.netsysit.util.ResourceLoader.getResource("rfc3161timestampingserver/priv/chain.pem"));
         handlers.handleGetChain(ctx);
         verify(ctx).status(201);
         verify(ctx).contentType("application/pkcs7-mime");
