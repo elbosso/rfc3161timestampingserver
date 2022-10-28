@@ -16,6 +16,24 @@ Changelog of this project.
 [98cb2aae9094ae7](https://github.com/elbosso//commit/98cb2aae9094ae7) Jürgen Key *2022-09-25 14:10:09*
 
 
+### GitHub [#26](https://github.com/elbosso/rfc3161timestampingserver/issues/26) publish automated integration tests
+
+**bug squished re #26**
+
+
+[3db2561b3289fae](https://github.com/elbosso//commit/3db2561b3289fae) Jürgen Key *2022-10-28 14:12:25*
+
+**refactoring re #26**
+
+
+[65281e18e5c37ba](https://github.com/elbosso//commit/65281e18e5c37ba) Jürgen Key *2022-10-28 14:06:30*
+
+**re #26 - small hiccup removed**
+
+
+[5720edd34b27747](https://github.com/elbosso//commit/5720edd34b27747) Jürgen Key *2022-10-27 17:47:45*
+
+
 ### No issue
 
 **successfully added the first integration tests**
