@@ -37,6 +37,7 @@ import java.io.InputStream;
 import java.security.GeneralSecurityException;
 import java.security.Security;
 import java.security.cert.*;
+import java.util.Base64;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
@@ -204,7 +205,7 @@ public class TestIntegration
     @SetEnvironmentVariable(key = Constants.JDBC_PASSWORD, value = "")
     @SetEnvironmentVariable(key = Constants.JDBC_USER, value = "sa")
     @SetEnvironmentVariable(key = Constants.PERSISTENCE_UNIT_NAME, value = Constants.PERSISTENCE_UNIT_NAME_FOR_TESTS)
-    public void test_SuccessMultiPartQuery() throws Exception
+    public void test_SuccessMultiPartQuery_msgDigestBase64() throws Exception
     {
         HttpPost post = new HttpPost("http://localhost:"+TEST_PORT+"/");
         java.net.URL url=TestIntegration.class.getClassLoader().getResource("example.tsq");
@@ -221,17 +222,69 @@ public class TestIntegration
         // Then
         Assertions.assertEquals(HttpStatus.SC_CREATED,httpResponse.getCode());
 
-        
-
-        entity = ((CloseableHttpResponse) httpResponse).getEntity();
         java.io.ByteArrayInputStream bais = new java.io.ByteArrayInputStream(baos.toByteArray());
         TimeStampRequest request = new TimeStampRequest(bais);
         bais.close();
+
+        post = new HttpPost("http://localhost:"+TEST_PORT+"/query");
+        builder = MultipartEntityBuilder.create();
+        builder.setMode(HttpMultipartMode.EXTENDED);
+        builder.addTextBody("msgDigestBase64", new String(Base64.getEncoder().encode(request.getMessageImprintDigest())));
+
+        entity = builder.build();
+        post.setEntity(entity);
+
+        httpResponse = HttpClientBuilder.create().build().execute( post );
+
+        // Then
+        Assertions.assertEquals(HttpStatus.SC_CREATED,httpResponse.getCode());
+
+        entity = ((CloseableHttpResponse) httpResponse).getEntity();
 
         java.io.InputStream responseStream = entity.getContent();
         TimeStampResponse response = new TimeStampResponse(responseStream);
         responseStream.close();
         validate(request,response);
+    }
+    @Test
+    @SetEnvironmentVariable(key = Constants.JDBC_URL, value = "jdbc:h2:mem:test")
+    @SetEnvironmentVariable(key = Constants.JDBC_PASSWORD, value = "")
+    @SetEnvironmentVariable(key = Constants.JDBC_USER, value = "sa")
+    @SetEnvironmentVariable(key = Constants.PERSISTENCE_UNIT_NAME, value = Constants.PERSISTENCE_UNIT_NAME_FOR_TESTS)
+    public void test_SuccessMultiPartQuery_msgDigestBase64_NotFound() throws Exception
+    {
+        HttpPost post = new HttpPost("http://localhost:"+TEST_PORT+"/");
+        java.net.URL url=TestIntegration.class.getClassLoader().getResource("example.tsq");
+        java.io.ByteArrayOutputStream baos = new java.io.ByteArrayOutputStream();
+        de.elbosso.util.Utilities.copyBetweenStreams(url.openStream(), baos, true);
+        MultipartEntityBuilder builder = MultipartEntityBuilder.create();
+        builder.setMode(HttpMultipartMode.EXTENDED);
+        builder.addBinaryBody("tsq", url.openStream(), ContentType.create("application/timestamp-query"), "query.tsq");
+//
+        HttpEntity entity = builder.build();
+        post.setEntity(entity);
+
+        HttpResponse httpResponse = HttpClientBuilder.create().build().execute( post );
+        // Then
+        Assertions.assertEquals(HttpStatus.SC_CREATED,httpResponse.getCode());
+
+        java.io.ByteArrayInputStream bais = new java.io.ByteArrayInputStream(baos.toByteArray());
+        TimeStampRequest request = new TimeStampRequest(bais);
+        bais.close();
+
+        post = new HttpPost("http://localhost:"+TEST_PORT+"/query");
+        builder = MultipartEntityBuilder.create();
+        builder.setMode(HttpMultipartMode.EXTENDED);
+        builder.addTextBody("msgDigestBase64", "some_unknown_digest_value");
+
+        entity = builder.build();
+        post.setEntity(entity);
+
+        httpResponse = HttpClientBuilder.create().build().execute( post );
+
+        // Then
+        Assertions.assertEquals(HttpStatus.SC_NOT_FOUND,httpResponse.getCode());
+
     }
 
     private void validate(TimeStampRequest request, TimeStampResponse response) throws TSPException, CertificateException, OperatorCreationException, IOException, CRLException
