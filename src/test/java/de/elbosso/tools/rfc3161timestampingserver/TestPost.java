@@ -91,6 +91,7 @@ public class TestPost
     {
         when(ctx.contentType()).thenReturn("application/timestamp-query");
         when(ctx.bodyAsBytes()).thenReturn(notsq);
+        when(cryptoResourceManager.getTsaCert()).thenReturn(de.netsysit.util.ResourceLoader.getResource("rfc3161timestampingserver/priv/tsa.crt"));
         when(em.getTransaction()).thenReturn(entityTransaction);
         doNothing().when(entityTransaction).begin();
         when(ctx.ip()).thenReturn("127.0.0.1");
@@ -145,6 +146,7 @@ public class TestPost
         java.io.ByteArrayInputStream bais=new java.io.ByteArrayInputStream(notsq);
         UploadedFile uploadedFile=new UploadedFile(bais,"application/timestamp-query",notsq.length,"example.tsq",".tsq");
         when(ctx.uploadedFile("tsq")).thenReturn(uploadedFile);
+        when(cryptoResourceManager.getTsaCert()).thenReturn(de.netsysit.util.ResourceLoader.getResource("rfc3161timestampingserver/priv/tsa.crt"));
         when(em.getTransaction()).thenReturn(entityTransaction);
         doNothing().when(entityTransaction).begin();
         doAnswer(invocation -> {
