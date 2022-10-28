@@ -26,7 +26,7 @@ public class TestGetSignerCert
     {
         when(ctx.ip()).thenReturn("127.0.0.1");
         when(ctx.host()).thenReturn("localhost");
-        when(cryptoResourceManager.getTsaCert()).thenReturn(de.netsysit.util.ResourceLoader.getResource("crypto/tsa.crt"));
+        when(cryptoResourceManager.getTsaCert()).thenReturn(de.netsysit.util.ResourceLoader.getResource("rfc3161timestampingserver/priv/tsa.crt"));
         handlers.handleGetSignerCert(ctx);
         verify(ctx).status(201);
         verify(ctx).contentType("application/pkix-cert");
