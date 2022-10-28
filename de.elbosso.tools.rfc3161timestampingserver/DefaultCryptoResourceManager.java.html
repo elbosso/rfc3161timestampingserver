@@ -6,17 +6,17 @@ import java.net.URL;
 {
     public java.net.URL getChainPem()
     {
-<span class="nc" id="L9">        java.net.URL url=de.netsysit.util.ResourceLoader.getDockerSecretResource(&quot;chain.pem&quot;);</span>
-<span class="nc bnc" id="L10" title="All 2 branches missed.">        if(url==null)</span>
-<span class="nc" id="L11">            url=de.netsysit.util.ResourceLoader.getResource(&quot;rfc3161timestampingserver/priv/chain.pem&quot;);</span>
-<span class="nc" id="L12">        return url;</span>
+<span class="fc" id="L9">        java.net.URL url=de.netsysit.util.ResourceLoader.getDockerSecretResource(&quot;chain.pem&quot;);</span>
+<span class="pc bpc" id="L10" title="1 of 2 branches missed.">        if(url==null)</span>
+<span class="fc" id="L11">            url=de.netsysit.util.ResourceLoader.getResource(&quot;rfc3161timestampingserver/priv/chain.pem&quot;);</span>
+<span class="fc" id="L12">        return url;</span>
     }
     public java.net.URL getTsaCert()
     {
-<span class="nc" id="L16">        java.net.URL url=de.netsysit.util.ResourceLoader.getDockerSecretResource(&quot;tsa.crt&quot;);</span>
-<span class="nc bnc" id="L17" title="All 2 branches missed.">        if(url==null)</span>
-<span class="nc" id="L18">            url=de.netsysit.util.ResourceLoader.getResource(&quot;rfc3161timestampingserver/priv/tsa.crt&quot;);</span>
-<span class="nc" id="L19">        return url;</span>
+<span class="fc" id="L16">        java.net.URL url=de.netsysit.util.ResourceLoader.getDockerSecretResource(&quot;tsa.crt&quot;);</span>
+<span class="pc bpc" id="L17" title="1 of 2 branches missed.">        if(url==null)</span>
+<span class="fc" id="L18">            url=de.netsysit.util.ResourceLoader.getResource(&quot;rfc3161timestampingserver/priv/tsa.crt&quot;);</span>
+<span class="fc" id="L19">        return url;</span>
     }
 
     @Override
@@ -29,10 +29,10 @@ import java.net.URL;
     @Override
     public URL getPrivateKey()
     {
-<span class="nc" id="L32">        java.net.URL url=de.netsysit.util.ResourceLoader.getDockerSecretResource(&quot;tsa.key&quot;);</span>
-<span class="nc bnc" id="L33" title="All 2 branches missed.">        if(url==null)</span>
-<span class="nc" id="L34">            url = de.netsysit.util.ResourceLoader.getResource(&quot;rfc3161timestampingserver/priv/tsa.key&quot;);</span>
-<span class="nc" id="L35">        return url;</span>
+<span class="fc" id="L32">        java.net.URL url=de.netsysit.util.ResourceLoader.getDockerSecretResource(&quot;tsa.key&quot;);</span>
+<span class="pc bpc" id="L33" title="1 of 2 branches missed.">        if(url==null)</span>
+<span class="fc" id="L34">            url = de.netsysit.util.ResourceLoader.getResource(&quot;rfc3161timestampingserver/priv/tsa.key&quot;);</span>
+<span class="fc" id="L35">        return url;</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.3.201901230119</span></div></body></html>

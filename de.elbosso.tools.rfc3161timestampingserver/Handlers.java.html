@@ -31,367 +31,375 @@ public class Handlers extends java.lang.Object implements Constants
 {
 <span class="fc" id="L32">    private final static org.slf4j.Logger CLASS_LOGGER=org.slf4j.LoggerFactory.getLogger(Handlers.class);</span>
 <span class="fc" id="L33">	private final static org.slf4j.Logger EXCEPTION_LOGGER=org.slf4j.LoggerFactory.getLogger(&quot;ExceptionCatcher&quot;);</span>
-    private final EntityManager em;
+    private EntityManager em;
     private final CryptoResourceManager cryptoResourceManager;
 
+    Handlers(CryptoResourceManager cryptoResourceManager)
+    {
+<span class="fc" id="L39">        this(null,cryptoResourceManager);</span>
+<span class="fc" id="L40">    }</span>
     Handlers(EntityManager em,CryptoResourceManager cryptoResourceManager)
     {
-<span class="fc" id="L39">        super();</span>
-<span class="fc" id="L40">        this.em =em;</span>
-<span class="fc" id="L41">        this.cryptoResourceManager=cryptoResourceManager;</span>
-<span class="fc" id="L42">    }</span>
+<span class="fc" id="L43">        super();</span>
+<span class="fc" id="L44">        this.em=em;</span>
+<span class="fc" id="L45">        this.cryptoResourceManager=cryptoResourceManager;</span>
+<span class="fc" id="L46">    }</span>
 
     public void handleGetChain(io.javalin.http.Context ctx) throws java.lang.Exception
     {
-<span class="fc" id="L46">        CLASS_LOGGER.debug(&quot;GET for chain.pem&quot;);</span>
-<span class="fc" id="L47">        java.net.URL url=cryptoResourceManager.getChainPem();</span>
-<span class="fc" id="L48">        java.io.InputStream is=url.openStream();</span>
-<span class="fc" id="L49">        java.io.ByteArrayOutputStream baos=new java.io.ByteArrayOutputStream();</span>
-<span class="fc" id="L50">        de.elbosso.util.Utilities.copyBetweenStreams(is,baos,true);</span>
-<span class="fc" id="L51">        byte[] content=baos.toByteArray();</span>
-<span class="fc" id="L52">        ctx.status(201);</span>
-<span class="fc" id="L53">        ctx.contentType(&quot;application/pkcs7-mime&quot;);</span>
-<span class="fc" id="L54">        ctx.result(new java.io.ByteArrayInputStream(content));</span>
-<span class="fc" id="L55">        Metrics.counter(&quot;rfc3161timestampingserver.get&quot;, &quot;resourcename&quot;,&quot;chain.pem&quot;, &quot;remoteAddr&quot;,ctx.ip(),&quot;remoteHost&quot;,ctx.ip(), &quot;localAddr&quot;,ctx.host(), &quot;localName&quot;,ctx.host()).increment();</span>
-<span class="fc" id="L56">    }</span>
+<span class="fc" id="L50">        CLASS_LOGGER.debug(&quot;GET for chain.pem&quot;);</span>
+<span class="fc" id="L51">        java.net.URL url=cryptoResourceManager.getChainPem();</span>
+<span class="fc" id="L52">        java.io.InputStream is=url.openStream();</span>
+<span class="fc" id="L53">        java.io.ByteArrayOutputStream baos=new java.io.ByteArrayOutputStream();</span>
+<span class="fc" id="L54">        de.elbosso.util.Utilities.copyBetweenStreams(is,baos,true);</span>
+<span class="fc" id="L55">        byte[] content=baos.toByteArray();</span>
+<span class="fc" id="L56">        ctx.status(201);</span>
+<span class="fc" id="L57">        ctx.contentType(&quot;application/pkcs7-mime&quot;);</span>
+<span class="fc" id="L58">        ctx.result(new java.io.ByteArrayInputStream(content));</span>
+<span class="fc" id="L59">        Metrics.counter(&quot;rfc3161timestampingserver.get&quot;, &quot;resourcename&quot;,&quot;chain.pem&quot;, &quot;remoteAddr&quot;,ctx.ip(),&quot;remoteHost&quot;,ctx.ip(), &quot;localAddr&quot;,ctx.host(), &quot;localName&quot;,ctx.host()).increment();</span>
+<span class="fc" id="L60">    }</span>
     public void handleGetSignerCert(io.javalin.http.Context ctx) throws java.lang.Exception
     {
-<span class="fc" id="L59">        CLASS_LOGGER.debug(&quot;GET for tsa.crt&quot;);</span>
-<span class="fc" id="L60">        java.net.URL url=cryptoResourceManager.getTsaCert();</span>
-<span class="fc" id="L61">        java.io.InputStream is=url.openStream();</span>
-<span class="fc" id="L62">        java.io.ByteArrayOutputStream baos=new java.io.ByteArrayOutputStream();</span>
-<span class="fc" id="L63">        de.elbosso.util.Utilities.copyBetweenStreams(is,baos,true);</span>
-<span class="fc" id="L64">        byte[] content=baos.toByteArray();</span>
-<span class="fc" id="L65">        ctx.status(201);</span>
-<span class="fc" id="L66">        ctx.contentType(&quot;application/pkix-cert&quot;);</span>
-<span class="fc" id="L67">        ctx.result(new java.io.ByteArrayInputStream(content));</span>
-<span class="fc" id="L68">        Metrics.counter(&quot;rfc3161timestampingserver.get&quot;, &quot;resourcename&quot;,&quot;tsa.crt&quot;,&quot;remoteAddr&quot;,ctx.ip(),&quot;remoteHost&quot;,ctx.ip(), &quot;localAddr&quot;,ctx.host(), &quot;localName&quot;,ctx.host()).increment();</span>
-<span class="fc" id="L69">    }</span>
+<span class="fc" id="L63">        CLASS_LOGGER.debug(&quot;GET for tsa.crt&quot;);</span>
+<span class="fc" id="L64">        java.net.URL url=cryptoResourceManager.getTsaCert();</span>
+<span class="fc" id="L65">        java.io.InputStream is=url.openStream();</span>
+<span class="fc" id="L66">        java.io.ByteArrayOutputStream baos=new java.io.ByteArrayOutputStream();</span>
+<span class="fc" id="L67">        de.elbosso.util.Utilities.copyBetweenStreams(is,baos,true);</span>
+<span class="fc" id="L68">        byte[] content=baos.toByteArray();</span>
+<span class="fc" id="L69">        ctx.status(201);</span>
+<span class="fc" id="L70">        ctx.contentType(&quot;application/pkix-cert&quot;);</span>
+<span class="fc" id="L71">        ctx.result(new java.io.ByteArrayInputStream(content));</span>
+<span class="fc" id="L72">        Metrics.counter(&quot;rfc3161timestampingserver.get&quot;, &quot;resourcename&quot;,&quot;tsa.crt&quot;,&quot;remoteAddr&quot;,ctx.ip(),&quot;remoteHost&quot;,ctx.ip(), &quot;localAddr&quot;,ctx.host(), &quot;localName&quot;,ctx.host()).increment();</span>
+<span class="fc" id="L73">    }</span>
     public void handleGetTsaConf(io.javalin.http.Context ctx) throws java.lang.Exception
     {
-<span class="fc" id="L72">        CLASS_LOGGER.debug(&quot;GET for tsa.conf&quot;);</span>
-<span class="fc" id="L73">        java.net.URL url=cryptoResourceManager.getTsaConf();</span>
-<span class="fc" id="L74">        java.io.InputStream is=url.openStream();</span>
-<span class="fc" id="L75">        java.io.ByteArrayOutputStream baos=new java.io.ByteArrayOutputStream();</span>
-<span class="fc" id="L76">        de.elbosso.util.Utilities.copyBetweenStreams(is,baos,true);</span>
-<span class="fc" id="L77">        byte[] content=baos.toByteArray();</span>
-<span class="fc" id="L78">        ctx.status(201);</span>
-<span class="fc" id="L79">        ctx.contentType(&quot;text/plain&quot;);</span>
-<span class="fc" id="L80">        ctx.result(new java.io.ByteArrayInputStream(content));</span>
-<span class="fc" id="L81">        Metrics.counter(&quot;rfc3161timestampingserver.get&quot;, &quot;resourcename&quot;,&quot;tsa.conf&quot;,&quot;remoteAddr&quot;,ctx.ip(),&quot;remoteHost&quot;,ctx.ip(), &quot;localAddr&quot;,ctx.host(), &quot;localName&quot;,ctx.host()).increment();</span>
-<span class="fc" id="L82">    }</span>
+<span class="fc" id="L76">        CLASS_LOGGER.debug(&quot;GET for tsa.conf&quot;);</span>
+<span class="fc" id="L77">        java.net.URL url=cryptoResourceManager.getTsaConf();</span>
+<span class="fc" id="L78">        java.io.InputStream is=url.openStream();</span>
+<span class="fc" id="L79">        java.io.ByteArrayOutputStream baos=new java.io.ByteArrayOutputStream();</span>
+<span class="fc" id="L80">        de.elbosso.util.Utilities.copyBetweenStreams(is,baos,true);</span>
+<span class="fc" id="L81">        byte[] content=baos.toByteArray();</span>
+<span class="fc" id="L82">        ctx.status(201);</span>
+<span class="fc" id="L83">        ctx.contentType(&quot;text/plain&quot;);</span>
+<span class="fc" id="L84">        ctx.result(new java.io.ByteArrayInputStream(content));</span>
+<span class="fc" id="L85">        Metrics.counter(&quot;rfc3161timestampingserver.get&quot;, &quot;resourcename&quot;,&quot;tsa.conf&quot;,&quot;remoteAddr&quot;,ctx.ip(),&quot;remoteHost&quot;,ctx.ip(), &quot;localAddr&quot;,ctx.host(), &quot;localName&quot;,ctx.host()).increment();</span>
+<span class="fc" id="L86">    }</span>
     public void handlePostQuery(io.javalin.http.Context ctx) throws java.lang.Exception
     {
-<span class="fc" id="L85">        java.lang.String contentType=ctx.contentType();</span>
-<span class="pc bpc" id="L86" title="1 of 4 branches missed.">        if((contentType.startsWith(&quot;multipart/form-data&quot;))||(contentType.startsWith(&quot;application/x-www-form-urlencoded&quot;)))</span>
+<span class="fc" id="L89">        java.lang.String contentType=ctx.contentType();</span>
+<span class="pc bpc" id="L90" title="1 of 4 branches missed.">        if((contentType.startsWith(&quot;multipart/form-data&quot;))||(contentType.startsWith(&quot;application/x-www-form-urlencoded&quot;)))</span>
         {
-<span class="fc" id="L88">            CLASS_LOGGER.debug(&quot;request is multipart/form-data or application/x-www-form-urlencoded - searching for parameters algoid and msgDigest&quot;);</span>
-<span class="fc" id="L89">            String algoid=ctx.formParam(&quot;algoid&quot;);</span>
-<span class="fc bfc" id="L90" title="All 2 branches covered.">            if(algoid!=null)</span>
+<span class="fc" id="L92">            CLASS_LOGGER.debug(&quot;request is multipart/form-data or application/x-www-form-urlencoded - searching for parameters algoid and msgDigest&quot;);</span>
+<span class="fc" id="L93">            String algoid=ctx.formParam(&quot;algoid&quot;);</span>
+<span class="fc bfc" id="L94" title="All 2 branches covered.">            if(algoid!=null)</span>
             {
-<span class="fc" id="L92">                 CLASS_LOGGER.debug(&quot;found algoid to be &quot; + algoid);</span>
+<span class="fc" id="L96">                 CLASS_LOGGER.debug(&quot;found algoid to be &quot; + algoid);</span>
             }
             else
             {
-<span class="fc" id="L96">                 CLASS_LOGGER.warn(&quot;did not find algoid&quot;);</span>
+<span class="fc" id="L100">                 CLASS_LOGGER.warn(&quot;did not find algoid&quot;);</span>
             }
-<span class="fc" id="L98">            String msgDigestBase64 = ctx.formParam(&quot;msgDigestBase64&quot;);</span>
-<span class="fc bfc" id="L99" title="All 2 branches covered.">            if(msgDigestBase64!=null)</span>
+<span class="fc" id="L102">            String msgDigestBase64 = ctx.formParam(&quot;msgDigestBase64&quot;);</span>
+<span class="fc bfc" id="L103" title="All 2 branches covered.">            if(msgDigestBase64!=null)</span>
             {
-<span class="fc" id="L101">                 CLASS_LOGGER.debug(&quot;found msgDigestBase64 to be &quot; + msgDigestBase64);</span>
-            }
-            else
-            {
-<span class="fc" id="L105">                 CLASS_LOGGER.warn(&quot;did not find msgDigestBase64&quot;);</span>
-            }
-<span class="fc" id="L107">            String msgDigestHex = ctx.formParam(&quot;msgDigestHex&quot;);</span>
-<span class="fc bfc" id="L108" title="All 2 branches covered.">            if(msgDigestHex!=null)</span>
-            {
-<span class="fc" id="L110">                 CLASS_LOGGER.debug(&quot;found msgDigestHex to be &quot; + msgDigestHex);</span>
+<span class="fc" id="L105">                 CLASS_LOGGER.debug(&quot;found msgDigestBase64 to be &quot; + msgDigestBase64);</span>
             }
             else
             {
-<span class="fc" id="L114">                 CLASS_LOGGER.warn(&quot;did not find msgDigestHex&quot;);</span>
+<span class="fc" id="L109">                 CLASS_LOGGER.warn(&quot;did not find msgDigestBase64&quot;);</span>
             }
-<span class="pc bpc" id="L116" title="1 of 4 branches missed.">            if((algoid!=null)&amp;&amp;(msgDigestBase64!=null))</span>
+<span class="fc" id="L111">            String msgDigestHex = ctx.formParam(&quot;msgDigestHex&quot;);</span>
+<span class="fc bfc" id="L112" title="All 2 branches covered.">            if(msgDigestHex!=null)</span>
             {
-<span class="fc" id="L118">                 CLASS_LOGGER.debug(&quot;searching using message digest algorithm and message digest (Base64) imprint as parameters&quot;);</span>
-<span class="fc" id="L119">                Query namedQuery = em.createNamedQuery(&quot;Rfc3161Timestamp.findYoungestByMsgDigestAndImprintBase64&quot;);</span>
-<span class="fc" id="L120">                namedQuery.setParameter(&quot;Alg&quot;, algoid);</span>
-<span class="fc" id="L121">                namedQuery.setParameter(&quot;Imprint&quot;, msgDigestBase64);</span>
-<span class="fc" id="L122">                namedQuery.setMaxResults(1);</span>
-<span class="fc" id="L123">                java.util.List resultList= namedQuery.getResultList();</span>
-<span class="fc bfc" id="L124" title="All 2 branches covered.">                if(resultList.isEmpty()==false)</span>
+<span class="fc" id="L114">                 CLASS_LOGGER.debug(&quot;found msgDigestHex to be &quot; + msgDigestHex);</span>
+            }
+            else
+            {
+<span class="fc" id="L118">                 CLASS_LOGGER.warn(&quot;did not find msgDigestHex&quot;);</span>
+            }
+<span class="pc bpc" id="L120" title="1 of 2 branches missed.">            if(em==null)</span>
+<span class="nc" id="L121">                em=PersistenceManager.getSharedInstance().getEntityManager();</span>
+<span class="pc bpc" id="L122" title="1 of 4 branches missed.">            if((algoid!=null)&amp;&amp;(msgDigestBase64!=null))</span>
+            {
+<span class="fc" id="L124">                 CLASS_LOGGER.debug(&quot;searching using message digest algorithm and message digest (Base64) imprint as parameters&quot;);</span>
+<span class="fc" id="L125">                Query namedQuery = em.createNamedQuery(&quot;Rfc3161Timestamp.findYoungestByMsgDigestAndImprintBase64&quot;);</span>
+<span class="fc" id="L126">                namedQuery.setParameter(&quot;Alg&quot;, algoid);</span>
+<span class="fc" id="L127">                namedQuery.setParameter(&quot;Imprint&quot;, msgDigestBase64);</span>
+<span class="fc" id="L128">                namedQuery.setMaxResults(1);</span>
+<span class="fc" id="L129">                java.util.List resultList= namedQuery.getResultList();</span>
+<span class="fc bfc" id="L130" title="All 2 branches covered.">                if(resultList.isEmpty()==false)</span>
                 {
-<span class="fc" id="L126">                    CLASS_LOGGER.info(&quot;Entry found in database&quot;);</span>
-<span class="fc" id="L127">                    Rfc3161Timestamp rfc3161Timestamp = (Rfc3161Timestamp) resultList.get(0);</span>
-<span class="fc" id="L128">                    ctx.status(201);</span>
-<span class="fc" id="L129">                    ctx.contentType(&quot;application/timestamp-reply&quot;);</span>
-<span class="fc" id="L130">                    ctx.header(&quot;Content-Disposition&quot;,&quot;filename=\&quot;queried.tsr\&quot;&quot;);</span>
-<span class="fc" id="L131">                    ctx.result(new java.io.ByteArrayInputStream(rfc3161Timestamp.getTsrData()));</span>
-<span class="fc" id="L132">                    Metrics.counter(&quot;rfc3161timestampingserver.post&quot;, &quot;resourcename&quot;,&quot;query&quot;,&quot;httpstatus&quot;,java.lang.Integer.toString(ctx.status()),&quot;params&quot;,&quot;alg+base64&quot;,&quot;success&quot;,&quot;true&quot;,&quot;contentType&quot;,contentType,&quot;remoteAddr&quot;,ctx.ip(),&quot;remoteHost&quot;,ctx.ip(), &quot;localAddr&quot;,ctx.host(), &quot;localName&quot;,ctx.host()).increment();</span>
-<span class="fc" id="L133">                }</span>
+<span class="fc" id="L132">                    CLASS_LOGGER.info(&quot;Entry found in database&quot;);</span>
+<span class="fc" id="L133">                    Rfc3161Timestamp rfc3161Timestamp = (Rfc3161Timestamp) resultList.get(0);</span>
+<span class="fc" id="L134">                    ctx.status(201);</span>
+<span class="fc" id="L135">                    ctx.contentType(&quot;application/timestamp-reply&quot;);</span>
+<span class="fc" id="L136">                    ctx.header(&quot;Content-Disposition&quot;,&quot;filename=\&quot;queried.tsr\&quot;&quot;);</span>
+<span class="fc" id="L137">                    ctx.result(new java.io.ByteArrayInputStream(rfc3161Timestamp.getTsrData()));</span>
+<span class="fc" id="L138">                    Metrics.counter(&quot;rfc3161timestampingserver.post&quot;, &quot;resourcename&quot;,&quot;query&quot;,&quot;httpstatus&quot;,java.lang.Integer.toString(ctx.status()),&quot;params&quot;,&quot;alg+base64&quot;,&quot;success&quot;,&quot;true&quot;,&quot;contentType&quot;,contentType,&quot;remoteAddr&quot;,ctx.ip(),&quot;remoteHost&quot;,ctx.ip(), &quot;localAddr&quot;,ctx.host(), &quot;localName&quot;,ctx.host()).increment();</span>
+<span class="fc" id="L139">                }</span>
                 else
                 {
-<span class="fc" id="L136">                    CLASS_LOGGER.info(&quot;No entry found in database&quot;);</span>
-<span class="fc" id="L137">                    ctx.status(404);</span>
-<span class="fc" id="L138">                    Metrics.counter(&quot;rfc3161timestampingserver.post&quot;, &quot;resourcename&quot;,&quot;query&quot;,&quot;httpstatus&quot;,java.lang.Integer.toString(ctx.status()),&quot;params&quot;,&quot;alg+base64&quot;,&quot;success&quot;,&quot;false&quot;,&quot;contentType&quot;,contentType,&quot;remoteAddr&quot;,ctx.ip(),&quot;remoteHost&quot;,ctx.ip(), &quot;localAddr&quot;,ctx.host(), &quot;localName&quot;,ctx.host()).increment();</span>
+<span class="fc" id="L142">                    CLASS_LOGGER.info(&quot;No entry found in database&quot;);</span>
+<span class="fc" id="L143">                    ctx.status(404);</span>
+<span class="fc" id="L144">                    Metrics.counter(&quot;rfc3161timestampingserver.post&quot;, &quot;resourcename&quot;,&quot;query&quot;,&quot;httpstatus&quot;,java.lang.Integer.toString(ctx.status()),&quot;params&quot;,&quot;alg+base64&quot;,&quot;success&quot;,&quot;false&quot;,&quot;contentType&quot;,contentType,&quot;remoteAddr&quot;,ctx.ip(),&quot;remoteHost&quot;,ctx.ip(), &quot;localAddr&quot;,ctx.host(), &quot;localName&quot;,ctx.host()).increment();</span>
                 }
-<span class="fc" id="L140">            }</span>
-<span class="fc bfc" id="L141" title="All 2 branches covered.">            else if(msgDigestBase64!=null)</span>
+<span class="fc" id="L146">            }</span>
+<span class="fc bfc" id="L147" title="All 2 branches covered.">            else if(msgDigestBase64!=null)</span>
             {
-<span class="fc" id="L143">                 CLASS_LOGGER.debug(&quot;searching using only message digest (Base64) imprint as parameter&quot;);</span>
-<span class="fc" id="L144">                Query namedQuery = em.createNamedQuery(&quot;Rfc3161Timestamp.findYoungestByMsgImprintBase64&quot;);</span>
-<span class="fc" id="L145">                namedQuery.setParameter(&quot;Imprint&quot;, msgDigestBase64);</span>
-<span class="fc" id="L146">                namedQuery.setMaxResults(1);</span>
-<span class="fc" id="L147">                java.util.List resultList= namedQuery.getResultList();</span>
-<span class="fc bfc" id="L148" title="All 2 branches covered.">                if(resultList.isEmpty()==false)</span>
+<span class="fc" id="L149">                 CLASS_LOGGER.debug(&quot;searching using only message digest (Base64) imprint as parameter&quot;);</span>
+<span class="fc" id="L150">                Query namedQuery = em.createNamedQuery(&quot;Rfc3161Timestamp.findYoungestByMsgImprintBase64&quot;);</span>
+<span class="fc" id="L151">                namedQuery.setParameter(&quot;Imprint&quot;, msgDigestBase64);</span>
+<span class="fc" id="L152">                namedQuery.setMaxResults(1);</span>
+<span class="fc" id="L153">                java.util.List resultList= namedQuery.getResultList();</span>
+<span class="fc bfc" id="L154" title="All 2 branches covered.">                if(resultList.isEmpty()==false)</span>
                 {
-<span class="fc" id="L150">                    CLASS_LOGGER.info(&quot;Entry found in database&quot;);</span>
-<span class="fc" id="L151">                    Rfc3161Timestamp rfc3161Timestamp = (Rfc3161Timestamp) resultList.get(0);</span>
-<span class="fc" id="L152">                    ctx.status(201);</span>
-<span class="fc" id="L153">                    ctx.contentType(&quot;application/timestamp-reply&quot;);</span>
-<span class="fc" id="L154">                    ctx.header(&quot;Content-Disposition&quot;,&quot;filename=\&quot;queried.tsr\&quot;&quot;);</span>
-<span class="fc" id="L155">                    ctx.result(new java.io.ByteArrayInputStream(rfc3161Timestamp.getTsrData()));</span>
-<span class="fc" id="L156">                    Metrics.counter(&quot;rfc3161timestampingserver.post&quot;, &quot;resourcename&quot;,&quot;query&quot;,&quot;httpstatus&quot;,java.lang.Integer.toString(ctx.status()),&quot;params&quot;,&quot;base64&quot;,&quot;success&quot;,&quot;true&quot;,&quot;contentType&quot;,contentType,&quot;remoteAddr&quot;,ctx.ip(),&quot;remoteHost&quot;,ctx.ip(), &quot;localAddr&quot;,ctx.host(), &quot;localName&quot;,ctx.host()).increment();</span>
-<span class="fc" id="L157">                }</span>
+<span class="fc" id="L156">                    CLASS_LOGGER.info(&quot;Entry found in database&quot;);</span>
+<span class="fc" id="L157">                    Rfc3161Timestamp rfc3161Timestamp = (Rfc3161Timestamp) resultList.get(0);</span>
+<span class="fc" id="L158">                    ctx.status(201);</span>
+<span class="fc" id="L159">                    ctx.contentType(&quot;application/timestamp-reply&quot;);</span>
+<span class="fc" id="L160">                    ctx.header(&quot;Content-Disposition&quot;,&quot;filename=\&quot;queried.tsr\&quot;&quot;);</span>
+<span class="fc" id="L161">                    ctx.result(new java.io.ByteArrayInputStream(rfc3161Timestamp.getTsrData()));</span>
+<span class="fc" id="L162">                    Metrics.counter(&quot;rfc3161timestampingserver.post&quot;, &quot;resourcename&quot;,&quot;query&quot;,&quot;httpstatus&quot;,java.lang.Integer.toString(ctx.status()),&quot;params&quot;,&quot;base64&quot;,&quot;success&quot;,&quot;true&quot;,&quot;contentType&quot;,contentType,&quot;remoteAddr&quot;,ctx.ip(),&quot;remoteHost&quot;,ctx.ip(), &quot;localAddr&quot;,ctx.host(), &quot;localName&quot;,ctx.host()).increment();</span>
+<span class="fc" id="L163">                }</span>
                 else
                 {
-<span class="fc" id="L160">                    CLASS_LOGGER.info(&quot;No entry found in database&quot;);</span>
-<span class="fc" id="L161">                    ctx.status(404);</span>
-<span class="fc" id="L162">                    Metrics.counter(&quot;rfc3161timestampingserver.post&quot;, &quot;resourcename&quot;,&quot;query&quot;,&quot;httpstatus&quot;,java.lang.Integer.toString(ctx.status()),&quot;params&quot;,&quot;base64&quot;,&quot;success&quot;,&quot;false&quot;,&quot;contentType&quot;,contentType,&quot;remoteAddr&quot;,ctx.ip(),&quot;remoteHost&quot;,ctx.ip(), &quot;localAddr&quot;,ctx.host(), &quot;localName&quot;,ctx.host()).increment();</span>
+<span class="fc" id="L166">                    CLASS_LOGGER.info(&quot;No entry found in database&quot;);</span>
+<span class="fc" id="L167">                    ctx.status(404);</span>
+<span class="fc" id="L168">                    Metrics.counter(&quot;rfc3161timestampingserver.post&quot;, &quot;resourcename&quot;,&quot;query&quot;,&quot;httpstatus&quot;,java.lang.Integer.toString(ctx.status()),&quot;params&quot;,&quot;base64&quot;,&quot;success&quot;,&quot;false&quot;,&quot;contentType&quot;,contentType,&quot;remoteAddr&quot;,ctx.ip(),&quot;remoteHost&quot;,ctx.ip(), &quot;localAddr&quot;,ctx.host(), &quot;localName&quot;,ctx.host()).increment();</span>
                 }
-<span class="fc" id="L164">            }</span>
-<span class="fc bfc" id="L165" title="All 2 branches covered.">            else if(msgDigestHex!=null)</span>
+<span class="fc" id="L170">            }</span>
+<span class="fc bfc" id="L171" title="All 2 branches covered.">            else if(msgDigestHex!=null)</span>
             {
-<span class="fc" id="L167">                 CLASS_LOGGER.debug(&quot;searching using only message digest (hex) imprint as parameter&quot;);</span>
-<span class="fc" id="L168">                Query namedQuery = em.createNamedQuery(&quot;Rfc3161Timestamp.findYoungestByMsgImprintHex&quot;);</span>
-<span class="fc" id="L169">                namedQuery.setParameter(&quot;Imprint&quot;, msgDigestHex.toUpperCase());</span>
-<span class="fc" id="L170">                namedQuery.setMaxResults(1);</span>
-<span class="fc" id="L171">                java.util.List resultList= namedQuery.getResultList();</span>
-<span class="fc bfc" id="L172" title="All 2 branches covered.">                if(resultList.isEmpty()==false)</span>
+<span class="fc" id="L173">                 CLASS_LOGGER.debug(&quot;searching using only message digest (hex) imprint as parameter&quot;);</span>
+<span class="fc" id="L174">                Query namedQuery = em.createNamedQuery(&quot;Rfc3161Timestamp.findYoungestByMsgImprintHex&quot;);</span>
+<span class="fc" id="L175">                namedQuery.setParameter(&quot;Imprint&quot;, msgDigestHex.toUpperCase());</span>
+<span class="fc" id="L176">                namedQuery.setMaxResults(1);</span>
+<span class="fc" id="L177">                java.util.List resultList= namedQuery.getResultList();</span>
+<span class="fc bfc" id="L178" title="All 2 branches covered.">                if(resultList.isEmpty()==false)</span>
                 {
-<span class="fc" id="L174">                    CLASS_LOGGER.info(&quot;Entry found in database&quot;);</span>
-<span class="fc" id="L175">                    Rfc3161Timestamp rfc3161Timestamp = (Rfc3161Timestamp) resultList.get(0);</span>
-<span class="fc" id="L176">                    ctx.status(201);</span>
-<span class="fc" id="L177">                    ctx.contentType(&quot;application/timestamp-reply&quot;);</span>
-<span class="fc" id="L178">                    ctx.header(&quot;Content-Disposition&quot;,&quot;filename=\&quot;queried.tsr\&quot;&quot;);</span>
-<span class="fc" id="L179">                    ctx.result(new java.io.ByteArrayInputStream(rfc3161Timestamp.getTsrData()));</span>
-<span class="fc" id="L180">                    Metrics.counter(&quot;rfc3161timestampingserver.post&quot;, &quot;resourcename&quot;,&quot;query&quot;,&quot;httpstatus&quot;,java.lang.Integer.toString(ctx.status()),&quot;params&quot;,&quot;hex&quot;,&quot;success&quot;,&quot;true&quot;,&quot;contentType&quot;,contentType,&quot;remoteAddr&quot;,ctx.ip(),&quot;remoteHost&quot;,ctx.ip(), &quot;localAddr&quot;,ctx.host(), &quot;localName&quot;,ctx.host()).increment();</span>
-<span class="fc" id="L181">                }</span>
+<span class="fc" id="L180">                    CLASS_LOGGER.info(&quot;Entry found in database&quot;);</span>
+<span class="fc" id="L181">                    Rfc3161Timestamp rfc3161Timestamp = (Rfc3161Timestamp) resultList.get(0);</span>
+<span class="fc" id="L182">                    ctx.status(201);</span>
+<span class="fc" id="L183">                    ctx.contentType(&quot;application/timestamp-reply&quot;);</span>
+<span class="fc" id="L184">                    ctx.header(&quot;Content-Disposition&quot;,&quot;filename=\&quot;queried.tsr\&quot;&quot;);</span>
+<span class="fc" id="L185">                    ctx.result(new java.io.ByteArrayInputStream(rfc3161Timestamp.getTsrData()));</span>
+<span class="fc" id="L186">                    Metrics.counter(&quot;rfc3161timestampingserver.post&quot;, &quot;resourcename&quot;,&quot;query&quot;,&quot;httpstatus&quot;,java.lang.Integer.toString(ctx.status()),&quot;params&quot;,&quot;hex&quot;,&quot;success&quot;,&quot;true&quot;,&quot;contentType&quot;,contentType,&quot;remoteAddr&quot;,ctx.ip(),&quot;remoteHost&quot;,ctx.ip(), &quot;localAddr&quot;,ctx.host(), &quot;localName&quot;,ctx.host()).increment();</span>
+<span class="fc" id="L187">                }</span>
                 else
                 {
-<span class="fc" id="L184">                    CLASS_LOGGER.info(&quot;No entry found in database&quot;);</span>
-<span class="fc" id="L185">                    ctx.status(404);</span>
-<span class="fc" id="L186">                    Metrics.counter(&quot;rfc3161timestampingserver.post&quot;, &quot;resourcename&quot;,&quot;query&quot;,&quot;httpstatus&quot;,java.lang.Integer.toString(ctx.status()),&quot;params&quot;,&quot;hex&quot;,&quot;success&quot;,&quot;false&quot;,&quot;contentType&quot;,contentType,&quot;remoteAddr&quot;,ctx.ip(),&quot;remoteHost&quot;,ctx.ip(), &quot;localAddr&quot;,ctx.host(), &quot;localName&quot;,ctx.host()).increment();</span>
+<span class="fc" id="L190">                    CLASS_LOGGER.info(&quot;No entry found in database&quot;);</span>
+<span class="fc" id="L191">                    ctx.status(404);</span>
+<span class="fc" id="L192">                    Metrics.counter(&quot;rfc3161timestampingserver.post&quot;, &quot;resourcename&quot;,&quot;query&quot;,&quot;httpstatus&quot;,java.lang.Integer.toString(ctx.status()),&quot;params&quot;,&quot;hex&quot;,&quot;success&quot;,&quot;false&quot;,&quot;contentType&quot;,contentType,&quot;remoteAddr&quot;,ctx.ip(),&quot;remoteHost&quot;,ctx.ip(), &quot;localAddr&quot;,ctx.host(), &quot;localName&quot;,ctx.host()).increment();</span>
                 }
-<span class="fc" id="L188">            }</span>
+<span class="fc" id="L194">            }</span>
             else
             {
-<span class="fc" id="L191">                CLASS_LOGGER.error(&quot;Not all needed information present&quot;);</span>
-<span class="fc" id="L192">                ctx.status(500);</span>
-<span class="fc" id="L193">                Metrics.counter(&quot;rfc3161timestampingserver.post&quot;, &quot;resourcename&quot;,&quot;query&quot;,&quot;httpstatus&quot;,java.lang.Integer.toString(ctx.status()),&quot;error&quot;,&quot;params&quot;,&quot;contentType&quot;,contentType,&quot;remoteAddr&quot;,ctx.ip(),&quot;remoteHost&quot;,ctx.ip(), &quot;localAddr&quot;,ctx.host(), &quot;localName&quot;,ctx.host()).increment();</span>
+<span class="fc" id="L197">                CLASS_LOGGER.error(&quot;Not all needed information present&quot;);</span>
+<span class="fc" id="L198">                ctx.status(500);</span>
+<span class="fc" id="L199">                Metrics.counter(&quot;rfc3161timestampingserver.post&quot;, &quot;resourcename&quot;,&quot;query&quot;,&quot;httpstatus&quot;,java.lang.Integer.toString(ctx.status()),&quot;error&quot;,&quot;params&quot;,&quot;contentType&quot;,contentType,&quot;remoteAddr&quot;,ctx.ip(),&quot;remoteHost&quot;,ctx.ip(), &quot;localAddr&quot;,ctx.host(), &quot;localName&quot;,ctx.host()).increment();</span>
             }
-<span class="fc" id="L195">        }</span>
+<span class="fc" id="L201">        }</span>
         else
         {
-<span class="fc" id="L198">             CLASS_LOGGER.error(&quot;request is not multipart/form-data or application/x-www-form-urlencoded&quot;);</span>
-<span class="fc" id="L199">            ctx.status(500);</span>
-<span class="fc" id="L200">            Metrics.counter(&quot;rfc3161timestampingserver.post&quot;, &quot;resourcename&quot;,&quot;query&quot;,&quot;httpstatus&quot;,java.lang.Integer.toString(ctx.status()),&quot;error&quot;,&quot;encoding&quot;,&quot;contentType&quot;,contentType,&quot;remoteAddr&quot;,ctx.ip(),&quot;remoteHost&quot;,ctx.ip(), &quot;localAddr&quot;,ctx.host(), &quot;localName&quot;,ctx.host()).increment();</span>
+<span class="fc" id="L204">             CLASS_LOGGER.error(&quot;request is not multipart/form-data or application/x-www-form-urlencoded&quot;);</span>
+<span class="fc" id="L205">            ctx.status(500);</span>
+<span class="fc" id="L206">            Metrics.counter(&quot;rfc3161timestampingserver.post&quot;, &quot;resourcename&quot;,&quot;query&quot;,&quot;httpstatus&quot;,java.lang.Integer.toString(ctx.status()),&quot;error&quot;,&quot;encoding&quot;,&quot;contentType&quot;,contentType,&quot;remoteAddr&quot;,ctx.ip(),&quot;remoteHost&quot;,ctx.ip(), &quot;localAddr&quot;,ctx.host(), &quot;localName&quot;,ctx.host()).increment();</span>
         }
-<span class="fc" id="L202">    }</span>
+<span class="fc" id="L208">    }</span>
     public void handlePost(io.javalin.http.Context ctx) throws java.lang.Exception
     {
-<span class="fc" id="L205">        CLASS_LOGGER.debug(&quot;received timestamp request&quot;);</span>
-<span class="fc" id="L206">        byte[] tsq=null;</span>
-<span class="fc" id="L207">        java.lang.String contentType=ctx.contentType();</span>
-<span class="fc bfc" id="L208" title="All 2 branches covered.">        if(ctx.contentType().equals(&quot;application/timestamp-query&quot;))</span>
+<span class="fc" id="L211">        CLASS_LOGGER.debug(&quot;received timestamp request&quot;);</span>
+<span class="fc" id="L212">        byte[] tsq=null;</span>
+<span class="fc" id="L213">        java.lang.String contentType=ctx.contentType();</span>
+<span class="fc bfc" id="L214" title="All 2 branches covered.">        if(ctx.contentType().equals(&quot;application/timestamp-query&quot;))</span>
         {
-<span class="fc" id="L210">            CLASS_LOGGER.debug(&quot;timestamp query data in body of request&quot;);</span>
+<span class="fc" id="L216">            CLASS_LOGGER.debug(&quot;timestamp query data in body of request&quot;);</span>
             //curl -H &quot;Content-Type: application/timestamp-query&quot; --data-binary '@../../work/expect-dialog-ca.git/_priv/create_ca.sh.tsq' http://localhost:7000/
-<span class="fc" id="L212">            CLASS_LOGGER.debug(&quot;length of timestamp query in body &quot; + ctx.bodyAsBytes().length);</span>
-<span class="fc" id="L213">            tsq=ctx.bodyAsBytes();</span>
+<span class="fc" id="L218">            CLASS_LOGGER.debug(&quot;length of timestamp query in body &quot; + ctx.bodyAsBytes().length);</span>
+<span class="fc" id="L219">            tsq=ctx.bodyAsBytes();</span>
         }
-<span class="fc bfc" id="L215" title="All 2 branches covered.">        else if(ctx.contentType().startsWith(&quot;multipart/form-data&quot;))</span>
+<span class="fc bfc" id="L221" title="All 2 branches covered.">        else if(ctx.contentType().startsWith(&quot;multipart/form-data&quot;))</span>
         {
-<span class="fc" id="L217">            CLASS_LOGGER.debug(&quot;request is multipart/form-data - searching for timestamp query under key\&quot;tsq\&quot;&quot;);</span>
+<span class="fc" id="L223">            CLASS_LOGGER.debug(&quot;request is multipart/form-data - searching for timestamp query under key\&quot;tsq\&quot;&quot;);</span>
             //curl -F &quot;tsq=@../../work/expect-dialog-ca.git/_priv/create_ca.sh.tsq&quot; http://localhost:7000/
-<span class="fc" id="L219">            UploadedFile uploadedFile=ctx.uploadedFile(&quot;tsq&quot;);</span>
-<span class="fc bfc" id="L220" title="All 2 branches covered.">            if(uploadedFile!=null)</span>
+<span class="fc" id="L225">            UploadedFile uploadedFile=ctx.uploadedFile(&quot;tsq&quot;);</span>
+<span class="fc bfc" id="L226" title="All 2 branches covered.">            if(uploadedFile!=null)</span>
             {
-<span class="fc" id="L222">                CLASS_LOGGER.debug(&quot;found it - timestamp query length is &quot;+uploadedFile.getContentLength());</span>
-<span class="fc" id="L223">                java.io.InputStream is=ctx.uploadedFile(&quot;tsq&quot;).getContent();</span>
-<span class="fc" id="L224">                java.io.ByteArrayOutputStream baos=new java.io.ByteArrayOutputStream();</span>
-<span class="fc" id="L225">                de.elbosso.util.Utilities.copyBetweenStreams(is,baos,true);</span>
-<span class="fc" id="L226">                tsq=baos.toByteArray();</span>
-<span class="fc" id="L227">            }</span>
+<span class="fc" id="L228">                CLASS_LOGGER.debug(&quot;found it - timestamp query length is &quot;+uploadedFile.getContentLength());</span>
+<span class="fc" id="L229">                java.io.InputStream is=ctx.uploadedFile(&quot;tsq&quot;).getContent();</span>
+<span class="fc" id="L230">                java.io.ByteArrayOutputStream baos=new java.io.ByteArrayOutputStream();</span>
+<span class="fc" id="L231">                de.elbosso.util.Utilities.copyBetweenStreams(is,baos,true);</span>
+<span class="fc" id="L232">                tsq=baos.toByteArray();</span>
+<span class="fc" id="L233">            }</span>
             //curl -F &quot;file=@../../work/expect-dialog-ca.git/_priv/create_ca.sh.tsq&quot; http://localhost:7000/
             else
             {
-<span class="fc" id="L231">                CLASS_LOGGER.error(&quot;no field named \&quot;tsq\&quot; found in form data . corrupted request?&quot;);</span>
-<span class="fc" id="L232">                Metrics.counter(&quot;rfc3161timestampingserver.post&quot;, &quot;resourcename&quot;,&quot;/&quot;,&quot;httpstatus&quot;,&quot;500&quot;,&quot;error&quot;,&quot;tsq not found&quot;,&quot;contentType&quot;,contentType,&quot;remoteAddr&quot;,ctx.ip(),&quot;remoteHost&quot;,ctx.ip(), &quot;localAddr&quot;,ctx.host(), &quot;localName&quot;,ctx.host()).increment();</span>
+<span class="fc" id="L237">                CLASS_LOGGER.error(&quot;no field named \&quot;tsq\&quot; found in form data . corrupted request?&quot;);</span>
+<span class="fc" id="L238">                Metrics.counter(&quot;rfc3161timestampingserver.post&quot;, &quot;resourcename&quot;,&quot;/&quot;,&quot;httpstatus&quot;,&quot;500&quot;,&quot;error&quot;,&quot;tsq not found&quot;,&quot;contentType&quot;,contentType,&quot;remoteAddr&quot;,ctx.ip(),&quot;remoteHost&quot;,ctx.ip(), &quot;localAddr&quot;,ctx.host(), &quot;localName&quot;,ctx.host()).increment();</span>
             }
-<span class="fc" id="L234">        }</span>
+<span class="fc" id="L240">        }</span>
         else
         {
-<span class="fc" id="L237">             CLASS_LOGGER.error(&quot;request is not multipart/form-data or application/x-www-form-urlencoded&quot;);</span>
-<span class="fc" id="L238">            Metrics.counter(&quot;rfc3161timestampingserver.post&quot;, &quot;resourcename&quot;,&quot;/&quot;,&quot;httpstatus&quot;,&quot;500&quot;,&quot;error&quot;,&quot;encoding&quot;,&quot;contentType&quot;,contentType,&quot;remoteAddr&quot;,ctx.ip(),&quot;remoteHost&quot;,ctx.ip(), &quot;localAddr&quot;,ctx.host(), &quot;localName&quot;,ctx.host()).increment();</span>
+<span class="fc" id="L243">             CLASS_LOGGER.error(&quot;request is not multipart/form-data or application/x-www-form-urlencoded&quot;);</span>
+<span class="fc" id="L244">            Metrics.counter(&quot;rfc3161timestampingserver.post&quot;, &quot;resourcename&quot;,&quot;/&quot;,&quot;httpstatus&quot;,&quot;500&quot;,&quot;error&quot;,&quot;encoding&quot;,&quot;contentType&quot;,contentType,&quot;remoteAddr&quot;,ctx.ip(),&quot;remoteHost&quot;,ctx.ip(), &quot;localAddr&quot;,ctx.host(), &quot;localName&quot;,ctx.host()).increment();</span>
         }
-<span class="fc bfc" id="L240" title="All 2 branches covered.">        if(tsq!=null)</span>
+<span class="fc bfc" id="L246" title="All 2 branches covered.">        if(tsq!=null)</span>
         {
-<span class="fc" id="L242">            em.getTransaction().begin();</span>
+<span class="fc bfc" id="L248" title="All 2 branches covered.">            if(em==null)</span>
+<span class="fc" id="L249">                em=PersistenceManager.getSharedInstance().getEntityManager();</span>
+<span class="fc" id="L250">            em.getTransaction().begin();</span>
             try
             {
-<span class="fc" id="L245">                RequestReplyEntity rre=new RequestReplyEntity();</span>
+<span class="fc" id="L253">                RequestReplyEntity rre=new RequestReplyEntity();</span>
 
-<span class="fc" id="L247">                TimeStampRequest timeStampRequest=createTimestampRequest(tsq,rre);</span>
+<span class="fc" id="L255">                TimeStampRequest timeStampRequest=createTimestampRequest(tsq,rre);</span>
 
-<span class="fc" id="L249">                Rfc3161Timestamp rfc3161Timestamp=new Rfc3161Timestamp();</span>
-<span class="fc" id="L250">                rfc3161Timestamp.setCreationDate(new java.util.Date());</span>
-<span class="fc" id="L251">                rfc3161Timestamp.setMessageImprintAlgOID(timeStampRequest.getMessageImprintAlgOID().getId());</span>
-<span class="fc" id="L252">                rfc3161Timestamp.setMessageImprintDigestBase64(de.elbosso.util.Utilities.base64Encode(timeStampRequest.getMessageImprintDigest()));</span>
-<span class="fc" id="L253">                rfc3161Timestamp.setMessageImprintDigestHex(de.elbosso.util.Utilities.formatHexDump(timeStampRequest.getMessageImprintDigest(),false).toUpperCase());</span>
-<span class="fc" id="L254">                em.persist(rfc3161Timestamp);</span>
+<span class="fc" id="L257">                Rfc3161Timestamp rfc3161Timestamp=new Rfc3161Timestamp();</span>
+<span class="fc" id="L258">                rfc3161Timestamp.setCreationDate(new java.util.Date());</span>
+<span class="fc" id="L259">                rfc3161Timestamp.setMessageImprintAlgOID(timeStampRequest.getMessageImprintAlgOID().getId());</span>
+<span class="fc" id="L260">                rfc3161Timestamp.setMessageImprintDigestBase64(de.elbosso.util.Utilities.base64Encode(timeStampRequest.getMessageImprintDigest()));</span>
+<span class="fc" id="L261">                rfc3161Timestamp.setMessageImprintDigestHex(de.elbosso.util.Utilities.formatHexDump(timeStampRequest.getMessageImprintDigest(),false).toUpperCase());</span>
+<span class="fc" id="L262">                em.persist(rfc3161Timestamp);</span>
 
-<span class="fc" id="L256">                byte[] tsr=executeTsaProtocol(timeStampRequest,rre,rfc3161Timestamp);</span>
+<span class="fc" id="L264">                byte[] tsr=executeTsaProtocol(timeStampRequest,rre,rfc3161Timestamp);</span>
 
-<span class="fc" id="L258">                rfc3161Timestamp.setTsrData(tsr);</span>
-<span class="fc" id="L259">                em.persist(rfc3161Timestamp);</span>
-
-                
-<span class="fc" id="L262">                    CLASS_LOGGER.debug(&quot;Timestamp Response created - length: &quot; + tsr.length);</span>
+<span class="fc" id="L266">                rfc3161Timestamp.setTsrData(tsr);</span>
+<span class="fc" id="L267">                em.persist(rfc3161Timestamp);</span>
 
                 
-<span class="fc" id="L265">                    CLASS_LOGGER.debug(&quot;Response (Base64): &quot; + de.elbosso.util.Utilities.base64Encode(tsr));</span>
+<span class="fc" id="L270">                    CLASS_LOGGER.debug(&quot;Timestamp Response created - length: &quot; + tsr.length);</span>
 
-<span class="fc" id="L267">                ctx.status(201);</span>
-<span class="fc" id="L268">                ctx.contentType(&quot;application/timestamp-reply&quot;);</span>
-<span class="fc" id="L269">                ctx.header(&quot;Content-Disposition&quot;,&quot;filename=\&quot;reply.tsr\&quot;&quot;);</span>
-<span class="fc" id="L270">                ctx.result(new java.io.ByteArrayInputStream(tsr));</span>
-<span class="fc" id="L271">                em.getTransaction().commit();</span>
-<span class="fc" id="L272">                Metrics.counter(&quot;rfc3161timestampingserver.post&quot;, &quot;resourcename&quot;,&quot;/&quot;,&quot;httpstatus&quot;,java.lang.Integer.toString(ctx.status()),&quot;success&quot;,&quot;true&quot;,&quot;contentType&quot;,contentType,&quot;remoteAddr&quot;,ctx.ip(),&quot;remoteHost&quot;,ctx.ip(), &quot;localAddr&quot;,ctx.host(), &quot;localName&quot;,ctx.host()).increment();</span>
+                
+<span class="fc" id="L273">                    CLASS_LOGGER.debug(&quot;Response (Base64): &quot; + de.elbosso.util.Utilities.base64Encode(tsr));</span>
+
+<span class="fc" id="L275">                ctx.status(201);</span>
+<span class="fc" id="L276">                ctx.contentType(&quot;application/timestamp-reply&quot;);</span>
+<span class="fc" id="L277">                ctx.header(&quot;Content-Disposition&quot;,&quot;filename=\&quot;reply.tsr\&quot;&quot;);</span>
+<span class="fc" id="L278">                ctx.result(new java.io.ByteArrayInputStream(tsr));</span>
+<span class="fc" id="L279">                em.getTransaction().commit();</span>
+<span class="fc" id="L280">                Metrics.counter(&quot;rfc3161timestampingserver.post&quot;, &quot;resourcename&quot;,&quot;/&quot;,&quot;httpstatus&quot;,java.lang.Integer.toString(ctx.status()),&quot;success&quot;,&quot;true&quot;,&quot;contentType&quot;,contentType,&quot;remoteAddr&quot;,ctx.ip(),&quot;remoteHost&quot;,ctx.ip(), &quot;localAddr&quot;,ctx.host(), &quot;localName&quot;,ctx.host()).increment();</span>
             }
-<span class="fc" id="L274">            catch(java.lang.Throwable t)</span>
+<span class="fc" id="L282">            catch(java.lang.Throwable t)</span>
             {
-<span class="fc" id="L276">                CLASS_LOGGER.error(t.getMessage(),t);</span>
-<span class="fc" id="L277">                ctx.status(500);</span>
-<span class="pc bpc" id="L278" title="1 of 2 branches missed.">                Metrics.counter(&quot;rfc3161timestampingserver.post&quot;, &quot;resourcename&quot;,&quot;/&quot;,&quot;httpstatus&quot;,java.lang.Integer.toString(ctx.status()),&quot;error&quot;,(t.getMessage()!=null?t.getMessage():&quot;NPE&quot;),&quot;contentType&quot;,contentType,&quot;remoteAddr&quot;,ctx.ip(),&quot;remoteHost&quot;,ctx.ip(), &quot;localAddr&quot;,ctx.host(), &quot;localName&quot;,ctx.host()).increment();</span>
-<span class="fc" id="L279">                em.getTransaction().rollback();</span>
+<span class="fc" id="L284">                CLASS_LOGGER.error(t.getMessage(),t);</span>
+<span class="fc" id="L285">                ctx.status(500);</span>
+<span class="pc bpc" id="L286" title="1 of 2 branches missed.">                Metrics.counter(&quot;rfc3161timestampingserver.post&quot;, &quot;resourcename&quot;,&quot;/&quot;,&quot;httpstatus&quot;,java.lang.Integer.toString(ctx.status()),&quot;error&quot;,(t.getMessage()!=null?t.getMessage():&quot;NPE&quot;),&quot;contentType&quot;,contentType,&quot;remoteAddr&quot;,ctx.ip(),&quot;remoteHost&quot;,ctx.ip(), &quot;localAddr&quot;,ctx.host(), &quot;localName&quot;,ctx.host()).increment();</span>
+<span class="fc" id="L287">                em.getTransaction().rollback();</span>
             }
             finally
-<span class="nc" id="L282">            {</span>
-<span class="pc" id="L283">            }</span>
+<span class="nc" id="L290">            {</span>
+<span class="pc" id="L291">            }</span>
         }
         else
         {
-<span class="fc" id="L287">            ctx.status(500);</span>
+<span class="fc" id="L295">            ctx.status(500);</span>
         }
-<span class="fc" id="L289">    }</span>
+<span class="fc" id="L297">    }</span>
     private byte[] executeTsaProtocol(TimeStampRequest timeStampRequest, RequestReplyEntity rre,Rfc3161Timestamp rfc3161Timestamp) throws OperatorCreationException, CertificateException, CRLException, IOException, TSPException
     {
-<span class="fc" id="L292">        AlgorithmIdentifier digestAlgorithm = new AlgorithmIdentifier(NISTObjectIdentifiers.id_sha384);</span>
-<span class="fc" id="L293">        DigestCalculatorProvider digProvider = new JcaDigestCalculatorProviderBuilder().setProvider(BouncyCastleProvider.PROVIDER_NAME).build();</span>
+<span class="fc" id="L300">        AlgorithmIdentifier digestAlgorithm = new AlgorithmIdentifier(NISTObjectIdentifiers.id_sha384);</span>
+<span class="fc" id="L301">        DigestCalculatorProvider digProvider = new JcaDigestCalculatorProviderBuilder().setProvider(BouncyCastleProvider.PROVIDER_NAME).build();</span>
 
-<span class="fc" id="L295">        TimeStampTokenGenerator tsTokenGen = new TimeStampTokenGenerator(</span>
-<span class="fc" id="L296">                new JcaSimpleSignerInfoGeneratorBuilder().build(&quot;SHA384withRSA&quot;, rre.privateKey, rre.rsaSigningCert),</span>
-<span class="fc" id="L297">                digProvider.get(digestAlgorithm),</span>
-<span class="pc bpc" id="L298" title="1 of 2 branches missed.">                timeStampRequest.getReqPolicy()!=null?timeStampRequest.getReqPolicy():new ASN1ObjectIdentifier(&quot;0.4.0.2023.1.1&quot;));</span>
+<span class="fc" id="L303">        TimeStampTokenGenerator tsTokenGen = new TimeStampTokenGenerator(</span>
+<span class="fc" id="L304">                new JcaSimpleSignerInfoGeneratorBuilder().build(&quot;SHA384withRSA&quot;, rre.privateKey, rre.rsaSigningCert),</span>
+<span class="fc" id="L305">                digProvider.get(digestAlgorithm),</span>
+<span class="pc bpc" id="L306" title="1 of 2 branches missed.">                timeStampRequest.getReqPolicy()!=null?timeStampRequest.getReqPolicy():new ASN1ObjectIdentifier(&quot;0.4.0.2023.1.1&quot;));</span>
         
-<span class="fc" id="L300">            CLASS_LOGGER.debug(&quot;TimeStampTokenGenerator successfully instantiated&quot;);</span>
+<span class="fc" id="L308">            CLASS_LOGGER.debug(&quot;TimeStampTokenGenerator successfully instantiated&quot;);</span>
 
-<span class="fc" id="L302">        boolean includeFullChain=false;</span>
-<span class="fc bfc" id="L303" title="All 2 branches covered.">        if(System.getenv(INCLUDE_FULL_CHAIN)!=null)</span>
-<span class="fc" id="L304">            includeFullChain=java.lang.Boolean.valueOf(System.getenv(INCLUDE_FULL_CHAIN));</span>
+<span class="fc" id="L310">        boolean includeFullChain=false;</span>
+<span class="fc bfc" id="L311" title="All 2 branches covered.">        if(System.getenv(INCLUDE_FULL_CHAIN)!=null)</span>
+<span class="fc" id="L312">            includeFullChain=java.lang.Boolean.valueOf(System.getenv(INCLUDE_FULL_CHAIN));</span>
 
-<span class="fc bfc" id="L306" title="All 2 branches covered.">        if(includeFullChain==false)</span>
+<span class="fc bfc" id="L314" title="All 2 branches covered.">        if(includeFullChain==false)</span>
         {
-<span class="fc" id="L308">            rre.certs.clear();</span>
-<span class="fc" id="L309">            rre.certs.add(rre.rsaSigningCert);</span>
+<span class="fc" id="L316">            rre.certs.clear();</span>
+<span class="fc" id="L317">            rre.certs.add(rre.rsaSigningCert);</span>
         }
-<span class="fc bfc" id="L311" title="All 2 branches covered.">        if(timeStampRequest.getCertReq())</span>
+<span class="fc bfc" id="L319" title="All 2 branches covered.">        if(timeStampRequest.getCertReq())</span>
         {
-<span class="fc" id="L313">            tsTokenGen.addCertificates(new JcaCertStore(rre.certs));</span>
-<span class="fc" id="L314">             CLASS_LOGGER.debug(&quot;added certificates&quot;);</span>
-<span class="fc" id="L315">            boolean includeCRLs=false;</span>
-<span class="fc bfc" id="L316" title="All 2 branches covered.">            if(System.getenv(INCLUDE_CRLS)!=null)</span>
-<span class="fc" id="L317">                includeCRLs=java.lang.Boolean.valueOf(System.getenv(INCLUDE_CRLS));</span>
+<span class="fc" id="L321">            tsTokenGen.addCertificates(new JcaCertStore(rre.certs));</span>
+<span class="fc" id="L322">             CLASS_LOGGER.debug(&quot;added certificates&quot;);</span>
+<span class="fc" id="L323">            boolean includeCRLs=false;</span>
+<span class="fc bfc" id="L324" title="All 2 branches covered.">            if(System.getenv(INCLUDE_CRLS)!=null)</span>
+<span class="fc" id="L325">                includeCRLs=java.lang.Boolean.valueOf(System.getenv(INCLUDE_CRLS));</span>
 
-<span class="fc bfc" id="L319" title="All 2 branches covered.">            if(includeCRLs)</span>
+<span class="fc bfc" id="L327" title="All 2 branches covered.">            if(includeCRLs)</span>
             {
-<span class="fc" id="L321">                java.util.List&lt;X509CRL&gt; crls = new java.util.LinkedList();</span>
-<span class="fc bfc" id="L322" title="All 2 branches covered.">                for (X509Certificate cert : rre.certs)</span>
+<span class="fc" id="L329">                java.util.List&lt;X509CRL&gt; crls = new java.util.LinkedList();</span>
+<span class="fc bfc" id="L330" title="All 2 branches covered.">                for (X509Certificate cert : rre.certs)</span>
                 {
-<span class="fc" id="L324">                    crls.addAll(de.elbosso.util.security.Utilities.getCRLs(cert));</span>
-<span class="fc" id="L325">                }</span>
-<span class="fc" id="L326">                JcaCRLStore store = new JcaCRLStore(crls);</span>
-<span class="fc" id="L327">                tsTokenGen.addCRLs(store);</span>
-<span class="fc" id="L328">                 CLASS_LOGGER.debug(&quot;added CRLs&quot;);</span>
-<span class="fc" id="L329">            }</span>
+<span class="fc" id="L332">                    crls.addAll(de.elbosso.util.security.Utilities.getCRLs(cert));</span>
+<span class="fc" id="L333">                }</span>
+<span class="fc" id="L334">                JcaCRLStore store = new JcaCRLStore(crls);</span>
+<span class="fc" id="L335">                tsTokenGen.addCRLs(store);</span>
+<span class="fc" id="L336">                 CLASS_LOGGER.debug(&quot;added CRLs&quot;);</span>
+<span class="fc" id="L337">            }</span>
             else
             {
-<span class="fc" id="L332">                 CLASS_LOGGER.debug(&quot;CRLs not included (as requested)&quot;);</span>
+<span class="fc" id="L340">                 CLASS_LOGGER.debug(&quot;CRLs not included (as requested)&quot;);</span>
             }
-<span class="fc" id="L334">        }</span>
+<span class="fc" id="L342">        }</span>
         else
         {
-<span class="fc" id="L337">             CLASS_LOGGER.debug(&quot;No certificates and no CRLs added (as requested)&quot;);</span>
+<span class="fc" id="L345">             CLASS_LOGGER.debug(&quot;No certificates and no CRLs added (as requested)&quot;);</span>
         }
-<span class="fc" id="L339">        GeneralName gn= new GeneralName(JcaX500NameUtil.getSubject(rre.rsaSigningCert));</span>
-<span class="fc" id="L340">        tsTokenGen.setTSA(gn);</span>
+<span class="fc" id="L347">        GeneralName gn= new GeneralName(JcaX500NameUtil.getSubject(rre.rsaSigningCert));</span>
+<span class="fc" id="L348">        tsTokenGen.setTSA(gn);</span>
 
-<span class="fc" id="L342">        TimeStampResponseGenerator tsRespGen = new TimeStampResponseGenerator(tsTokenGen, TSPAlgorithms.ALLOWED);</span>
+<span class="fc" id="L350">        TimeStampResponseGenerator tsRespGen = new TimeStampResponseGenerator(tsTokenGen, TSPAlgorithms.ALLOWED);</span>
         
-<span class="fc" id="L344">            CLASS_LOGGER.debug(&quot;TimeStampResponseGenerator successfully instantiated&quot;);</span>
+<span class="fc" id="L352">            CLASS_LOGGER.debug(&quot;TimeStampResponseGenerator successfully instantiated&quot;);</span>
 
         
-<span class="fc" id="L347">            CLASS_LOGGER.debug(&quot;Message imprint: &quot; + timeStampRequest.getMessageImprintAlgOID().getId() + &quot; &quot; + de.elbosso.util.Utilities.formatHexDump(timeStampRequest.getMessageImprintDigest(), true));</span>
+<span class="fc" id="L355">            CLASS_LOGGER.debug(&quot;Message imprint: &quot; + timeStampRequest.getMessageImprintAlgOID().getId() + &quot; &quot; + de.elbosso.util.Utilities.formatHexDump(timeStampRequest.getMessageImprintDigest(), true));</span>
         
-<span class="fc" id="L349">            CLASS_LOGGER.debug(&quot;Message imprint (Base64): &quot; + timeStampRequest.getMessageImprintAlgOID().getId() + &quot; &quot; + de.elbosso.util.Utilities.base64Encode(timeStampRequest.getMessageImprintDigest()));</span>
+<span class="fc" id="L357">            CLASS_LOGGER.debug(&quot;Message imprint (Base64): &quot; + timeStampRequest.getMessageImprintAlgOID().getId() + &quot; &quot; + de.elbosso.util.Utilities.base64Encode(timeStampRequest.getMessageImprintDigest()));</span>
 
-<span class="fc" id="L351">        byte[] tsr = tsRespGen.generateGrantedResponse(timeStampRequest, rfc3161Timestamp.getId(), rfc3161Timestamp.getCreationDate()).getEncoded();</span>
-<span class="fc" id="L352">        return tsr;</span>
+<span class="fc" id="L359">        byte[] tsr = tsRespGen.generateGrantedResponse(timeStampRequest, rfc3161Timestamp.getId(), rfc3161Timestamp.getCreationDate()).getEncoded();</span>
+<span class="fc" id="L360">        return tsr;</span>
     }
     private TimeStampRequest createTimestampRequest(byte[] tsq,RequestReplyEntity rre) throws IOException, CertificateException, NoSuchAlgorithmException, InvalidKeySpecException
     {
-<span class="fc" id="L356">         CLASS_LOGGER.debug(&quot;timestamp query found&quot;);</span>
-<span class="fc" id="L357">        CertificateFactory cf = CertificateFactory.getInstance(&quot;X.509&quot;);</span>
+<span class="fc" id="L364">         CLASS_LOGGER.debug(&quot;timestamp query found&quot;);</span>
+<span class="fc" id="L365">        CertificateFactory cf = CertificateFactory.getInstance(&quot;X.509&quot;);</span>
 
-<span class="fc" id="L359">        java.net.URL url = cryptoResourceManager.getTsaCert();</span>
-<span class="fc" id="L360">         CLASS_LOGGER.debug(&quot;Loading TSA cert from &quot; + url);</span>
+<span class="fc" id="L367">        java.net.URL url = cryptoResourceManager.getTsaCert();</span>
+<span class="fc" id="L368">         CLASS_LOGGER.debug(&quot;Loading TSA cert from &quot; + url);</span>
 
-<span class="fc" id="L362">        java.io.InputStream is = url.openStream();</span>
-<span class="fc" id="L363">        rre.rsaSigningCert = (X509Certificate) cf.generateCertificate(is);</span>
-<span class="fc" id="L364">        is.close();</span>
-
-<span class="fc" id="L366">        url = cryptoResourceManager.getChainPem();</span>
-<span class="fc" id="L367">         CLASS_LOGGER.debug(&quot;Loading chain from &quot; + url);</span>
-
-<span class="fc" id="L369">        is = url.openStream();</span>
-<span class="fc" id="L370">        rre.certs=new java.util.LinkedList((java.util.Collection&lt;X509Certificate&gt;) cf.generateCertificates(is));</span>
-<span class="fc" id="L371">        rre.certs.add(rre.rsaSigningCert);</span>
+<span class="fc" id="L370">        java.io.InputStream is = url.openStream();</span>
+<span class="fc" id="L371">        rre.rsaSigningCert = (X509Certificate) cf.generateCertificate(is);</span>
 <span class="fc" id="L372">        is.close();</span>
 
-<span class="fc" id="L374">        url=cryptoResourceManager.getPrivateKey();</span>
-<span class="fc" id="L375">         CLASS_LOGGER.debug(&quot;Loading TSA private key from &quot; + url);</span>
-<span class="fc" id="L376">        is = url.openStream();</span>
-<span class="fc" id="L377">        java.lang.String privateKeyPEM = de.elbosso.util.Utilities.readIntoString(is, StandardCharsets.UTF_8);</span>
-<span class="fc" id="L378">        is.close();</span>
+<span class="fc" id="L374">        url = cryptoResourceManager.getChainPem();</span>
+<span class="fc" id="L375">         CLASS_LOGGER.debug(&quot;Loading chain from &quot; + url);</span>
+
+<span class="fc" id="L377">        is = url.openStream();</span>
+<span class="fc" id="L378">        rre.certs=new java.util.LinkedList((java.util.Collection&lt;X509Certificate&gt;) cf.generateCertificates(is));</span>
+<span class="fc" id="L379">        rre.certs.add(rre.rsaSigningCert);</span>
+<span class="fc" id="L380">        is.close();</span>
+
+<span class="fc" id="L382">        url=cryptoResourceManager.getPrivateKey();</span>
+<span class="fc" id="L383">         CLASS_LOGGER.debug(&quot;Loading TSA private key from &quot; + url);</span>
+<span class="fc" id="L384">        is = url.openStream();</span>
+<span class="fc" id="L385">        java.lang.String privateKeyPEM = de.elbosso.util.Utilities.readIntoString(is, StandardCharsets.UTF_8);</span>
+<span class="fc" id="L386">        is.close();</span>
 
         // strip of header, footer, newlines, whitespaces
-<span class="fc" id="L381">        privateKeyPEM = privateKeyPEM</span>
-<span class="fc" id="L382">                .replace(&quot;-----BEGIN PRIVATE KEY-----&quot;, &quot;&quot;)</span>
-<span class="fc" id="L383">                .replace(&quot;-----END PRIVATE KEY-----&quot;, &quot;&quot;)</span>
-<span class="fc" id="L384">                .replaceAll(&quot;\\s&quot;, &quot;&quot;);</span>
+<span class="fc" id="L389">        privateKeyPEM = privateKeyPEM</span>
+<span class="fc" id="L390">                .replace(&quot;-----BEGIN PRIVATE KEY-----&quot;, &quot;&quot;)</span>
+<span class="fc" id="L391">                .replace(&quot;-----END PRIVATE KEY-----&quot;, &quot;&quot;)</span>
+<span class="fc" id="L392">                .replaceAll(&quot;\\s&quot;, &quot;&quot;);</span>
 
         // decode to get the binary DER representation
-<span class="fc" id="L387">        byte[] privateKeyDER = Base64.getDecoder().decode(privateKeyPEM);</span>
+<span class="fc" id="L395">        byte[] privateKeyDER = Base64.getDecoder().decode(privateKeyPEM);</span>
 
-<span class="fc" id="L389">        KeyFactory keyFactory = KeyFactory.getInstance(&quot;RSA&quot;);</span>
-<span class="fc" id="L390">        rre.privateKey = keyFactory.generatePrivate(new PKCS8EncodedKeySpec(privateKeyDER));</span>
-<span class="fc" id="L391">         CLASS_LOGGER.debug(&quot;Decoding private key successfully finished&quot;);</span>
+<span class="fc" id="L397">        KeyFactory keyFactory = KeyFactory.getInstance(&quot;RSA&quot;);</span>
+<span class="fc" id="L398">        rre.privateKey = keyFactory.generatePrivate(new PKCS8EncodedKeySpec(privateKeyDER));</span>
+<span class="fc" id="L399">         CLASS_LOGGER.debug(&quot;Decoding private key successfully finished&quot;);</span>
 
-<span class="fc" id="L393">        TimeStampRequest timeStampRequest = new TimeStampRequest(tsq);</span>
-<span class="fc" id="L394">        return timeStampRequest;</span>
+<span class="fc" id="L401">        TimeStampRequest timeStampRequest = new TimeStampRequest(tsq);</span>
+<span class="fc" id="L402">        return timeStampRequest;</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.3.201901230119</span></div></body></html>

@@ -1,8 +1,8 @@
 GROUP,PACKAGE,CLASS,INSTRUCTION_MISSED,INSTRUCTION_COVERED,BRANCH_MISSED,BRANCH_COVERED,LINE_MISSED,LINE_COVERED,COMPLEXITY_MISSED,COMPLEXITY_COVERED,METHOD_MISSED,METHOD_COVERED
-rfc3161timestampingserver,de.elbosso.tools.rfc3161timestampingserver,PersistenceManager,104,0,10,0,25,0,9,0,4,0
+rfc3161timestampingserver,de.elbosso.tools.rfc3161timestampingserver,PersistenceManager,20,92,8,10,5,25,8,7,0,6
+rfc3161timestampingserver,de.elbosso.tools.rfc3161timestampingserver,Handlers,13,1970,5,47,2,243,5,31,0,10
 rfc3161timestampingserver,de.elbosso.tools.rfc3161timestampingserver,App.new InfluxConfig() {...},59,0,6,0,17,0,7,0,4,0
-rfc3161timestampingserver,de.elbosso.tools.rfc3161timestampingserver,Handlers,9,1955,4,44,1,238,4,29,0,9
-rfc3161timestampingserver,de.elbosso.tools.rfc3161timestampingserver,DefaultCryptoResourceManager,35,3,6,0,14,1,7,1,4,1
+rfc3161timestampingserver,de.elbosso.tools.rfc3161timestampingserver,DefaultCryptoResourceManager,5,33,3,3,2,13,4,4,1,4
 rfc3161timestampingserver,de.elbosso.tools.rfc3161timestampingserver,RequestReplyEntity,0,3,0,0,0,1,0,1,0,1
 rfc3161timestampingserver,de.elbosso.tools.rfc3161timestampingserver,Rfc3161Timestamp,0,99,0,0,0,31,0,13,0,13
-rfc3161timestampingserver,de.elbosso.tools.rfc3161timestampingserver,App,174,0,0,0,43,0,9,0,9,0
+rfc3161timestampingserver,de.elbosso.tools.rfc3161timestampingserver,App,23,150,0,0,7,36,2,7,2,7
