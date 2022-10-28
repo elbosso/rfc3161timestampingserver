@@ -286,6 +286,92 @@ public class TestIntegration
         Assertions.assertEquals(HttpStatus.SC_NOT_FOUND,httpResponse.getCode());
 
     }
+    @Test
+    @SetEnvironmentVariable(key = Constants.JDBC_URL, value = "jdbc:h2:mem:test")
+    @SetEnvironmentVariable(key = Constants.JDBC_PASSWORD, value = "")
+    @SetEnvironmentVariable(key = Constants.JDBC_USER, value = "sa")
+    @SetEnvironmentVariable(key = Constants.PERSISTENCE_UNIT_NAME, value = Constants.PERSISTENCE_UNIT_NAME_FOR_TESTS)
+    public void test_SuccessMultiPartQuery_msgDigestHex() throws Exception
+    {
+        HttpPost post = new HttpPost("http://localhost:"+TEST_PORT+"/");
+        java.net.URL url=TestIntegration.class.getClassLoader().getResource("example.tsq");
+        java.io.ByteArrayOutputStream baos = new java.io.ByteArrayOutputStream();
+        de.elbosso.util.Utilities.copyBetweenStreams(url.openStream(), baos, true);
+        MultipartEntityBuilder builder = MultipartEntityBuilder.create();
+        builder.setMode(HttpMultipartMode.EXTENDED);
+        builder.addBinaryBody("tsq", url.openStream(), ContentType.create("application/timestamp-query"), "query.tsq");
+//
+        HttpEntity entity = builder.build();
+        post.setEntity(entity);
+
+        HttpResponse httpResponse = HttpClientBuilder.create().build().execute( post );
+        // Then
+        Assertions.assertEquals(HttpStatus.SC_CREATED,httpResponse.getCode());
+
+        java.io.ByteArrayInputStream bais = new java.io.ByteArrayInputStream(baos.toByteArray());
+        TimeStampRequest request = new TimeStampRequest(bais);
+        bais.close();
+
+        post = new HttpPost("http://localhost:"+TEST_PORT+"/query");
+        builder = MultipartEntityBuilder.create();
+        builder.setMode(HttpMultipartMode.EXTENDED);
+        builder.addTextBody("msgDigestHex", de.elbosso.util.Utilities.formatHexDump(request.getMessageImprintDigest(),false));
+
+        entity = builder.build();
+        post.setEntity(entity);
+
+        httpResponse = HttpClientBuilder.create().build().execute( post );
+
+        // Then
+        Assertions.assertEquals(HttpStatus.SC_CREATED,httpResponse.getCode());
+
+        entity = ((CloseableHttpResponse) httpResponse).getEntity();
+
+        java.io.InputStream responseStream = entity.getContent();
+        TimeStampResponse response = new TimeStampResponse(responseStream);
+        responseStream.close();
+        validate(request,response);
+    }
+    @Test
+    @SetEnvironmentVariable(key = Constants.JDBC_URL, value = "jdbc:h2:mem:test")
+    @SetEnvironmentVariable(key = Constants.JDBC_PASSWORD, value = "")
+    @SetEnvironmentVariable(key = Constants.JDBC_USER, value = "sa")
+    @SetEnvironmentVariable(key = Constants.PERSISTENCE_UNIT_NAME, value = Constants.PERSISTENCE_UNIT_NAME_FOR_TESTS)
+    public void test_SuccessMultiPartQuery_msgDigestHex_NotFound() throws Exception
+    {
+        HttpPost post = new HttpPost("http://localhost:"+TEST_PORT+"/");
+        java.net.URL url=TestIntegration.class.getClassLoader().getResource("example.tsq");
+        java.io.ByteArrayOutputStream baos = new java.io.ByteArrayOutputStream();
+        de.elbosso.util.Utilities.copyBetweenStreams(url.openStream(), baos, true);
+        MultipartEntityBuilder builder = MultipartEntityBuilder.create();
+        builder.setMode(HttpMultipartMode.EXTENDED);
+        builder.addBinaryBody("tsq", url.openStream(), ContentType.create("application/timestamp-query"), "query.tsq");
+//
+        HttpEntity entity = builder.build();
+        post.setEntity(entity);
+
+        HttpResponse httpResponse = HttpClientBuilder.create().build().execute( post );
+        // Then
+        Assertions.assertEquals(HttpStatus.SC_CREATED,httpResponse.getCode());
+
+        java.io.ByteArrayInputStream bais = new java.io.ByteArrayInputStream(baos.toByteArray());
+        TimeStampRequest request = new TimeStampRequest(bais);
+        bais.close();
+
+        post = new HttpPost("http://localhost:"+TEST_PORT+"/query");
+        builder = MultipartEntityBuilder.create();
+        builder.setMode(HttpMultipartMode.EXTENDED);
+        builder.addTextBody("msgDigestHex", de.elbosso.util.Utilities.formatHexDump("some_unknown_digest_value".getBytes(),false));
+
+        entity = builder.build();
+        post.setEntity(entity);
+
+        httpResponse = HttpClientBuilder.create().build().execute( post );
+
+        // Then
+        Assertions.assertEquals(HttpStatus.SC_NOT_FOUND,httpResponse.getCode());
+
+    }
 
     private void validate(TimeStampRequest request, TimeStampResponse response) throws TSPException, CertificateException, OperatorCreationException, IOException, CRLException
     {
