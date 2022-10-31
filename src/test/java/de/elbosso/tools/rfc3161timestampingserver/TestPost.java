@@ -158,7 +158,7 @@ public class TestPost
         when(ctx.ip()).thenReturn("127.0.0.1");
         when(ctx.host()).thenReturn("localhost");
         handlers.handlePost(ctx);
-        verify(ctx).status(501);
+        verify(ctx).status(500);
         verify(entityTransaction).rollback();
     }
     @Test

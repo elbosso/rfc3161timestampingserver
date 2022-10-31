@@ -4,7 +4,7 @@
 [![start with why](https://img.shields.io/badge/start%20with-why%3F-brightgreen.svg?style=flat)](http://www.ted.com/talks/simon_sinek_how_great_leaders_inspire_action)
 --->
 [![Java CI](https://github.com/elbosso/rfc3161timestampingserver/actions/workflows/workflow.yml/badge.svg)](https://github.com/elbosso/rfc3161timestampingserver/actions/workflows/workflow.yml)
-[![Test Coverage](https://raw.githubusercontent.com/elbosso/rfc3161timestampingserver/gh-pages/badges/jacoco.svg)](https://elbosso.github.io/rfc3161timestampingserver/)
+[![Test Coverage](https://raw.githubusercontent.com/elbosso/rfc3161timestampingserver/gh-pages/badges/jacoco.svg)](https://elbosso.github.io/rfc3161timestampingserver/jacoco/index.html)
 [![GitHub release](https://img.shields.io/github/release/elbosso/rfc3161timestampingserver/all.svg?maxAge=1)](https://GitHub.com/elbosso/rfc3161timestampingserver/releases/)
 [![GitHub tag](https://img.shields.io/github/tag/elbosso/rfc3161timestampingserver.svg)](https://GitHub.com/elbosso/rfc3161timestampingserver/tags/)
 [![made-with-jasva](https://img.shields.io/badge/Made%20with-Java-9cf)](https://www.java.com)
@@ -17,7 +17,7 @@
 [![contributions welcome](https://img.shields.io/badge/contributions-welcome-brightgreen.svg?style=flat)](https://github.com/elbosso/rfc3161timestampingserver/issues)
 [![GitHub contributors](https://img.shields.io/github/contributors/elbosso/rfc3161timestampingserver.svg)](https://GitHub.com/elbosso/rfc3161timestampingserver/graphs/contributors/)
 [![Github All Releases](https://img.shields.io/github/downloads/elbosso/rfc3161timestampingserver/total.svg)](https://github.com/elbosso/rfc3161timestampingserver)
-[![Website elbosso.github.io](https://img.shields.io/website-up-down-green-red/https/elbosso.github.io.svg)](https://elbosso.github.io/)
+[![Website elbosso.github.io](https://img.shields.io/website-up-down-green-red/https/elbosso.github.io.svg)](https://elbosso.github.io/rfc3161timestampingserver)
 
 ![rfc3161timestampingserver_logo](src/main/resources/site/rfc3161timestampingserver_logo.png)
 
