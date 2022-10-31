@@ -15,7 +15,7 @@ jobs:
           distribution: 'adopt'
           cache: maven
       - name: Build with Maven
-        run: mvn --batch-mode -U clean compile test install package assembly:single
+        run: mvn  -fn -Dmaven.test.failure.ignore=true --batch-mode -U clean compile test surefire-report:report-only site install package assembly:single
       - run: mkdir staging && cp target/*with-dependencies.jar staging
       - uses: actions/upload-artifact@v3
         with:
@@ -31,4 +31,4 @@ jobs:
         if: ${{ github.ref == 'refs/heads/master' }}
         uses: JamesIves/github-pages-deploy-action@v4
         with:
-          folder: target/site/jacoco/
+          folder: target/site/

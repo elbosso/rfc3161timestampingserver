@@ -1,0 +1,20 @@
+    <project name="My Site Title">
+        <bannerLeft>
+            <name>rfc3161timestampingserver</name>
+            <href>https://github.com/elbosso/rfc3161timestampingserver</href>
+        </bannerLeft>
+
+        <bannerRight>
+            <src>https://github.com/elbosso/rfc3161timestampingserver/raw/master/src/main/resources/site/rfc3161timestampingserver_logo.png</src>
+        </bannerRight>
+        <publishDate position="right"/>
+        <version position="right"/>
+        <body>
+            <menu name="Tests">
+            <item name="Code Coverage" href="jacoco/index.html" />
+            <item name="Test Results" href="surefire-report.html" />
+            </menu>
+            <menu ref="reports" />
+        </body>
+    </project>
+
