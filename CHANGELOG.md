@@ -18,6 +18,21 @@ Changelog of this project.
 
 ### GitHub [#26](https://github.com/elbosso/rfc3161timestampingserver/issues/26) publish automated integration tests
 
+**re #26 - final integration tests (for now)**
+
+
+[36f61363a7cb788](https://github.com/elbosso//commit/36f61363a7cb788) Jürgen Key *2022-10-28 18:45:12*
+
+**re #26 - some more tests**
+
+
+[100fbef9c7949ee](https://github.com/elbosso//commit/100fbef9c7949ee) Jürgen Key *2022-10-28 18:39:57*
+
+**re #26 - some more tests**
+
+
+[bee2efd270ef7c6](https://github.com/elbosso//commit/bee2efd270ef7c6) Jürgen Key *2022-10-28 18:29:25*
+
 **re #26**
 
 
