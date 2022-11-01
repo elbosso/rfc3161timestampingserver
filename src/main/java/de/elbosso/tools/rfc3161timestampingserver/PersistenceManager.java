@@ -1,6 +1,5 @@
 // https://dzone.com/articles/jpa-tutorial-setting-jpa-java
 package de.elbosso.tools.rfc3161timestampingserver;
-import com.sun.xml.bind.v2.runtime.reflect.opt.Const;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
@@ -9,8 +8,8 @@ import javax.persistence.Persistence;
 public class PersistenceManager
 {
 	private static PersistenceManager sharedInstance;
-	private final org.slf4j.Logger CLASS_LOGGER=org.slf4j.LoggerFactory.getLogger(PersistenceManager.class);
-	private final static org.slf4j.Logger EXCEPTION_LOGGER=org.slf4j.LoggerFactory.getLogger("ExceptionCatcher");
+	private static final org.slf4j.Logger CLASS_LOGGER=org.slf4j.LoggerFactory.getLogger(PersistenceManager.class);
+	private static final org.slf4j.Logger EXCEPTION_LOGGER=org.slf4j.LoggerFactory.getLogger("ExceptionCatcher");
 	private EntityManagerFactory emFactory;
 
 	public static PersistenceManager getSharedInstance()

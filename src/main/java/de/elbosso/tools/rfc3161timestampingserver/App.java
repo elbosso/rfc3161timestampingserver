@@ -1,7 +1,7 @@
 package de.elbosso.tools.rfc3161timestampingserver;
 import ch.qos.logback.classic.Level;
+import de.elbosso.tools.rfc3161timestampingserver.impl.DefaultCryptoResourceManager;
 import io.javalin.Javalin;
-import io.javalin.http.Handler;
 import io.micrometer.core.instrument.Clock;
 import io.micrometer.core.instrument.MeterRegistry;
 import io.micrometer.core.instrument.Metrics;
