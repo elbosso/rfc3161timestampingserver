@@ -1,4 +1,4 @@
-package de.elbosso.tools.rfc3161timestampingserver;
+package de.elbosso.tools.rfc3161timestampingserver.service;
 
 public interface CryptoResourceManager
 {

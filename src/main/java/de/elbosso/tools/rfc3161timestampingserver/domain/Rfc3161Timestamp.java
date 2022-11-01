@@ -1,4 +1,4 @@
-package de.elbosso.tools.rfc3161timestampingserver;
+package de.elbosso.tools.rfc3161timestampingserver.domain;
 
 import javax.persistence.*;
 import java.math.BigDecimal;

@@ -56,6 +56,16 @@ Changelog of this project.
 
 ### No issue
 
+**finishing touches for test reports**
+
+
+[364bdc1ea47e690](https://github.com/elbosso//commit/364bdc1ea47e690) Jürgen Key *2022-10-31 12:53:22*
+
+**reports for unit tests andf integration tests added**
+
+
+[9c2b7accda80e87](https://github.com/elbosso//commit/9c2b7accda80e87) Jürgen Key *2022-10-31 12:46:59*
+
 **successfully added the first integration tests**
 
 

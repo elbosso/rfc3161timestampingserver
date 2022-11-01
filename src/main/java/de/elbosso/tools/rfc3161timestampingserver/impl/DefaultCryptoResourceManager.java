@@ -1,4 +1,6 @@
-package de.elbosso.tools.rfc3161timestampingserver;
+package de.elbosso.tools.rfc3161timestampingserver.impl;
+
+import de.elbosso.tools.rfc3161timestampingserver.service.CryptoResourceManager;
 
 import java.net.URL;
 
