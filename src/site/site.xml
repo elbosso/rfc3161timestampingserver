@@ -10,6 +10,10 @@
         <publishDate position="right"/>
         <version position="right"/>
         <body>
+            <menu name="Project">
+            <item name="Readme" href="https://github.com/elbosso/rfc3161timestampingserver#readme" />
+            <item name="@GitHub" href="https://github.com/elbosso/rfc3161timestampingserver" />
+            </menu>
             <menu name="Tests">
             <item name="Code Coverage" href="jacoco/index.html" />
             <item name="Test Results" href="surefire-report.html" />
