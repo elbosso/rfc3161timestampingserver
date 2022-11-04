@@ -2,6 +2,7 @@ package de.elbosso.tools.rfc3161timestampingserver;
 
 import de.elbosso.tools.rfc3161timestampingserver.domain.Rfc3161Timestamp;
 import de.elbosso.tools.rfc3161timestampingserver.service.CryptoResourceManager;
+import io.javalin.http.Context;
 import io.javalin.http.UploadedFile;
 import io.micrometer.core.instrument.Metrics;
 import org.bouncycastle.asn1.ASN1ObjectIdentifier;
@@ -136,6 +137,7 @@ public class Handlers extends java.lang.Object implements Constants
                     ctx.status(201);
                     ctx.contentType("application/timestamp-reply");
                     ctx.header("Content-Disposition","filename=\"queried.tsr\"");
+                    setCachingPolixy(ctx);
                     ctx.result(new java.io.ByteArrayInputStream(rfc3161Timestamp.getTsrData()));
                     Metrics.counter("rfc3161timestampingserver.post", "resourcename","query","httpstatus",java.lang.Integer.toString(ctx.status()),"params","alg+base64","success","true","contentType",contentType,"remoteAddr",ctx.ip(),"remoteHost",ctx.ip(), "localAddr",ctx.host(), "localName",ctx.host()).increment();
                 }
@@ -160,6 +162,7 @@ public class Handlers extends java.lang.Object implements Constants
                     ctx.status(201);
                     ctx.contentType("application/timestamp-reply");
                     ctx.header("Content-Disposition","filename=\"queried.tsr\"");
+                    setCachingPolixy(ctx);
                     ctx.result(new java.io.ByteArrayInputStream(rfc3161Timestamp.getTsrData()));
                     Metrics.counter("rfc3161timestampingserver.post", "resourcename","query","httpstatus",java.lang.Integer.toString(ctx.status()),"params","base64","success","true","contentType",contentType,"remoteAddr",ctx.ip(),"remoteHost",ctx.ip(), "localAddr",ctx.host(), "localName",ctx.host()).increment();
                 }
@@ -184,6 +187,7 @@ public class Handlers extends java.lang.Object implements Constants
                     ctx.status(201);
                     ctx.contentType("application/timestamp-reply");
                     ctx.header("Content-Disposition","filename=\"queried.tsr\"");
+                    setCachingPolixy(ctx);
                     ctx.result(new java.io.ByteArrayInputStream(rfc3161Timestamp.getTsrData()));
                     Metrics.counter("rfc3161timestampingserver.post", "resourcename","query","httpstatus",java.lang.Integer.toString(ctx.status()),"params","hex","success","true","contentType",contentType,"remoteAddr",ctx.ip(),"remoteHost",ctx.ip(), "localAddr",ctx.host(), "localName",ctx.host()).increment();
                 }
@@ -208,6 +212,16 @@ public class Handlers extends java.lang.Object implements Constants
             Metrics.counter("rfc3161timestampingserver.post", "resourcename","query","httpstatus",java.lang.Integer.toString(ctx.status()),"error","encoding","contentType",contentType,"remoteAddr",ctx.ip(),"remoteHost",ctx.ip(), "localAddr",ctx.host(), "localName",ctx.host()).increment();
         }
     }
+
+    private void setCachingPolixy(Context ctx)
+    {
+        ctx.header("Pragma", "no-cache");
+        ctx.header("Cache-Control", "no-cache");
+        ctx.header("Cache-Control", "no-store");
+        ctx.header("Cache-Control", "max-age=0");
+        ctx.header("Cache-Control", "must-revalidate");
+    }
+
     public void handlePost(io.javalin.http.Context ctx) throws java.lang.Exception
     {
         CLASS_LOGGER.debug("received timestamp request");
@@ -277,6 +291,7 @@ public class Handlers extends java.lang.Object implements Constants
                 ctx.status(201);
                 ctx.contentType("application/timestamp-reply");
                 ctx.header("Content-Disposition","filename=\"reply.tsr\"");
+                setCachingPolixy(ctx);
                 ctx.result(new java.io.ByteArrayInputStream(tsr));
                 em.getTransaction().commit();
                 Metrics.counter("rfc3161timestampingserver.post", "resourcename","/","httpstatus",java.lang.Integer.toString(ctx.status()),"success","true","contentType",contentType,"remoteAddr",ctx.ip(),"remoteHost",ctx.ip(), "localAddr",ctx.host(), "localName",ctx.host()).increment();
