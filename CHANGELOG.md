@@ -54,7 +54,25 @@ Changelog of this project.
 [5720edd34b27747](https://github.com/elbosso//commit/5720edd34b27747) Jürgen Key *2022-10-27 17:47:45*
 
 
+### GitHub [#27](https://github.com/elbosso/rfc3161timestampingserver/issues/27) change persistence to using JPA
+
+**started working on re #27 and intrudoced ArchUnit-Tests**
+
+
+[4f4cb61621ea7a3](https://github.com/elbosso//commit/4f4cb61621ea7a3) Jürgen Key *2022-11-01 16:59:50*
+
+
 ### No issue
+
+**added configuration**
+
+
+[180b86e3d482c87](https://github.com/elbosso//commit/180b86e3d482c87) Jürgen Key *2022-11-04 07:48:29*
+
+**added links back to the github project**
+
+
+[3d0961f1683e53e](https://github.com/elbosso//commit/3d0961f1683e53e) Jürgen Key *2022-11-01 17:08:25*
 
 **finishing touches for test reports**
 

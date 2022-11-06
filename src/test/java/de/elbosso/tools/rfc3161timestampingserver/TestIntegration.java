@@ -411,7 +411,7 @@ public class TestIntegration
         }
 
 
-        Assertions.assertTrue(System.currentTimeMillis()-2000l<timeStampToken.getTimeStampInfo().getGenTime().getTime());
+        Assertions.assertTrue(System.currentTimeMillis()-10000l<timeStampToken.getTimeStampInfo().getGenTime().getTime());
 
         InputStream chainStream = TestIntegration.class.getClassLoader().getResource("rfc3161timestampingserver/priv/chain.pem").openStream();
         InputStream rootStream = TestIntegration.class.getClassLoader().getResource("crypto/root.pem").openStream();
