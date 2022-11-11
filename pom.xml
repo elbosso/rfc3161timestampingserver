@@ -181,7 +181,7 @@ WENN SIE AUF DIE MOEGLICHKEIT EINES SOLCHEN SCHADENS HINGEWIESEN WORDEN SIND.
               <configuration>
                   <showSuccess>true</showSuccess>
                   <outputDirectory>${basedir}/target/site </outputDirectory>
-                  <testFailureIgnore>true</testFailureIgnore>
+                  <!--testFailureIgnore>true</testFailureIgnore-->
               </configuration>
           </plugin>
           <plugin>
@@ -340,6 +340,14 @@ WENN SIE AUF DIE MOEGLICHKEIT EINES SOLCHEN SCHADENS HINGEWIESEN WORDEN SIND.
             <artifactId>logback-classic</artifactId>
             <scope>compile</scope>
         </dependency>
+        <!-- https://mvnrepository.com/artifact/javax.validation/validation-api -->
+        <dependency>
+            <groupId>javax.validation</groupId>
+            <artifactId>validation-api</artifactId>
+            <version>2.0.1.Final</version>
+        </dependency>
+
+
         <dependency>
             <groupId>org.mockito</groupId>
             <artifactId>mockito-core</artifactId>
