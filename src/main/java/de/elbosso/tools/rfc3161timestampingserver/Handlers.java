@@ -2,6 +2,7 @@ package de.elbosso.tools.rfc3161timestampingserver;
 
 import de.elbosso.tools.rfc3161timestampingserver.domain.Rfc3161Timestamp;
 import de.elbosso.tools.rfc3161timestampingserver.service.CryptoResourceManager;
+import de.elbosso.tools.rfc3161timestampingserver.util.PersistenceManager;
 import io.javalin.http.Context;
 import io.javalin.http.UploadedFile;
 import io.micrometer.core.instrument.Metrics;
@@ -28,7 +29,9 @@ import java.security.NoSuchAlgorithmException;
 import java.security.cert.*;
 import java.security.spec.InvalidKeySpecException;
 import java.security.spec.PKCS8EncodedKeySpec;
+import java.time.Clock;
 import java.util.Base64;
+import java.util.Date;
 
 public class Handlers extends java.lang.Object implements Constants
 {
@@ -121,7 +124,7 @@ public class Handlers extends java.lang.Object implements Constants
                  CLASS_LOGGER.warn("did not find msgDigestHex");
             }
             if(em==null)
-                em=PersistenceManager.getSharedInstance().getEntityManager();
+                em= PersistenceManager.getSharedInstance().getEntityManager();
             if((algoid!=null)&&(msgDigestBase64!=null))
             {
                  CLASS_LOGGER.debug("searching using message digest algorithm and message digest (Base64) imprint as parameters");
@@ -271,7 +274,7 @@ public class Handlers extends java.lang.Object implements Constants
                 TimeStampRequest timeStampRequest=createTimestampRequest(tsq,rre);
 
                 Rfc3161Timestamp rfc3161Timestamp=new Rfc3161Timestamp();
-                rfc3161Timestamp.setCreationDate(new java.util.Date());
+                rfc3161Timestamp.setCreationDate(Date.from(Clock.systemUTC().instant()));
                 rfc3161Timestamp.setMessageImprintAlgOID(timeStampRequest.getMessageImprintAlgOID().getId());
                 rfc3161Timestamp.setMessageImprintDigestBase64(de.elbosso.util.Utilities.base64Encode(timeStampRequest.getMessageImprintDigest()));
                 rfc3161Timestamp.setMessageImprintDigestHex(de.elbosso.util.Utilities.formatHexDump(timeStampRequest.getMessageImprintDigest(),false).toUpperCase());

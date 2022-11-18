@@ -47,4 +47,12 @@ public class CodingRulesTest {
             CompositeArchRule.of(NO_CLASSES_SHOULD_ACCESS_STANDARD_STREAMS)
                     .and(NO_CLASSES_SHOULD_THROW_GENERIC_EXCEPTIONS);
 
+    @ArchTest
+    private final ArchRule no_system_currenttimemillis=
+            noClasses().
+                    should().callMethod("java.lang.System","currentTimeMillis");
+    @ArchTest
+    private final ArchRule no_new_javautildate=
+            noClasses().
+                    should().callConstructor("java.util.Date");
 }
