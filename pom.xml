@@ -326,7 +326,7 @@ WENN SIE AUF DIE MOEGLICHKEIT EINES SOLCHEN SCHADENS HINGEWIESEN WORDEN SIND.
         <dependency>
             <groupId>org.postgresql</groupId>
             <artifactId>postgresql</artifactId>
-            <version>42.4.1</version>
+            <version>42.4.3</version>
         </dependency>
         <!-- https://mvnrepository.com/artifact/io.micrometer/micrometer-registry-influx -->
         <dependency>
