@@ -15,7 +15,7 @@ public class Rfc3161timestamp
 {
 
 	@Id
-	//@GeneratedValue(strategy = GenerationType.AUTO)
+	@GeneratedValue(strategy = GenerationType.AUTO)
 	@NotNull
 	@Column(name = "id"
 		, nullable = false
@@ -50,11 +50,9 @@ public class Rfc3161timestamp
 	private String m_rfc3161timestamp_message_imprint_digest_base64;
 
 	@Column(name = "tsr_data"
-		, length=10
-		, precision=10
-		, scale=0
 	)
-	private java.math.BigInteger m_rfc3161timestamp_tsr_data;
+	@Lob
+	private byte[] m_rfc3161timestamp_tsr_data;
 
 	@Column(name = "message_imprint_digest_hex"
 		, length=1024
@@ -100,11 +98,11 @@ public class Rfc3161timestamp
 		m_rfc3161timestamp_message_imprint_digest_base64=v_message_imprint_digest_base64;
 	}
 //tsr_data
-	public java.math.BigInteger getTsr_data()
+	public byte[] getTsr_data()
 	{
 		return m_rfc3161timestamp_tsr_data;
 	}
-	public void setTsr_data(java.math.BigInteger v_tsr_data)
+	public void setTsr_data(byte[] v_tsr_data)
 	{
 		m_rfc3161timestamp_tsr_data=v_tsr_data;
 	}
