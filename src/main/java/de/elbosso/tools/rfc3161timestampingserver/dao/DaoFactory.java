@@ -11,9 +11,15 @@ public class DaoFactory extends JpaDaoFactory
 		super();
 	}
 
-	public JpaDao<Rfc3161timestamp> createRfc3161timestampDao()
+	public Rfc3161timestampDao createRfc3161timestampDao()
 	{
-		return super.<Rfc3161timestampDao>createDao(Rfc3161timestamp.class);
+		if(map.containsKey(Rfc3161timestamp.class)==false)
+		{
+			JpaDao<Rfc3161timestamp> dao=new Rfc3161timestampDao();
+			dao.setEntityManager(getEntityManager());
+			map.put(Rfc3161timestamp.class,dao);
+		}
+		return (Rfc3161timestampDao) map.get(Rfc3161timestamp.class);
 	}
 
 }

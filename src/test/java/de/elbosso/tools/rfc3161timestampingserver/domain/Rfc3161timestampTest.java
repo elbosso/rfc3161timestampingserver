@@ -30,7 +30,7 @@ public class Rfc3161timestampTest
     @SetEnvironmentVariable(key = Constants.PERSISTENCE_UNIT_NAME, value = Constants.PERSISTENCE_UNIT_NAME_FOR_TESTS)
     public void alwaysSuccess()
     {
-		JpaDao<Rfc3161timestamp> timestampDao=df.createRfc3161timestampDao();
+	    Rfc3161timestampDao timestampDao=df.createRfc3161timestampDao();
 		timestampDao.beginTransaction();
 		Rfc3161timestamp timestamp=new Rfc3161timestamp();
 		timestamp.setCreation_date(new Timestamp(java.util.Date.from(Instant.now()).getTime()));
