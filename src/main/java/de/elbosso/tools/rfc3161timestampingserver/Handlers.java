@@ -1,7 +1,10 @@
 package de.elbosso.tools.rfc3161timestampingserver;
 
+import de.elbosso.tools.rfc3161timestampingserver.dao.DaoFactory;
 import de.elbosso.tools.rfc3161timestampingserver.domain.Rfc3161Timestamp;
+import de.elbosso.tools.rfc3161timestampingserver.domain.Rfc3161timestamp;
 import de.elbosso.tools.rfc3161timestampingserver.service.CryptoResourceManager;
+import de.elbosso.tools.rfc3161timestampingserver.util.JpaDao;
 import de.elbosso.tools.rfc3161timestampingserver.util.PersistenceManager;
 import io.javalin.http.Context;
 import io.javalin.http.UploadedFile;
@@ -37,6 +40,7 @@ public class Handlers extends java.lang.Object implements Constants
 {
     private final static org.slf4j.Logger CLASS_LOGGER=org.slf4j.LoggerFactory.getLogger(Handlers.class);
 	private final static org.slf4j.Logger EXCEPTION_LOGGER=org.slf4j.LoggerFactory.getLogger("ExceptionCatcher");
+   	static DaoFactory df=new DaoFactory();
     private EntityManager em;
     private final CryptoResourceManager cryptoResourceManager;
 
@@ -264,26 +268,28 @@ public class Handlers extends java.lang.Object implements Constants
         }
         if(tsq!=null)
         {
-            if(em==null)
-                em=PersistenceManager.getSharedInstance().getEntityManager();
-            em.getTransaction().begin();
+            JpaDao<Rfc3161timestamp> timestampDao=df.createRfc3161timestampDao();
+            timestampDao.beginTransaction();
+//            if(em==null)
+//                em=PersistenceManager.getSharedInstance().getEntityManager();
+//            em.getTransaction().begin();
             try
             {
                 RequestReplyEntity rre=new RequestReplyEntity();
 
                 TimeStampRequest timeStampRequest=createTimestampRequest(tsq,rre);
 
-                Rfc3161Timestamp rfc3161Timestamp=new Rfc3161Timestamp();
-                rfc3161Timestamp.setCreationDate(Date.from(Clock.systemUTC().instant()));
-                rfc3161Timestamp.setMessageImprintAlgOID(timeStampRequest.getMessageImprintAlgOID().getId());
-                rfc3161Timestamp.setMessageImprintDigestBase64(de.elbosso.util.Utilities.base64Encode(timeStampRequest.getMessageImprintDigest()));
-                rfc3161Timestamp.setMessageImprintDigestHex(de.elbosso.util.Utilities.formatHexDump(timeStampRequest.getMessageImprintDigest(),false).toUpperCase());
-                em.persist(rfc3161Timestamp);
+                Rfc3161timestamp rfc3161Timestamp=new Rfc3161timestamp();
+                rfc3161Timestamp.setCreation_date(java.sql.Timestamp.from(Clock.systemUTC().instant()));
+                rfc3161Timestamp.setMessage_imprint_alg_oid(timeStampRequest.getMessageImprintAlgOID().getId());
+                rfc3161Timestamp.setMessage_imprint_digest_base64(de.elbosso.util.Utilities.base64Encode(timeStampRequest.getMessageImprintDigest()));
+                rfc3161Timestamp.setMessage_imprint_digest_hex(de.elbosso.util.Utilities.formatHexDump(timeStampRequest.getMessageImprintDigest(),false).toUpperCase());
+                timestampDao.persist(rfc3161Timestamp);
 
                 byte[] tsr=executeTsaProtocol(timeStampRequest,rre,rfc3161Timestamp);
 
-                rfc3161Timestamp.setTsrData(tsr);
-                em.persist(rfc3161Timestamp);
+                rfc3161Timestamp.setTsr_data(tsr);
+                timestampDao.update(rfc3161Timestamp);
 
                 
                     CLASS_LOGGER.debug("Timestamp Response created - length: " + tsr.length);
@@ -296,7 +302,7 @@ public class Handlers extends java.lang.Object implements Constants
                 ctx.header("Content-Disposition","filename=\"reply.tsr\"");
                 setCachingPolixy(ctx);
                 ctx.result(new java.io.ByteArrayInputStream(tsr));
-                em.getTransaction().commit();
+                timestampDao.commitTransaction();
                 Metrics.counter("rfc3161timestampingserver.post", "resourcename","/","httpstatus",java.lang.Integer.toString(ctx.status()),"success","true","contentType",contentType,"remoteAddr",ctx.ip(),"remoteHost",ctx.ip(), "localAddr",ctx.host(), "localName",ctx.host()).increment();
             }
             catch(java.lang.Throwable t)
@@ -304,7 +310,7 @@ public class Handlers extends java.lang.Object implements Constants
                 CLASS_LOGGER.error(t.getMessage(),t);
                 ctx.status(500);
                 Metrics.counter("rfc3161timestampingserver.post", "resourcename","/","httpstatus",java.lang.Integer.toString(ctx.status()),"error",(t.getMessage()!=null?t.getMessage():"NPE"),"contentType",contentType,"remoteAddr",ctx.ip(),"remoteHost",ctx.ip(), "localAddr",ctx.host(), "localName",ctx.host()).increment();
-                em.getTransaction().rollback();
+                timestampDao.rollbackTransaction();
             }
             finally
             {
@@ -315,7 +321,7 @@ public class Handlers extends java.lang.Object implements Constants
             ctx.status(500);
         }
     }
-    private byte[] executeTsaProtocol(TimeStampRequest timeStampRequest, RequestReplyEntity rre,Rfc3161Timestamp rfc3161Timestamp) throws OperatorCreationException, CertificateException, CRLException, IOException, TSPException
+    private byte[] executeTsaProtocol(TimeStampRequest timeStampRequest, RequestReplyEntity rre,Rfc3161timestamp rfc3161Timestamp) throws OperatorCreationException, CertificateException, CRLException, IOException, TSPException
     {
         AlgorithmIdentifier digestAlgorithm = new AlgorithmIdentifier(NISTObjectIdentifiers.id_sha384);
         DigestCalculatorProvider digProvider = new JcaDigestCalculatorProviderBuilder().setProvider(BouncyCastleProvider.PROVIDER_NAME).build();
@@ -376,7 +382,7 @@ public class Handlers extends java.lang.Object implements Constants
         
             CLASS_LOGGER.debug("Message imprint (Base64): " + timeStampRequest.getMessageImprintAlgOID().getId() + " " + de.elbosso.util.Utilities.base64Encode(timeStampRequest.getMessageImprintDigest()));
 
-        byte[] tsr = tsRespGen.generateGrantedResponse(timeStampRequest, rfc3161Timestamp.getId(), rfc3161Timestamp.getCreationDate()).getEncoded();
+        byte[] tsr = tsRespGen.generateGrantedResponse(timeStampRequest, rfc3161Timestamp.getId().toBigInteger(), rfc3161Timestamp.getCreation_date()).getEncoded();
         return tsr;
     }
     private TimeStampRequest createTimestampRequest(byte[] tsq,RequestReplyEntity rre) throws IOException, CertificateException, NoSuchAlgorithmException, InvalidKeySpecException
