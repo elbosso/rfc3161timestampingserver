@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>Rfc3161timestampDao.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">rfc3161timestampingserver</a> &gt; <a href="index.source.html" class="el_package">de.elbosso.tools.rfc3161timestampingserver.dao</a> &gt; <span class="el_source">Rfc3161timestampDao.java</span></div><h1>Rfc3161timestampDao.java</h1><pre class="source lang-java linenums">package de.elbosso.tools.rfc3161timestampingserver.dao;
+
+import de.elbosso.tools.rfc3161timestampingserver.domain.Rfc3161timestamp;
+import de.elbosso.tools.rfc3161timestampingserver.util.JpaDao;
+
+import javax.persistence.NoResultException;
+import java.util.Optional;
+
+public class Rfc3161timestampDao extends JpaDao&lt;Rfc3161timestamp&gt;
+{
+	Rfc3161timestampDao()
+	{
+<span class="fc" id="L13">		super(Rfc3161timestamp.class);</span>
+<span class="fc" id="L14">	}</span>
+
+	public Optional&lt;Rfc3161timestamp&gt; findYoungestByMsgImprintBase64(Rfc3161timestamp timestamp) {
+		try {
+
+
+<span class="fc" id="L20">			return Optional.of(entityManager.createQuery(&quot;SELECT r FROM Rfc3161timestamp r WHERE r.m_rfc3161timestamp_message_imprint_digest_base64 = :Imprint ORDER BY r.m_rfc3161timestamp_creation_date DESC&quot;, Rfc3161timestamp.class)</span>
+<span class="fc" id="L21">					.setParameter(&quot;Imprint&quot;, timestamp.getMessage_imprint_digest_base64())</span>
+<span class="fc" id="L22">					.setMaxResults(1)</span>
+<span class="fc" id="L23">					.getResultList().get(0));</span>
+<span class="nc" id="L24">		} catch (NoResultException e) {</span>
+<span class="nc" id="L25">			return Optional.empty();</span>
+		}
+	}
+	public Optional&lt;Rfc3161timestamp&gt; findYoungestByMsgDigestAndImprintBase64(Rfc3161timestamp timestamp) {
+		try {
+
+
+<span class="nc" id="L32">			return Optional.of(entityManager.createQuery(&quot;SELECT r FROM Rfc3161timestamp r WHERE r.m_rfc3161timestamp_message_imprint_alg_oid = :alg_oid AND r.m_rfc3161timestamp_message_imprint_digest_base64 = :Imprint ORDER BY r.m_rfc3161timestamp_creation_date DESC&quot;, Rfc3161timestamp.class)</span>
+<span class="nc" id="L33">					.setParameter(&quot;alg_oid&quot;, timestamp.getMessage_imprint_alg_oid())</span>
+<span class="nc" id="L34">					.setParameter(&quot;Imprint&quot;, timestamp.getMessage_imprint_digest_base64())</span>
+<span class="nc" id="L35">					.setMaxResults(1)</span>
+<span class="nc" id="L36">					.getResultList().get(0));</span>
+<span class="nc" id="L37">		} catch (NoResultException e) {</span>
+<span class="nc" id="L38">			return Optional.empty();</span>
+		}
+	}
+	public Optional&lt;Rfc3161timestamp&gt; findYoungestByMsgImprintHex(Rfc3161timestamp timestamp) {
+		try {
+
+
+<span class="fc" id="L45">			return Optional.of(entityManager.createQuery(&quot;SELECT r FROM Rfc3161timestamp r WHERE r.m_rfc3161timestamp_message_imprint_digest_hex = :Imprint ORDER BY r.m_rfc3161timestamp_creation_date DESC&quot;, Rfc3161timestamp.class)</span>
+<span class="fc" id="L46">					.setParameter(&quot;Imprint&quot;, timestamp.getMessage_imprint_digest_hex())</span>
+<span class="fc" id="L47">					.setMaxResults(1)</span>
+<span class="fc" id="L48">					.getResultList().get(0));</span>
+<span class="nc" id="L49">		} catch (NoResultException e) {</span>
+<span class="nc" id="L50">			return Optional.empty();</span>
+		}
+	}
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.3.201901230119</span></div></body></html>

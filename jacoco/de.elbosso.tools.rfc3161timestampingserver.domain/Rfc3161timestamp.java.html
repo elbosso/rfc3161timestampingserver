@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>Rfc3161timestamp.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">rfc3161timestampingserver</a> &gt; <a href="index.source.html" class="el_package">de.elbosso.tools.rfc3161timestampingserver.domain</a> &gt; <span class="el_source">Rfc3161timestamp.java</span></div><h1>Rfc3161timestamp.java</h1><pre class="source lang-java linenums">package de.elbosso.tools.rfc3161timestampingserver.domain;
+
+import javax.persistence.*;
+import javax.validation.constraints.NotNull;
+import java.util.Set;
+import java.util.HashSet;
+
+@Entity
+@Table(name = &quot;rfc3161timestamp&quot;
+/*	,indexes = {
+		@Index(name= &quot;rfc3161timestamp_pkey&quot;, columnList=&quot;id&quot;)
+	}*/
+)
+<span class="fc" id="L14">public class Rfc3161timestamp</span>
+{
+
+	@Id
+	@GeneratedValue(strategy = GenerationType.AUTO)
+	@NotNull
+	@Column(name = &quot;id&quot;
+		, nullable = false
+		, updatable = false
+		, length=19
+		, precision=19
+		, scale=2
+	)
+	private java.math.BigDecimal m_rfc3161timestamp_id;
+
+	@Column(name = &quot;creation_date&quot;
+		, length=29
+		, precision=29
+		, scale=6
+	)
+	private java.sql.Timestamp m_rfc3161timestamp_creation_date;
+
+	@NotNull
+	@Column(name = &quot;message_imprint_alg_oid&quot;
+		, nullable = false
+		, length=255
+		, precision=255
+		, scale=0
+	)
+	private String m_rfc3161timestamp_message_imprint_alg_oid;
+
+	@Column(name = &quot;message_imprint_digest_base64&quot;
+		, length=1024
+		, precision=1024
+		, scale=0
+	)
+	private String m_rfc3161timestamp_message_imprint_digest_base64;
+
+	@Column(name = &quot;tsr_data&quot;
+	)
+	@Lob
+	private byte[] m_rfc3161timestamp_tsr_data;
+
+	@Column(name = &quot;message_imprint_digest_hex&quot;
+		, length=1024
+		, precision=1024
+		, scale=0
+	)
+	private String m_rfc3161timestamp_message_imprint_digest_hex;
+
+//id
+	public java.math.BigDecimal getId()
+	{
+<span class="fc" id="L67">		return m_rfc3161timestamp_id;</span>
+	}
+	public void setId(java.math.BigDecimal v_id)
+	{
+<span class="fc" id="L71">		m_rfc3161timestamp_id=v_id;</span>
+<span class="fc" id="L72">	}</span>
+//creation_date
+	public java.sql.Timestamp getCreation_date()
+	{
+<span class="fc" id="L76">		return m_rfc3161timestamp_creation_date;</span>
+	}
+	public void setCreation_date(java.sql.Timestamp v_creation_date)
+	{
+<span class="fc" id="L80">		m_rfc3161timestamp_creation_date=v_creation_date;</span>
+<span class="fc" id="L81">	}</span>
+//message_imprint_alg_oid
+	public String getMessage_imprint_alg_oid()
+	{
+<span class="fc" id="L85">		return m_rfc3161timestamp_message_imprint_alg_oid;</span>
+	}
+	public void setMessage_imprint_alg_oid(String v_message_imprint_alg_oid)
+	{
+<span class="fc" id="L89">		m_rfc3161timestamp_message_imprint_alg_oid=v_message_imprint_alg_oid;</span>
+<span class="fc" id="L90">	}</span>
+//message_imprint_digest_base64
+	public String getMessage_imprint_digest_base64()
+	{
+<span class="fc" id="L94">		return m_rfc3161timestamp_message_imprint_digest_base64;</span>
+	}
+	public void setMessage_imprint_digest_base64(String v_message_imprint_digest_base64)
+	{
+<span class="fc" id="L98">		m_rfc3161timestamp_message_imprint_digest_base64=v_message_imprint_digest_base64;</span>
+<span class="fc" id="L99">	}</span>
+//tsr_data
+	public byte[] getTsr_data()
+	{
+<span class="fc" id="L103">		return m_rfc3161timestamp_tsr_data;</span>
+	}
+	public void setTsr_data(byte[] v_tsr_data)
+	{
+<span class="fc" id="L107">		m_rfc3161timestamp_tsr_data=v_tsr_data;</span>
+<span class="fc" id="L108">	}</span>
+//message_imprint_digest_hex
+	public String getMessage_imprint_digest_hex()
+	{
+<span class="fc" id="L112">		return m_rfc3161timestamp_message_imprint_digest_hex;</span>
+	}
+	public void setMessage_imprint_digest_hex(String v_message_imprint_digest_hex)
+	{
+<span class="fc" id="L116">		m_rfc3161timestamp_message_imprint_digest_hex=v_message_imprint_digest_hex;</span>
+<span class="fc" id="L117">	}</span>
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.3.201901230119</span></div></body></html>

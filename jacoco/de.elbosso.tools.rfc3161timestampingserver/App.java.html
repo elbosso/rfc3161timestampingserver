@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>App.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">rfc3161timestampingserver</a> &gt; <a href="index.source.html" class="el_package">de.elbosso.tools.rfc3161timestampingserver</a> &gt; <span class="el_source">App.java</span></div><h1>App.java</h1><pre class="source lang-java linenums">package de.elbosso.tools.rfc3161timestampingserver;
 import ch.qos.logback.classic.Level;
+import de.elbosso.tools.rfc3161timestampingserver.dao.DaoFactory;
 import de.elbosso.tools.rfc3161timestampingserver.impl.DefaultCryptoResourceManager;
+import de.elbosso.tools.rfc3161timestampingserver.util.PersistenceManager;
 import io.javalin.Javalin;
 import io.micrometer.core.instrument.Clock;
 import io.micrometer.core.instrument.MeterRegistry;
@@ -11,94 +13,95 @@ import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import java.security.Security;
 import java.time.Duration;
 
-<span class="nc" id="L14">public class App {</span>
-<span class="fc" id="L15">	private final static org.slf4j.Logger CLASS_LOGGER=org.slf4j.LoggerFactory.getLogger(App.class);</span>
-<span class="fc" id="L16">	private final static org.slf4j.Logger EXCEPTION_LOGGER=org.slf4j.LoggerFactory.getLogger(&quot;ExceptionCatcher&quot;);</span>
+<span class="nc" id="L16">public class App {</span>
+<span class="fc" id="L17">	private final static org.slf4j.Logger CLASS_LOGGER=org.slf4j.LoggerFactory.getLogger(App.class);</span>
+<span class="fc" id="L18">	private final static org.slf4j.Logger EXCEPTION_LOGGER=org.slf4j.LoggerFactory.getLogger(&quot;ExceptionCatcher&quot;);</span>
 	private static final int DEFAULT_PORT = 7000;
 
 	public static void main(String[] args)
 	{
-<span class="nc" id="L21">		de.elbosso.util.Utilities.configureBasicStdoutLogging(Level.ALL);</span>
-<span class="nc" id="L22">		InfluxConfig config = new InfluxConfig() {</span>
+<span class="nc" id="L23">		de.elbosso.util.Utilities.configureBasicStdoutLogging(Level.ALL);</span>
+<span class="nc" id="L24">		InfluxConfig config = new InfluxConfig() {</span>
 			java.util.Properties props;
 
 			@Override
 			public Duration step() {
-<span class="nc" id="L27">				return Duration.ofSeconds(10);</span>
+<span class="nc" id="L29">				return Duration.ofSeconds(10);</span>
 			}
 
 			@Override
 			public String db() {
-<span class="nc" id="L32">				return &quot;monitoring&quot;;</span>
+<span class="nc" id="L34">				return &quot;monitoring&quot;;</span>
 			}
 
 			@Override
 			public String get(String k) {
-<span class="nc bnc" id="L37" title="All 2 branches missed.">				if(props==null)</span>
+<span class="nc bnc" id="L39" title="All 2 branches missed.">				if(props==null)</span>
 				{
-<span class="nc" id="L39">					props = new java.util.Properties();</span>
-<span class="nc" id="L40">					java.net.URL url=de.netsysit.util.ResourceLoader.getResource(&quot;influxdb_micrometer.properties&quot;);</span>
-<span class="nc bnc" id="L41" title="All 2 branches missed.">					if(url==null)</span>
-<span class="nc" id="L42">						CLASS_LOGGER.error(&quot;could not load default influxdb monitoring properties!&quot;);</span>
+<span class="nc" id="L41">					props = new java.util.Properties();</span>
+<span class="nc" id="L42">					java.net.URL url=de.netsysit.util.ResourceLoader.getResource(&quot;influxdb_micrometer.properties&quot;);</span>
+<span class="nc bnc" id="L43" title="All 2 branches missed.">					if(url==null)</span>
+<span class="nc" id="L44">						CLASS_LOGGER.error(&quot;could not load default influxdb monitoring properties!&quot;);</span>
 					else
 					{
 						try
 						{
-<span class="nc" id="L47">							java.io.InputStream is = url.openStream();</span>
-<span class="nc" id="L48">							props.load(is);</span>
-<span class="nc" id="L49">							is.close();</span>
+<span class="nc" id="L49">							java.io.InputStream is = url.openStream();</span>
+<span class="nc" id="L50">							props.load(is);</span>
+<span class="nc" id="L51">							is.close();</span>
 						}
-<span class="nc" id="L51">						catch(java.io.IOException exp)</span>
+<span class="nc" id="L53">						catch(java.io.IOException exp)</span>
 						{
-<span class="nc" id="L53">							CLASS_LOGGER.error(exp.getMessage(),exp);</span>
-<span class="nc" id="L54">						}</span>
+<span class="nc" id="L55">							CLASS_LOGGER.error(exp.getMessage(),exp);</span>
+<span class="nc" id="L56">						}</span>
 					}
 				}
-<span class="nc bnc" id="L57" title="All 2 branches missed.">				String rv=System.getenv(k)!=null?System.getenv(k):props.getProperty(k);</span>
-<span class="nc" id="L58">				CLASS_LOGGER.debug(&quot;getting value of &quot;+k+&quot;: &quot;+rv);</span>
-<span class="nc" id="L59">				return rv;</span>
+<span class="nc bnc" id="L59" title="All 2 branches missed.">				String rv=System.getenv(k)!=null?System.getenv(k):props.getProperty(k);</span>
+<span class="nc" id="L60">				CLASS_LOGGER.debug(&quot;getting value of &quot;+k+&quot;: &quot;+rv);</span>
+<span class="nc" id="L61">				return rv;</span>
 			}
 		};
-<span class="nc" id="L62">		MeterRegistry registry = new InfluxMeterRegistry(config, Clock.SYSTEM);</span>
-<span class="nc" id="L63">		Metrics.globalRegistry.add(registry);</span>
-<span class="nc" id="L64">		App.init(DEFAULT_PORT);</span>
-<span class="nc" id="L65">	}</span>
+<span class="nc" id="L64">		MeterRegistry registry = new InfluxMeterRegistry(config, Clock.SYSTEM);</span>
+<span class="nc" id="L65">		Metrics.globalRegistry.add(registry);</span>
+<span class="nc" id="L66">		App.init(DEFAULT_PORT);</span>
+<span class="nc" id="L67">	}</span>
 	static final Javalin init(int port)
 	{
-<span class="fc" id="L68">		CLASS_LOGGER.debug(&quot;adding BouncyCastle crypto provider&quot;);</span>
-<span class="fc" id="L69">		Security.addProvider(new BouncyCastleProvider());</span>
-<span class="fc" id="L70">		Javalin app = Javalin.create().start(port);</span>
-<span class="fc" id="L71">		CLASS_LOGGER.debug(&quot;started app - listening on port 7000&quot;);</span>
-<span class="fc" id="L72">		app.config.addStaticFiles(&quot;/site&quot;);</span>
-<span class="fc" id="L73">		CLASS_LOGGER.debug(&quot;added path for static contents: /site (allowed methods: GET)&quot;);</span>
-<span class="fc" id="L74">		Handlers handlers=new Handlers(new DefaultCryptoResourceManager());</span>
-<span class="fc" id="L75">		app.get(&quot;/chain.pem&quot;, handlers::handleGetChain);</span>
-<span class="fc" id="L76">		CLASS_LOGGER.debug(&quot;added path for cert chain: /chain.pem (allowed methods: GET)&quot;);</span>
-<span class="fc" id="L77">		app.get(&quot;/tsa.crt&quot;, handlers::handleGetSignerCert);</span>
-<span class="fc" id="L78">		CLASS_LOGGER.debug(&quot;added path for cert: /tsa.cert (allowed methods: GET)&quot;);</span>
-<span class="fc" id="L79">		app.get(&quot;/tsa.conf&quot;, handlers::handleGetTsaConf);</span>
-<span class="fc" id="L80">		CLASS_LOGGER.debug(&quot;added path for tsa configuration: /tsa.conf (allowed methods: GET)&quot;);</span>
-<span class="fc" id="L81">		app.post(&quot;/query&quot;, handlers::handlePostQuery);</span>
-<span class="fc" id="L82">		app.post(&quot;/&quot;, handlers::handlePost);</span>
-<span class="fc" id="L83">		CLASS_LOGGER.debug(&quot;added path for requesting timestamps: / (allowed methods: POST)&quot;);</span>
-<span class="fc" id="L84">		app.before(ctx -&gt; {</span>
-<span class="fc" id="L85">			CLASS_LOGGER.debug(ctx.req.getMethod()+&quot; &quot;+ctx.contentType());</span>
-<span class="fc" id="L86">		});</span>
-<span class="fc" id="L87">		CLASS_LOGGER.debug(&quot;added before interceptor&quot;);</span>
-<span class="fc" id="L88">		Runtime.getRuntime().addShutdownHook(new Thread(() -&gt; {</span>
-<span class="fc" id="L89">			app.stop();</span>
-<span class="fc" id="L90">		}));</span>
-<span class="fc" id="L91">		CLASS_LOGGER.debug(&quot;added callback for stopping the application&quot;);</span>
-<span class="fc" id="L92">		app.events(event -&gt; {</span>
-<span class="fc" id="L93">			event.serverStopping(() -&gt; { /* Your code here */ });</span>
-<span class="fc" id="L94">			event.serverStopped(() -&gt; {</span>
-<span class="fc" id="L95">				CLASS_LOGGER.debug(&quot;Server stopped&quot;);</span>
-<span class="fc" id="L96">				PersistenceManager.getSharedInstance().close();</span>
-<span class="fc" id="L97">				CLASS_LOGGER.debug(&quot;Persistence manager closed&quot;);</span>
-<span class="fc" id="L98">			});</span>
-<span class="fc" id="L99">			CLASS_LOGGER.debug(&quot;added listener for server stopped event&quot;);</span>
-<span class="fc" id="L100">		});</span>
-<span class="fc" id="L101">		return app;</span>
+<span class="fc" id="L70">		DaoFactory df=new DaoFactory();</span>
+<span class="fc" id="L71">		CLASS_LOGGER.debug(&quot;adding BouncyCastle crypto provider&quot;);</span>
+<span class="fc" id="L72">		Security.addProvider(new BouncyCastleProvider());</span>
+<span class="fc" id="L73">		Javalin app = Javalin.create().start(port);</span>
+<span class="fc" id="L74">		CLASS_LOGGER.debug(&quot;started app - listening on port 7000&quot;);</span>
+<span class="fc" id="L75">		app.config.addStaticFiles(&quot;/site&quot;);</span>
+<span class="fc" id="L76">		CLASS_LOGGER.debug(&quot;added path for static contents: /site (allowed methods: GET)&quot;);</span>
+<span class="fc" id="L77">		Handlers handlers=new Handlers(df,new DefaultCryptoResourceManager());</span>
+<span class="fc" id="L78">		app.get(&quot;/chain.pem&quot;, handlers::handleGetChain);</span>
+<span class="fc" id="L79">		CLASS_LOGGER.debug(&quot;added path for cert chain: /chain.pem (allowed methods: GET)&quot;);</span>
+<span class="fc" id="L80">		app.get(&quot;/tsa.crt&quot;, handlers::handleGetSignerCert);</span>
+<span class="fc" id="L81">		CLASS_LOGGER.debug(&quot;added path for cert: /tsa.cert (allowed methods: GET)&quot;);</span>
+<span class="fc" id="L82">		app.get(&quot;/tsa.conf&quot;, handlers::handleGetTsaConf);</span>
+<span class="fc" id="L83">		CLASS_LOGGER.debug(&quot;added path for tsa configuration: /tsa.conf (allowed methods: GET)&quot;);</span>
+<span class="fc" id="L84">		app.post(&quot;/query&quot;, handlers::handlePostQuery);</span>
+<span class="fc" id="L85">		app.post(&quot;/&quot;, handlers::handlePost);</span>
+<span class="fc" id="L86">		CLASS_LOGGER.debug(&quot;added path for requesting timestamps: / (allowed methods: POST)&quot;);</span>
+<span class="fc" id="L87">		app.before(ctx -&gt; {</span>
+<span class="fc" id="L88">			CLASS_LOGGER.debug(ctx.req.getMethod()+&quot; &quot;+ctx.contentType());</span>
+<span class="fc" id="L89">		});</span>
+<span class="fc" id="L90">		CLASS_LOGGER.debug(&quot;added before interceptor&quot;);</span>
+<span class="fc" id="L91">		Runtime.getRuntime().addShutdownHook(new Thread(() -&gt; {</span>
+<span class="fc" id="L92">			app.stop();</span>
+<span class="fc" id="L93">		}));</span>
+<span class="fc" id="L94">		CLASS_LOGGER.debug(&quot;added callback for stopping the application&quot;);</span>
+<span class="fc" id="L95">		app.events(event -&gt; {</span>
+<span class="fc" id="L96">			event.serverStopping(() -&gt; { /* Your code here */ });</span>
+<span class="fc" id="L97">			event.serverStopped(() -&gt; {</span>
+<span class="fc" id="L98">				CLASS_LOGGER.debug(&quot;Server stopped&quot;);</span>
+<span class="fc" id="L99">				PersistenceManager.getSharedInstance().close();</span>
+<span class="fc" id="L100">				CLASS_LOGGER.debug(&quot;Persistence manager closed&quot;);</span>
+<span class="fc" id="L101">			});</span>
+<span class="fc" id="L102">			CLASS_LOGGER.debug(&quot;added listener for server stopped event&quot;);</span>
+<span class="fc" id="L103">		});</span>
+<span class="fc" id="L104">		return app;</span>
 	}
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.3.201901230119</span></div></body></html>
