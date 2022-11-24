@@ -62,11 +62,11 @@ public class Rfc3161timestampDao extends JpaDao<Rfc3161timestamp>
 			return Optional.empty();
 		}
 	}
-	public Optional<BigInteger> findTotalNumber() {
+	public Optional<Long> findTotalNumber() {
 		try {
 
 
-			return Optional.of(entityManager.createQuery("SELECT count(r) FROM Rfc3161timestamp r", BigInteger.class)
+			return Optional.of(entityManager.createQuery("SELECT count(r) FROM Rfc3161timestamp r", Long.class)
 					.getSingleResult());
 		} catch (NoResultException e) {
 			return Optional.empty();

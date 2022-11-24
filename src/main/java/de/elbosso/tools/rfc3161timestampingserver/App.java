@@ -1,6 +1,8 @@
 package de.elbosso.tools.rfc3161timestampingserver;
 import ch.qos.logback.classic.Level;
 import de.elbosso.tools.rfc3161timestampingserver.dao.DaoFactory;
+import de.elbosso.tools.rfc3161timestampingserver.domain.Rfc3161timestamp;
+import de.elbosso.tools.rfc3161timestampingserver.domain.TotalNumber;
 import de.elbosso.tools.rfc3161timestampingserver.impl.DefaultCryptoResourceManager;
 import de.elbosso.tools.rfc3161timestampingserver.util.PersistenceManager;
 import io.javalin.Javalin;
@@ -20,6 +22,7 @@ import io.micrometer.influx.InfluxMeterRegistry;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.jetbrains.annotations.NotNull;
 
+import java.math.BigInteger;
 import java.security.Security;
 import java.time.Duration;
 
@@ -193,6 +196,40 @@ public class App {
 			}
 		});
 		CLASS_LOGGER.debug("added path for requesting timestamps: / (allowed methods: POST)");
+/*		AdminHandlers adminHandlers=new AdminHandlers(df,new DefaultCryptoResourceManager());
+		app.post("/admin/totalNumber", new Handler()
+		{
+			@Override
+			@OpenApi(
+					summary = "Assess Total Number of Timestamps in Database",
+					deprecated = false,
+					responses = {
+							@OpenApiResponse(status = "200", content = @OpenApiContent(from = TotalNumber.class)),
+							@OpenApiResponse(status = "204") // No content
+					}
+			)
+			public void handle(@NotNull Context context) throws Exception
+			{
+				adminHandlers.handlePostTotalNumber(context);
+			}
+		});
+		app.post("/admin/youngest", new Handler()
+		{
+			@Override
+			@OpenApi(
+					summary = "Assess Total Number of Timestamps in Database",
+					deprecated = false,
+					responses = {
+							@OpenApiResponse(status = "200", content = @OpenApiContent(from = Rfc3161timestamp.class)),
+							@OpenApiResponse(status = "204") // No content
+					}
+			)
+			public void handle(@NotNull Context context) throws Exception
+			{
+				adminHandlers.handlePostYoungest(context);
+			}
+		});
+*/
 		app.before(ctx -> {
 			CLASS_LOGGER.debug(ctx.req.getMethod()+" "+ctx.contentType());
 		});
