@@ -2,16 +2,13 @@ package de.elbosso.tools.rfc3161timestampingserver;
 
 import de.elbosso.tools.rfc3161timestampingserver.dao.DaoFactory;
 import de.elbosso.tools.rfc3161timestampingserver.dao.Rfc3161timestampDao;
-import de.elbosso.tools.rfc3161timestampingserver.domain.Rfc3161Timestamp;
 import de.elbosso.tools.rfc3161timestampingserver.domain.Rfc3161timestamp;
 import de.elbosso.tools.rfc3161timestampingserver.service.CryptoResourceManager;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import javax.persistence.EntityManager;
 import javax.persistence.Query;
 
-import java.util.Collections;
 import java.util.Optional;
 
 import static org.mockito.Mockito.*;
