@@ -37,6 +37,8 @@ import java.io.InputStream;
 import java.security.GeneralSecurityException;
 import java.security.Security;
 import java.security.cert.*;
+import java.sql.Date;
+import java.time.Clock;
 import java.util.Base64;
 import java.util.Collection;
 import java.util.HashSet;
@@ -411,7 +413,7 @@ public class TestIntegration
         }
 
 
-        Assertions.assertTrue(System.currentTimeMillis()-10000l<timeStampToken.getTimeStampInfo().getGenTime().getTime());
+        Assertions.assertTrue(Date.from(Clock.systemDefaultZone().instant().minusMillis(10000l)).getTime()<timeStampToken.getTimeStampInfo().getGenTime().getTime());
 
         InputStream chainStream = TestIntegration.class.getClassLoader().getResource("rfc3161timestampingserver/priv/chain.pem").openStream();
         InputStream rootStream = TestIntegration.class.getClassLoader().getResource("crypto/root.pem").openStream();

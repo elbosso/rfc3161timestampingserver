@@ -1,5 +1,7 @@
 // https://dzone.com/articles/jpa-tutorial-setting-jpa-java
-package de.elbosso.tools.rfc3161timestampingserver;
+package de.elbosso.tools.rfc3161timestampingserver.util;
+
+import de.elbosso.tools.rfc3161timestampingserver.Constants;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
