@@ -67,7 +67,7 @@ public class TestPostQuery
         when(ctx.ip()).thenReturn("127.0.0.1");
         when(ctx.host()).thenReturn("localhost");
         handlers.handlePostQuery(ctx);
-        verify(ctx).status(201);
+        verify(ctx).status(200);
         verify(ctx).contentType("application/timestamp-reply");
         verify(ctx).header("Content-Disposition","filename=\"queried.tsr\"");
         verify(ctx).result(any(java.io.InputStream.class));
@@ -100,7 +100,7 @@ public class TestPostQuery
         when(ctx.ip()).thenReturn("127.0.0.1");
         when(ctx.host()).thenReturn("localhost");
         handlers.handlePostQuery(ctx);
-        verify(ctx).status(201);
+        verify(ctx).status(200);
         verify(ctx).contentType("application/timestamp-reply");
         verify(ctx).header("Content-Disposition","filename=\"queried.tsr\"");
         verify(ctx).result(any(java.io.InputStream.class));
@@ -124,7 +124,7 @@ public class TestPostQuery
         when(ctx.contentType()).thenReturn("multipart/form-data");
         when(ctx.formParam("algoid")).thenReturn(null);
         when(ctx.formParam("msgDigestBase64")).thenReturn(null);
-        when(ctx.formParam("msgDigestHex")).thenReturn("");
+        when(ctx.formParam("msgDigestHex")).thenReturn("msgDigestHex");
         when(dao.findYoungestByMsgImprintHex(any(Rfc3161timestamp.class))).thenReturn(Optional.empty());
         when(ctx.ip()).thenReturn("127.0.0.1");
         when(ctx.host()).thenReturn("localhost");
@@ -138,14 +138,14 @@ public class TestPostQuery
         when(ctx.contentType()).thenReturn("multipart/form-data");
         when(ctx.formParam("algoid")).thenReturn(null);
         when(ctx.formParam("msgDigestBase64")).thenReturn(null);
-        when(ctx.formParam("msgDigestHex")).thenReturn("");
+        when(ctx.formParam("msgDigestHex")).thenReturn("msgDigestHex");
         Rfc3161timestamp rfc3161Timestamp=new Rfc3161timestamp();
         rfc3161Timestamp.setTsr_data(new byte[0]);
         when(dao.findYoungestByMsgImprintHex(any(Rfc3161timestamp.class))).thenReturn(Optional.of(rfc3161Timestamp));
         when(ctx.ip()).thenReturn("127.0.0.1");
         when(ctx.host()).thenReturn("localhost");
         handlers.handlePostQuery(ctx);
-        verify(ctx).status(201);
+        verify(ctx).status(200);
         verify(ctx).contentType("application/timestamp-reply");
         verify(ctx).header("Content-Disposition","filename=\"queried.tsr\"");
         verify(ctx).result(any(java.io.InputStream.class));

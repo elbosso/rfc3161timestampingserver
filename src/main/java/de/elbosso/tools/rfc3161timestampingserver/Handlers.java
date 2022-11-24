@@ -95,36 +95,33 @@ public class Handlers extends java.lang.Object implements Constants
         {
             CLASS_LOGGER.debug("request is multipart/form-data or application/x-www-form-urlencoded - searching for parameters algoid and msgDigest");
             String algoid=ctx.formParam("algoid");
-            if(algoid.equals(""))
-                algoid=null;
-            if(algoid!=null)
+            if((algoid!=null)&&(algoid.equals("")==false))
             {
                  CLASS_LOGGER.debug("found algoid to be " + algoid);
             }
             else
             {
-                 CLASS_LOGGER.warn("did not find algoid");
+                algoid=null;
+                CLASS_LOGGER.warn("did not find algoid");
             }
             String msgDigestBase64 = ctx.formParam("msgDigestBase64");
-            if(msgDigestBase64.equals(""))
-                msgDigestBase64=null;
-            if(msgDigestBase64!=null)
+            if((msgDigestBase64!=null)&&(msgDigestBase64.equals("")==false))
             {
                  CLASS_LOGGER.debug("found msgDigestBase64 to be " + msgDigestBase64);
             }
             else
             {
+                msgDigestBase64=null;
                  CLASS_LOGGER.warn("did not find msgDigestBase64");
             }
             String msgDigestHex = ctx.formParam("msgDigestHex");
-            if(msgDigestHex.equals(""))
-                msgDigestHex=null;
-            if(msgDigestHex!=null)
+            if((msgDigestHex!=null)&&(msgDigestHex.equals("")==false))
             {
                  CLASS_LOGGER.debug("found msgDigestHex to be " + msgDigestHex);
             }
             else
             {
+                msgDigestHex=null;
                  CLASS_LOGGER.warn("did not find msgDigestHex");
             }
             Rfc3161timestampDao timestampDao=df.createRfc3161timestampDao();

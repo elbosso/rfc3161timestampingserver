@@ -239,7 +239,7 @@ public class TestIntegration
         httpResponse = HttpClientBuilder.create().build().execute( post );
 
         // Then
-        Assertions.assertEquals(HttpStatus.SC_CREATED,httpResponse.getCode());
+        Assertions.assertEquals(HttpStatus.SC_OK,httpResponse.getCode());
 
         entity = ((CloseableHttpResponse) httpResponse).getEntity();
 
@@ -325,7 +325,7 @@ public class TestIntegration
         httpResponse = HttpClientBuilder.create().build().execute( post );
 
         // Then
-        Assertions.assertEquals(HttpStatus.SC_CREATED,httpResponse.getCode());
+        Assertions.assertEquals(HttpStatus.SC_OK,httpResponse.getCode());
 
         entity = ((CloseableHttpResponse) httpResponse).getEntity();
 
