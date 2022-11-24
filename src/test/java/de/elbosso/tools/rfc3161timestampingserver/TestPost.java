@@ -2,7 +2,6 @@ package de.elbosso.tools.rfc3161timestampingserver;
 
 import de.elbosso.tools.rfc3161timestampingserver.dao.DaoFactory;
 import de.elbosso.tools.rfc3161timestampingserver.dao.Rfc3161timestampDao;
-import de.elbosso.tools.rfc3161timestampingserver.domain.Rfc3161Timestamp;
 import de.elbosso.tools.rfc3161timestampingserver.domain.Rfc3161timestamp;
 import de.elbosso.tools.rfc3161timestampingserver.impl.DefaultCryptoResourceManager;
 import de.elbosso.tools.rfc3161timestampingserver.service.CryptoResourceManager;
@@ -13,9 +12,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junitpioneer.jupiter.SetEnvironmentVariable;
 
-import javax.persistence.EntityManager;
-import javax.persistence.EntityTransaction;
-import javax.persistence.Query;
 import java.io.IOException;
 import java.security.Security;
 
@@ -150,8 +146,8 @@ public class TestPost
         when(cryptoResourceManager.getTsaCert()).thenReturn(de.netsysit.util.ResourceLoader.getResource("rfc3161timestampingserver/priv/tsa.crt"));
         doNothing().when(dao).beginTransaction();
         doAnswer(invocation -> {
-            Rfc3161Timestamp arg0 = invocation.getArgument(0);
-            arg0.setId(java.math.BigInteger.valueOf(1));
+            Rfc3161timestamp arg0 = invocation.getArgument(0);
+            arg0.setId(java.math.BigDecimal.valueOf(1));
             return null;
         }).when(dao).persist(any(Rfc3161timestamp.class));
 
