@@ -4,6 +4,10 @@ import de.elbosso.tools.rfc3161timestampingserver.dao.DaoFactory;
 import de.elbosso.tools.rfc3161timestampingserver.impl.DefaultCryptoResourceManager;
 import de.elbosso.tools.rfc3161timestampingserver.util.PersistenceManager;
 import io.javalin.Javalin;
+import io.javalin.plugin.openapi.OpenApiOptions;
+import io.javalin.plugin.openapi.OpenApiPlugin;
+import io.javalin.plugin.openapi.ui.SwaggerOptions;
+import io.swagger.v3.oas.models.info.Info;
 import io.micrometer.core.instrument.Clock;
 import io.micrometer.core.instrument.MeterRegistry;
 import io.micrometer.core.instrument.Metrics;
@@ -70,9 +74,15 @@ public class App {
 		DaoFactory df=new DaoFactory();
 		CLASS_LOGGER.debug("adding BouncyCastle crypto provider");
 		Security.addProvider(new BouncyCastleProvider());
-		Javalin app = Javalin.create().start(port);
+		Javalin app = Javalin.create(config ->
+						config
+//						.registerPlugin(new RouteOverviewPlugin("/"))
+								.registerPlugin(new OpenApiPlugin(getOpenApiOptions()))
+								.enableWebjars()
+								.addStaticFiles("/site")
+		).
+				start(port);
 		CLASS_LOGGER.debug("started app - listening on port 7000");
-		app.config.addStaticFiles("/site");
 		CLASS_LOGGER.debug("added path for static contents: /site (allowed methods: GET)");
 		Handlers handlers=new Handlers(df,new DefaultCryptoResourceManager());
 		app.get("/chain.pem", handlers::handleGetChain);
@@ -102,5 +112,16 @@ public class App {
 			CLASS_LOGGER.debug("added listener for server stopped event");
 		});
 		return app;
+	}
+	private static OpenApiOptions getOpenApiOptions()
+	{
+		Info applicationInfo = new Info()
+			.version("1.6.0-SNAPSHOT")
+			.description("de.elbosso.tools.rfc3161timestampingserver");
+		return new OpenApiOptions(applicationInfo)
+				.path("/open-api-spec")
+				.swagger(new SwaggerOptions("/try-it").title("de.elbosso.tools.rfc3161timestampingserver - try it!"))
+//				.reDoc(new ReDocOptions("/redoc").title("My ReDoc Documentation"))
+		;
 	}
 }

@@ -5,6 +5,11 @@ Changelog of this project.
 ## Unreleased
 ### GitHub [#27](https://github.com/elbosso/rfc3161timestampingserver/issues/27) change persistence to using JPA
 
+**fixes #27**
+
+
+[438f8c79abfe466](https://github.com/elbosso//commit/438f8c79abfe466) Jürgen Key *2022-11-24 14:56:00*
+
 **re #27**
 
 
@@ -37,6 +42,31 @@ Changelog of this project.
 
 
 ### No issue
+
+**breaking tests mended**
+
+
+[2fb3c4f60284c3a](https://github.com/elbosso//commit/2fb3c4f60284c3a) Jürgen Key *2022-11-24 14:31:41*
+
+**breaking tests mended**
+
+
+[3806217f56f4a4e](https://github.com/elbosso//commit/3806217f56f4a4e) Jürgen Key *2022-11-24 07:32:38*
+
+**Bump postgresql from 42.4.1 to 42.4.3**
+
+* Bumps [postgresql](https://github.com/pgjdbc/pgjdbc) from 42.4.1 to 42.4.3.
+* - [Release notes](https://github.com/pgjdbc/pgjdbc/releases)
+* - [Changelog](https://github.com/pgjdbc/pgjdbc/blob/master/CHANGELOG.md)
+* - [Commits](https://github.com/pgjdbc/pgjdbc/compare/REL42.4.1...REL42.4.3)
+* ---
+* updated-dependencies:
+* - dependency-name: org.postgresql:postgresql
+* dependency-type: direct:production
+* ...
+* Signed-off-by: dependabot[bot] &lt;support@github.com&gt;
+
+[4e30702fdf3fefd](https://github.com/elbosso//commit/4e30702fdf3fefd) dependabot[bot] *2022-11-23 22:26:34*
 
 **new version**
 

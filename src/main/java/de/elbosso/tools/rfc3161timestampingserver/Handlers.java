@@ -6,6 +6,9 @@ import de.elbosso.tools.rfc3161timestampingserver.domain.Rfc3161timestamp;
 import de.elbosso.tools.rfc3161timestampingserver.service.CryptoResourceManager;
 import io.javalin.http.Context;
 import io.javalin.http.UploadedFile;
+import io.javalin.plugin.openapi.annotations.OpenApi;
+import io.javalin.plugin.openapi.annotations.OpenApiContent;
+import io.javalin.plugin.openapi.annotations.OpenApiResponse;
 import io.micrometer.core.instrument.Metrics;
 import org.bouncycastle.asn1.ASN1ObjectIdentifier;
 import org.bouncycastle.asn1.nist.NISTObjectIdentifiers;
@@ -47,6 +50,15 @@ public class Handlers extends java.lang.Object implements Constants
         this.cryptoResourceManager=cryptoResourceManager;
     }
 
+    @OpenApi(
+            summary = "Get Chain",
+            deprecated = false,
+            //tags = {"user"},
+            responses = {
+                    @OpenApiResponse(status = "200", content = @OpenApiContent(from = java.lang.Float.class)),
+                    @OpenApiResponse(status = "204") // No content
+            }
+    )
     public void handleGetChain(io.javalin.http.Context ctx) throws java.lang.Exception
     {
         CLASS_LOGGER.debug("GET for chain.pem");
