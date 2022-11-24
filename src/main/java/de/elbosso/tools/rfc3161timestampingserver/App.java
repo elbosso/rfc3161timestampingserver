@@ -153,7 +153,7 @@ public class App {
 		{
 			@Override
 			@OpenApi(
-					summary = "Query",
+					summary = "Query Timestamps",
 					deprecated = false,
 					formParams = {
 							@OpenApiFormParam(name = "algoid", type = String.class,required = false),
@@ -175,7 +175,7 @@ public class App {
 		{
 			@Override
 			@OpenApi(
-					summary = "Query",
+					summary = "Create Timestamps",
 					deprecated = false,
 					fileUploads = {
 						@OpenApiFileUpload(name = "tsq",required = false)
