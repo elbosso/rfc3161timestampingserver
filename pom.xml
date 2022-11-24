@@ -61,10 +61,18 @@ WENN SIE AUF DIE MOEGLICHKEIT EINES SOLCHEN SCHADENS HINGEWIESEN WORDEN SIND.
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-compiler-plugin</artifactId>
+                    <version>3.10.1</version>
                     <configuration>
                         <source>${project.custom.java.version}</source>
                         <!--target>${project.custom.java.version}</target-->
                         <compilerVersion>${project.custom.java.version}</compilerVersion>
+                        <annotationProcessorPaths>
+                            <annotationProcessorPath>
+                                <groupId>io.javalin.community.openapi</groupId>
+                                <artifactId>openapi-annotation-processor</artifactId>
+                                <version>5.2.0</version>
+                            </annotationProcessorPath>
+                        </annotationProcessorPaths>
                     </configuration>
                 </plugin>
                 <plugin>
@@ -302,7 +310,7 @@ WENN SIE AUF DIE MOEGLICHKEIT EINES SOLCHEN SCHADENS HINGEWIESEN WORDEN SIND.
         <dependency>
             <groupId>io.javalin</groupId>
             <artifactId>javalin</artifactId>
-            <version>3.5.0</version>
+            <version>3.6.0</version>
         </dependency>
         <!-- https://mvnrepository.com/artifact/org.bouncycastle/bcprov-jdk15on -->
         <dependency>

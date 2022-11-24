@@ -4,8 +4,12 @@ import de.elbosso.tools.rfc3161timestampingserver.dao.DaoFactory;
 import de.elbosso.tools.rfc3161timestampingserver.impl.DefaultCryptoResourceManager;
 import de.elbosso.tools.rfc3161timestampingserver.util.PersistenceManager;
 import io.javalin.Javalin;
+import io.javalin.http.Context;
+import io.javalin.http.Handler;
+import io.javalin.http.InternalServerErrorResponse;
 import io.javalin.plugin.openapi.OpenApiOptions;
 import io.javalin.plugin.openapi.OpenApiPlugin;
+import io.javalin.plugin.openapi.annotations.*;
 import io.javalin.plugin.openapi.ui.SwaggerOptions;
 import io.swagger.v3.oas.models.info.Info;
 import io.micrometer.core.instrument.Clock;
@@ -14,6 +18,8 @@ import io.micrometer.core.instrument.Metrics;
 import io.micrometer.influx.InfluxConfig;
 import io.micrometer.influx.InfluxMeterRegistry;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
+import org.jetbrains.annotations.NotNull;
+
 import java.security.Security;
 import java.time.Duration;
 
@@ -85,14 +91,107 @@ public class App {
 		CLASS_LOGGER.debug("started app - listening on port 7000");
 		CLASS_LOGGER.debug("added path for static contents: /site (allowed methods: GET)");
 		Handlers handlers=new Handlers(df,new DefaultCryptoResourceManager());
-		app.get("/chain.pem", handlers::handleGetChain);
+		app.get("/chain.pem", new Handler()
+		{
+			@Override
+			@OpenApi(
+					summary = "Get Chain",
+					method = HttpMethod.GET,
+					deprecated = false,
+					//tags = {"user"},
+					responses = {
+							@OpenApiResponse(status = "200", content = @OpenApiContent(from = java.lang.String.class, type="application/pkcs7-mime")),
+							@OpenApiResponse(status = "204") // No content
+					}
+			)
+			public void handle(@NotNull Context context) throws Exception
+			{
+				handlers.handleGetChain(context);
+			}
+		});
 		CLASS_LOGGER.debug("added path for cert chain: /chain.pem (allowed methods: GET)");
-		app.get("/tsa.crt", handlers::handleGetSignerCert);
+		app.get("/tsa.crt", new Handler()
+		{
+			@Override
+			@OpenApi(
+					summary = "Get Signer Certificate",
+					operationId = "getAllUsers",
+					method = HttpMethod.GET,
+					deprecated = false,
+					//tags = {"user"},
+					responses = {
+							@OpenApiResponse(status = "200", content = @OpenApiContent(from = java.lang.String.class,type = "application/pkix-cert")),
+							@OpenApiResponse(status = "204") // No content
+					}
+			)
+			public void handle(@NotNull Context context) throws Exception
+			{
+				handlers.handleGetSignerCert(context);
+			}
+		});
 		CLASS_LOGGER.debug("added path for cert: /tsa.cert (allowed methods: GET)");
-		app.get("/tsa.conf", handlers::handleGetTsaConf);
+		app.get("/tsa.conf", new Handler()
+		{
+			@Override
+			@OpenApi(
+					summary = "Get TSA Configuration",
+					method = HttpMethod.GET,
+					deprecated = false,
+					//tags = {"user"},
+					responses = {
+							@OpenApiResponse(status = "200", content = @OpenApiContent(from = java.lang.String.class)),
+							@OpenApiResponse(status = "204") // No content
+					}
+			)
+			public void handle(@NotNull Context context) throws Exception
+			{
+				handlers.handleGetTsaConf(context);
+			}
+		});
 		CLASS_LOGGER.debug("added path for tsa configuration: /tsa.conf (allowed methods: GET)");
-		app.post("/query", handlers::handlePostQuery);
-		app.post("/", handlers::handlePost);
+		app.post("/query", new Handler()
+		{
+			@Override
+			@OpenApi(
+					summary = "Query",
+					deprecated = false,
+					formParams = {
+							@OpenApiFormParam(name = "algoid", type = String.class,required = false),
+							@OpenApiFormParam(name = "msgDigestBase64", type = String.class,required = false),
+							@OpenApiFormParam(name = "msgDigestHex", type = String.class,required = false),
+					},
+					//tags = {"user"},
+					responses = {
+							@OpenApiResponse(status = "200", content = @OpenApiContent(from = byte[].class, type="application/timestamp-reply")),
+							@OpenApiResponse(status = "204") // No content
+					}
+			)
+			public void handle(@NotNull Context context) throws Exception
+			{
+				handlers.handlePostQuery(context);
+			}
+		});
+		app.post("/", new Handler()
+		{
+			@Override
+			@OpenApi(
+					summary = "Query",
+					deprecated = false,
+					fileUploads = {
+						@OpenApiFileUpload(name = "tsq",required = false)
+					},
+//					requestBody = @OpenApiRequestBody(required = false,content =  @OpenApiContent(from = byte[].class)),
+					//tags = {"user"},
+					responses = {
+							@OpenApiResponse(status = "200", content = @OpenApiContent(from = byte[].class, type="application/timestamp-reply")),
+							@OpenApiResponse(status = "204") // No content
+					}
+			)
+			public void handle(@NotNull Context context) throws Exception
+			{
+				handlers.handlePost(context);
+			}
+		});
 		CLASS_LOGGER.debug("added path for requesting timestamps: / (allowed methods: POST)");
 		app.before(ctx -> {
 			CLASS_LOGGER.debug(ctx.req.getMethod()+" "+ctx.contentType());

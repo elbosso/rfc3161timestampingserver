@@ -5,10 +5,9 @@ import de.elbosso.tools.rfc3161timestampingserver.dao.Rfc3161timestampDao;
 import de.elbosso.tools.rfc3161timestampingserver.domain.Rfc3161timestamp;
 import de.elbosso.tools.rfc3161timestampingserver.service.CryptoResourceManager;
 import io.javalin.http.Context;
+import io.javalin.http.InternalServerErrorResponse;
 import io.javalin.http.UploadedFile;
-import io.javalin.plugin.openapi.annotations.OpenApi;
-import io.javalin.plugin.openapi.annotations.OpenApiContent;
-import io.javalin.plugin.openapi.annotations.OpenApiResponse;
+import io.javalin.plugin.openapi.annotations.*;
 import io.micrometer.core.instrument.Metrics;
 import org.bouncycastle.asn1.ASN1ObjectIdentifier;
 import org.bouncycastle.asn1.nist.NISTObjectIdentifiers;
@@ -23,8 +22,8 @@ import org.bouncycastle.operator.DigestCalculatorProvider;
 import org.bouncycastle.operator.OperatorCreationException;
 import org.bouncycastle.operator.jcajce.JcaDigestCalculatorProviderBuilder;
 import org.bouncycastle.tsp.*;
+import org.jetbrains.annotations.NotNull;
 
-import javax.persistence.EntityManager;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.security.KeyFactory;
@@ -50,15 +49,6 @@ public class Handlers extends java.lang.Object implements Constants
         this.cryptoResourceManager=cryptoResourceManager;
     }
 
-    @OpenApi(
-            summary = "Get Chain",
-            deprecated = false,
-            //tags = {"user"},
-            responses = {
-                    @OpenApiResponse(status = "200", content = @OpenApiContent(from = java.lang.Float.class)),
-                    @OpenApiResponse(status = "204") // No content
-            }
-    )
     public void handleGetChain(io.javalin.http.Context ctx) throws java.lang.Exception
     {
         CLASS_LOGGER.debug("GET for chain.pem");
@@ -105,6 +95,8 @@ public class Handlers extends java.lang.Object implements Constants
         {
             CLASS_LOGGER.debug("request is multipart/form-data or application/x-www-form-urlencoded - searching for parameters algoid and msgDigest");
             String algoid=ctx.formParam("algoid");
+            if(algoid.equals(""))
+                algoid=null;
             if(algoid!=null)
             {
                  CLASS_LOGGER.debug("found algoid to be " + algoid);
@@ -114,6 +106,8 @@ public class Handlers extends java.lang.Object implements Constants
                  CLASS_LOGGER.warn("did not find algoid");
             }
             String msgDigestBase64 = ctx.formParam("msgDigestBase64");
+            if(msgDigestBase64.equals(""))
+                msgDigestBase64=null;
             if(msgDigestBase64!=null)
             {
                  CLASS_LOGGER.debug("found msgDigestBase64 to be " + msgDigestBase64);
@@ -123,6 +117,8 @@ public class Handlers extends java.lang.Object implements Constants
                  CLASS_LOGGER.warn("did not find msgDigestBase64");
             }
             String msgDigestHex = ctx.formParam("msgDigestHex");
+            if(msgDigestHex.equals(""))
+                msgDigestHex=null;
             if(msgDigestHex!=null)
             {
                  CLASS_LOGGER.debug("found msgDigestHex to be " + msgDigestHex);
