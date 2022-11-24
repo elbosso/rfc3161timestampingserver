@@ -21,8 +21,8 @@ public class Rfc3161timestampDao extends JpaDao&lt;Rfc3161timestamp&gt;
 <span class="fc" id="L21">					.setParameter(&quot;Imprint&quot;, timestamp.getMessage_imprint_digest_base64())</span>
 <span class="fc" id="L22">					.setMaxResults(1)</span>
 <span class="fc" id="L23">					.getResultList().get(0));</span>
-<span class="nc" id="L24">		} catch (NoResultException e) {</span>
-<span class="nc" id="L25">			return Optional.empty();</span>
+<span class="fc" id="L24">		} catch (NoResultException|IndexOutOfBoundsException e) {</span>
+<span class="fc" id="L25">			return Optional.empty();</span>
 		}
 	}
 	public Optional&lt;Rfc3161timestamp&gt; findYoungestByMsgDigestAndImprintBase64(Rfc3161timestamp timestamp) {
@@ -34,7 +34,7 @@ public class Rfc3161timestampDao extends JpaDao&lt;Rfc3161timestamp&gt;
 <span class="nc" id="L34">					.setParameter(&quot;Imprint&quot;, timestamp.getMessage_imprint_digest_base64())</span>
 <span class="nc" id="L35">					.setMaxResults(1)</span>
 <span class="nc" id="L36">					.getResultList().get(0));</span>
-<span class="nc" id="L37">		} catch (NoResultException e) {</span>
+<span class="nc" id="L37">		} catch (NoResultException|IndexOutOfBoundsException e) {</span>
 <span class="nc" id="L38">			return Optional.empty();</span>
 		}
 	}
@@ -46,8 +46,8 @@ public class Rfc3161timestampDao extends JpaDao&lt;Rfc3161timestamp&gt;
 <span class="fc" id="L46">					.setParameter(&quot;Imprint&quot;, timestamp.getMessage_imprint_digest_hex())</span>
 <span class="fc" id="L47">					.setMaxResults(1)</span>
 <span class="fc" id="L48">					.getResultList().get(0));</span>
-<span class="nc" id="L49">		} catch (NoResultException e) {</span>
-<span class="nc" id="L50">			return Optional.empty();</span>
+<span class="fc" id="L49">		} catch (NoResultException|IndexOutOfBoundsException e) {</span>
+<span class="fc" id="L50">			return Optional.empty();</span>
 		}
 	}
 }
