@@ -21,7 +21,7 @@ public class Rfc3161timestampDao extends JpaDao<Rfc3161timestamp>
 					.setParameter("Imprint", timestamp.getMessage_imprint_digest_base64())
 					.setMaxResults(1)
 					.getResultList().get(0));
-		} catch (NoResultException e) {
+		} catch (NoResultException|IndexOutOfBoundsException e) {
 			return Optional.empty();
 		}
 	}
@@ -34,7 +34,7 @@ public class Rfc3161timestampDao extends JpaDao<Rfc3161timestamp>
 					.setParameter("Imprint", timestamp.getMessage_imprint_digest_base64())
 					.setMaxResults(1)
 					.getResultList().get(0));
-		} catch (NoResultException e) {
+		} catch (NoResultException|IndexOutOfBoundsException e) {
 			return Optional.empty();
 		}
 	}
@@ -46,7 +46,7 @@ public class Rfc3161timestampDao extends JpaDao<Rfc3161timestamp>
 					.setParameter("Imprint", timestamp.getMessage_imprint_digest_hex())
 					.setMaxResults(1)
 					.getResultList().get(0));
-		} catch (NoResultException e) {
+		} catch (NoResultException|IndexOutOfBoundsException e) {
 			return Optional.empty();
 		}
 	}
