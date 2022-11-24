@@ -175,7 +175,7 @@ public class Handlers extends java.lang.Object implements Constants
                  CLASS_LOGGER.debug("searching using only message digest (hex) imprint as parameter");
                 Rfc3161timestamp pattern=new Rfc3161timestamp();
                 pattern.setMessage_imprint_digest_hex(msgDigestHex.toUpperCase());
-                Optional<Rfc3161timestamp> queriedTimestamp=timestampDao.findYoungestByMsgImprintBase64(pattern);
+                Optional<Rfc3161timestamp> queriedTimestamp=timestampDao.findYoungestByMsgImprintHex(pattern);
                 if(queriedTimestamp.isPresent())
                 {
                     CLASS_LOGGER.info("Entry found in database");
