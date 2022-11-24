@@ -1,6 +1,8 @@
 package de.elbosso.tools.rfc3161timestampingserver;
 
-import de.elbosso.tools.rfc3161timestampingserver.domain.Rfc3161Timestamp;
+import de.elbosso.tools.rfc3161timestampingserver.dao.DaoFactory;
+import de.elbosso.tools.rfc3161timestampingserver.dao.Rfc3161timestampDao;
+import de.elbosso.tools.rfc3161timestampingserver.domain.Rfc3161timestamp;
 import de.elbosso.tools.rfc3161timestampingserver.service.CryptoResourceManager;
 import io.javalin.http.Context;
 import io.javalin.http.UploadedFile;
@@ -20,7 +22,6 @@ import org.bouncycastle.operator.jcajce.JcaDigestCalculatorProviderBuilder;
 import org.bouncycastle.tsp.*;
 
 import javax.persistence.EntityManager;
-import javax.persistence.Query;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.security.KeyFactory;
@@ -28,23 +29,20 @@ import java.security.NoSuchAlgorithmException;
 import java.security.cert.*;
 import java.security.spec.InvalidKeySpecException;
 import java.security.spec.PKCS8EncodedKeySpec;
+import java.time.Clock;
 import java.util.Base64;
+import java.util.Optional;
 
 public class Handlers extends java.lang.Object implements Constants
 {
     private final static org.slf4j.Logger CLASS_LOGGER=org.slf4j.LoggerFactory.getLogger(Handlers.class);
 	private final static org.slf4j.Logger EXCEPTION_LOGGER=org.slf4j.LoggerFactory.getLogger("ExceptionCatcher");
-    private EntityManager em;
+   	static DaoFactory df=new DaoFactory();
     private final CryptoResourceManager cryptoResourceManager;
 
     Handlers(CryptoResourceManager cryptoResourceManager)
     {
-        this(null,cryptoResourceManager);
-    }
-    Handlers(EntityManager em,CryptoResourceManager cryptoResourceManager)
-    {
         super();
-        this.em=em;
         this.cryptoResourceManager=cryptoResourceManager;
     }
 
@@ -120,25 +118,25 @@ public class Handlers extends java.lang.Object implements Constants
             {
                  CLASS_LOGGER.warn("did not find msgDigestHex");
             }
-            if(em==null)
-                em=PersistenceManager.getSharedInstance().getEntityManager();
+            Rfc3161timestampDao timestampDao=df.createRfc3161timestampDao();
+//            if(em==null)
+//                em= PersistenceManager.getSharedInstance().getEntityManager();
             if((algoid!=null)&&(msgDigestBase64!=null))
             {
                  CLASS_LOGGER.debug("searching using message digest algorithm and message digest (Base64) imprint as parameters");
-                Query namedQuery = em.createNamedQuery("Rfc3161Timestamp.findYoungestByMsgDigestAndImprintBase64");
-                namedQuery.setParameter("Alg", algoid);
-                namedQuery.setParameter("Imprint", msgDigestBase64);
-                namedQuery.setMaxResults(1);
-                java.util.List resultList= namedQuery.getResultList();
-                if(resultList.isEmpty()==false)
+                Rfc3161timestamp pattern=new Rfc3161timestamp();
+                pattern.setMessage_imprint_alg_oid(algoid);
+                pattern.setMessage_imprint_digest_base64(msgDigestBase64);
+                Optional<Rfc3161timestamp> queriedTimestamp=timestampDao.findYoungestByMsgDigestAndImprintBase64(pattern);
+                if(queriedTimestamp.isPresent())
                 {
                     CLASS_LOGGER.info("Entry found in database");
-                    Rfc3161Timestamp rfc3161Timestamp = (Rfc3161Timestamp) resultList.get(0);
+                    Rfc3161timestamp rfc3161Timestamp = queriedTimestamp.get();
                     ctx.status(201);
                     ctx.contentType("application/timestamp-reply");
                     ctx.header("Content-Disposition","filename=\"queried.tsr\"");
                     setCachingPolixy(ctx);
-                    ctx.result(new java.io.ByteArrayInputStream(rfc3161Timestamp.getTsrData()));
+                    ctx.result(new java.io.ByteArrayInputStream(rfc3161Timestamp.getTsr_data()));
                     Metrics.counter("rfc3161timestampingserver.post", "resourcename","query","httpstatus",java.lang.Integer.toString(ctx.status()),"params","alg+base64","success","true","contentType",contentType,"remoteAddr",ctx.ip(),"remoteHost",ctx.ip(), "localAddr",ctx.host(), "localName",ctx.host()).increment();
                 }
                 else
@@ -151,19 +149,18 @@ public class Handlers extends java.lang.Object implements Constants
             else if(msgDigestBase64!=null)
             {
                  CLASS_LOGGER.debug("searching using only message digest (Base64) imprint as parameter");
-                Query namedQuery = em.createNamedQuery("Rfc3161Timestamp.findYoungestByMsgImprintBase64");
-                namedQuery.setParameter("Imprint", msgDigestBase64);
-                namedQuery.setMaxResults(1);
-                java.util.List resultList= namedQuery.getResultList();
-                if(resultList.isEmpty()==false)
+                Rfc3161timestamp pattern=new Rfc3161timestamp();
+                pattern.setMessage_imprint_digest_base64(msgDigestBase64);
+                Optional<Rfc3161timestamp> queriedTimestamp=timestampDao.findYoungestByMsgImprintBase64(pattern);
+                if(queriedTimestamp.isPresent())
                 {
                     CLASS_LOGGER.info("Entry found in database");
-                    Rfc3161Timestamp rfc3161Timestamp = (Rfc3161Timestamp) resultList.get(0);
+                    Rfc3161timestamp rfc3161Timestamp = queriedTimestamp.get();
                     ctx.status(201);
                     ctx.contentType("application/timestamp-reply");
                     ctx.header("Content-Disposition","filename=\"queried.tsr\"");
                     setCachingPolixy(ctx);
-                    ctx.result(new java.io.ByteArrayInputStream(rfc3161Timestamp.getTsrData()));
+                    ctx.result(new java.io.ByteArrayInputStream(rfc3161Timestamp.getTsr_data()));
                     Metrics.counter("rfc3161timestampingserver.post", "resourcename","query","httpstatus",java.lang.Integer.toString(ctx.status()),"params","base64","success","true","contentType",contentType,"remoteAddr",ctx.ip(),"remoteHost",ctx.ip(), "localAddr",ctx.host(), "localName",ctx.host()).increment();
                 }
                 else
@@ -176,19 +173,18 @@ public class Handlers extends java.lang.Object implements Constants
             else if(msgDigestHex!=null)
             {
                  CLASS_LOGGER.debug("searching using only message digest (hex) imprint as parameter");
-                Query namedQuery = em.createNamedQuery("Rfc3161Timestamp.findYoungestByMsgImprintHex");
-                namedQuery.setParameter("Imprint", msgDigestHex.toUpperCase());
-                namedQuery.setMaxResults(1);
-                java.util.List resultList= namedQuery.getResultList();
-                if(resultList.isEmpty()==false)
+                Rfc3161timestamp pattern=new Rfc3161timestamp();
+                pattern.setMessage_imprint_digest_hex(msgDigestHex.toUpperCase());
+                Optional<Rfc3161timestamp> queriedTimestamp=timestampDao.findYoungestByMsgImprintHex(pattern);
+                if(queriedTimestamp.isPresent())
                 {
                     CLASS_LOGGER.info("Entry found in database");
-                    Rfc3161Timestamp rfc3161Timestamp = (Rfc3161Timestamp) resultList.get(0);
+                    Rfc3161timestamp rfc3161Timestamp = queriedTimestamp.get();
                     ctx.status(201);
                     ctx.contentType("application/timestamp-reply");
                     ctx.header("Content-Disposition","filename=\"queried.tsr\"");
                     setCachingPolixy(ctx);
-                    ctx.result(new java.io.ByteArrayInputStream(rfc3161Timestamp.getTsrData()));
+                    ctx.result(new java.io.ByteArrayInputStream(rfc3161Timestamp.getTsr_data()));
                     Metrics.counter("rfc3161timestampingserver.post", "resourcename","query","httpstatus",java.lang.Integer.toString(ctx.status()),"params","hex","success","true","contentType",contentType,"remoteAddr",ctx.ip(),"remoteHost",ctx.ip(), "localAddr",ctx.host(), "localName",ctx.host()).increment();
                 }
                 else
@@ -261,26 +257,28 @@ public class Handlers extends java.lang.Object implements Constants
         }
         if(tsq!=null)
         {
-            if(em==null)
-                em=PersistenceManager.getSharedInstance().getEntityManager();
-            em.getTransaction().begin();
+            Rfc3161timestampDao timestampDao=df.createRfc3161timestampDao();
+            timestampDao.beginTransaction();
+//            if(em==null)
+//                em=PersistenceManager.getSharedInstance().getEntityManager();
+//            em.getTransaction().begin();
             try
             {
                 RequestReplyEntity rre=new RequestReplyEntity();
 
                 TimeStampRequest timeStampRequest=createTimestampRequest(tsq,rre);
 
-                Rfc3161Timestamp rfc3161Timestamp=new Rfc3161Timestamp();
-                rfc3161Timestamp.setCreationDate(new java.util.Date());
-                rfc3161Timestamp.setMessageImprintAlgOID(timeStampRequest.getMessageImprintAlgOID().getId());
-                rfc3161Timestamp.setMessageImprintDigestBase64(de.elbosso.util.Utilities.base64Encode(timeStampRequest.getMessageImprintDigest()));
-                rfc3161Timestamp.setMessageImprintDigestHex(de.elbosso.util.Utilities.formatHexDump(timeStampRequest.getMessageImprintDigest(),false).toUpperCase());
-                em.persist(rfc3161Timestamp);
+                Rfc3161timestamp rfc3161Timestamp=new Rfc3161timestamp();
+                rfc3161Timestamp.setCreation_date(java.sql.Timestamp.from(Clock.systemUTC().instant()));
+                rfc3161Timestamp.setMessage_imprint_alg_oid(timeStampRequest.getMessageImprintAlgOID().getId());
+                rfc3161Timestamp.setMessage_imprint_digest_base64(de.elbosso.util.Utilities.base64Encode(timeStampRequest.getMessageImprintDigest()));
+                rfc3161Timestamp.setMessage_imprint_digest_hex(de.elbosso.util.Utilities.formatHexDump(timeStampRequest.getMessageImprintDigest(),false).toUpperCase());
+                timestampDao.persist(rfc3161Timestamp);
 
                 byte[] tsr=executeTsaProtocol(timeStampRequest,rre,rfc3161Timestamp);
 
-                rfc3161Timestamp.setTsrData(tsr);
-                em.persist(rfc3161Timestamp);
+                rfc3161Timestamp.setTsr_data(tsr);
+                timestampDao.update(rfc3161Timestamp);
 
                 
                     CLASS_LOGGER.debug("Timestamp Response created - length: " + tsr.length);
@@ -293,7 +291,7 @@ public class Handlers extends java.lang.Object implements Constants
                 ctx.header("Content-Disposition","filename=\"reply.tsr\"");
                 setCachingPolixy(ctx);
                 ctx.result(new java.io.ByteArrayInputStream(tsr));
-                em.getTransaction().commit();
+                timestampDao.commitTransaction();
                 Metrics.counter("rfc3161timestampingserver.post", "resourcename","/","httpstatus",java.lang.Integer.toString(ctx.status()),"success","true","contentType",contentType,"remoteAddr",ctx.ip(),"remoteHost",ctx.ip(), "localAddr",ctx.host(), "localName",ctx.host()).increment();
             }
             catch(java.lang.Throwable t)
@@ -301,7 +299,7 @@ public class Handlers extends java.lang.Object implements Constants
                 CLASS_LOGGER.error(t.getMessage(),t);
                 ctx.status(500);
                 Metrics.counter("rfc3161timestampingserver.post", "resourcename","/","httpstatus",java.lang.Integer.toString(ctx.status()),"error",(t.getMessage()!=null?t.getMessage():"NPE"),"contentType",contentType,"remoteAddr",ctx.ip(),"remoteHost",ctx.ip(), "localAddr",ctx.host(), "localName",ctx.host()).increment();
-                em.getTransaction().rollback();
+                timestampDao.rollbackTransaction();
             }
             finally
             {
@@ -312,7 +310,7 @@ public class Handlers extends java.lang.Object implements Constants
             ctx.status(500);
         }
     }
-    private byte[] executeTsaProtocol(TimeStampRequest timeStampRequest, RequestReplyEntity rre,Rfc3161Timestamp rfc3161Timestamp) throws OperatorCreationException, CertificateException, CRLException, IOException, TSPException
+    private byte[] executeTsaProtocol(TimeStampRequest timeStampRequest, RequestReplyEntity rre,Rfc3161timestamp rfc3161Timestamp) throws OperatorCreationException, CertificateException, CRLException, IOException, TSPException
     {
         AlgorithmIdentifier digestAlgorithm = new AlgorithmIdentifier(NISTObjectIdentifiers.id_sha384);
         DigestCalculatorProvider digProvider = new JcaDigestCalculatorProviderBuilder().setProvider(BouncyCastleProvider.PROVIDER_NAME).build();
@@ -373,7 +371,7 @@ public class Handlers extends java.lang.Object implements Constants
         
             CLASS_LOGGER.debug("Message imprint (Base64): " + timeStampRequest.getMessageImprintAlgOID().getId() + " " + de.elbosso.util.Utilities.base64Encode(timeStampRequest.getMessageImprintDigest()));
 
-        byte[] tsr = tsRespGen.generateGrantedResponse(timeStampRequest, rfc3161Timestamp.getId(), rfc3161Timestamp.getCreationDate()).getEncoded();
+        byte[] tsr = tsRespGen.generateGrantedResponse(timeStampRequest, rfc3161Timestamp.getId().toBigInteger(), rfc3161Timestamp.getCreation_date()).getEncoded();
         return tsr;
     }
     private TimeStampRequest createTimestampRequest(byte[] tsq,RequestReplyEntity rre) throws IOException, CertificateException, NoSuchAlgorithmException, InvalidKeySpecException
