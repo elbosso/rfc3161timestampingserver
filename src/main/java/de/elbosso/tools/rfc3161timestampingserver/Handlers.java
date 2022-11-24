@@ -141,7 +141,7 @@ public class Handlers extends java.lang.Object implements Constants
                 {
                     CLASS_LOGGER.info("Entry found in database");
                     Rfc3161timestamp rfc3161Timestamp = queriedTimestamp.get();
-                    ctx.status(201);
+                    ctx.status(200);
                     ctx.contentType("application/timestamp-reply");
                     ctx.header("Content-Disposition","filename=\"queried.tsr\"");
                     setCachingPolixy(ctx);
@@ -165,7 +165,7 @@ public class Handlers extends java.lang.Object implements Constants
                 {
                     CLASS_LOGGER.info("Entry found in database");
                     Rfc3161timestamp rfc3161Timestamp = queriedTimestamp.get();
-                    ctx.status(201);
+                    ctx.status(200);
                     ctx.contentType("application/timestamp-reply");
                     ctx.header("Content-Disposition","filename=\"queried.tsr\"");
                     setCachingPolixy(ctx);
@@ -189,7 +189,7 @@ public class Handlers extends java.lang.Object implements Constants
                 {
                     CLASS_LOGGER.info("Entry found in database");
                     Rfc3161timestamp rfc3161Timestamp = queriedTimestamp.get();
-                    ctx.status(201);
+                    ctx.status(200);
                     ctx.contentType("application/timestamp-reply");
                     ctx.header("Content-Disposition","filename=\"queried.tsr\"");
                     setCachingPolixy(ctx);
