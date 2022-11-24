@@ -1,5 +1,6 @@
 package de.elbosso.tools.rfc3161timestampingserver;
 import ch.qos.logback.classic.Level;
+import de.elbosso.tools.rfc3161timestampingserver.dao.DaoFactory;
 import de.elbosso.tools.rfc3161timestampingserver.impl.DefaultCryptoResourceManager;
 import de.elbosso.tools.rfc3161timestampingserver.util.PersistenceManager;
 import io.javalin.Javalin;
@@ -66,13 +67,14 @@ public class App {
 	}
 	static final Javalin init(int port)
 	{
+		DaoFactory df=new DaoFactory();
 		CLASS_LOGGER.debug("adding BouncyCastle crypto provider");
 		Security.addProvider(new BouncyCastleProvider());
 		Javalin app = Javalin.create().start(port);
 		CLASS_LOGGER.debug("started app - listening on port 7000");
 		app.config.addStaticFiles("/site");
 		CLASS_LOGGER.debug("added path for static contents: /site (allowed methods: GET)");
-		Handlers handlers=new Handlers(new DefaultCryptoResourceManager());
+		Handlers handlers=new Handlers(df,new DefaultCryptoResourceManager());
 		app.get("/chain.pem", handlers::handleGetChain);
 		CLASS_LOGGER.debug("added path for cert chain: /chain.pem (allowed methods: GET)");
 		app.get("/tsa.crt", handlers::handleGetSignerCert);

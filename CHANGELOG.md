@@ -3,6 +3,39 @@
 Changelog of this project.
 
 ## Unreleased
+### GitHub [#27](https://github.com/elbosso/rfc3161timestampingserver/issues/27) change persistence to using JPA
+
+**re #27**
+
+
+[bc124c2cc655997](https://github.com/elbosso//commit/bc124c2cc655997) Jürgen Key *2022-11-24 06:26:40*
+
+**re #27**
+
+
+[7df3b6c7d21da26](https://github.com/elbosso//commit/7df3b6c7d21da26) Jürgen Key *2022-11-23 15:59:11*
+
+**re #27**
+
+
+[e7fca763387a249](https://github.com/elbosso//commit/e7fca763387a249) Jürgen Key *2022-11-23 15:30:08*
+
+**re #27**
+
+
+[326f6715ddd0fe0](https://github.com/elbosso//commit/326f6715ddd0fe0) Jürgen Key *2022-11-23 08:57:58*
+
+**re #27**
+
+
+[a7fe6af104b2d67](https://github.com/elbosso//commit/a7fe6af104b2d67) Jürgen Key *2022-11-18 05:26:35*
+
+**re #27**
+
+
+[5aa9ff7724ddaff](https://github.com/elbosso//commit/5aa9ff7724ddaff) Jürgen Key *2022-11-11 19:04:12*
+
+
 ### No issue
 
 **new version**
