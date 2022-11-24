@@ -49,6 +49,8 @@
             <div class="w3-panel w3-leftbar w3-sand w3-tiny w3-mono">openssl ts -config tsa.conf -reply -in &lt;reply&gt;.tsr -text</div>
             <p>To verify the timestamp, OpenSSL can help too:</p>
             <div class="w3-panel w3-leftbar w3-sand w3-tiny w3-mono">openssl ts -verify -config tsa.conf -queryfile &lt;request&gt;.tsq -in &lt;reply&gt;.tsr -CAfile chain.pem</div>
+            <p>To produce the hash value correctly formatted to use as search key in the web GUI you can use the following command:</p>
+            <div class="w3-panel w3-leftbar w3-sand w3-tiny w3-mono">sha512sum &lt;path&gt;/&lt;some_file&gt;</div>
         </div>
     </div>
 

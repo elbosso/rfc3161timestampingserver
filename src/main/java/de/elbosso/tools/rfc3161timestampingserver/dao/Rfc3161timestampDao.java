@@ -19,7 +19,8 @@ public class Rfc3161timestampDao extends JpaDao<Rfc3161timestamp>
 
 			return Optional.of(entityManager.createQuery("SELECT r FROM Rfc3161timestamp r WHERE r.m_rfc3161timestamp_message_imprint_digest_base64 = :Imprint ORDER BY r.m_rfc3161timestamp_creation_date DESC", Rfc3161timestamp.class)
 					.setParameter("Imprint", timestamp.getMessage_imprint_digest_base64())
-					.getSingleResult());
+					.setMaxResults(1)
+					.getResultList().get(0));
 		} catch (NoResultException e) {
 			return Optional.empty();
 		}
@@ -31,7 +32,8 @@ public class Rfc3161timestampDao extends JpaDao<Rfc3161timestamp>
 			return Optional.of(entityManager.createQuery("SELECT r FROM Rfc3161timestamp r WHERE r.m_rfc3161timestamp_message_imprint_alg_oid = :alg_oid AND r.m_rfc3161timestamp_message_imprint_digest_base64 = :Imprint ORDER BY r.m_rfc3161timestamp_creation_date DESC", Rfc3161timestamp.class)
 					.setParameter("alg_oid", timestamp.getMessage_imprint_alg_oid())
 					.setParameter("Imprint", timestamp.getMessage_imprint_digest_base64())
-					.getSingleResult());
+					.setMaxResults(1)
+					.getResultList().get(0));
 		} catch (NoResultException e) {
 			return Optional.empty();
 		}
@@ -42,7 +44,8 @@ public class Rfc3161timestampDao extends JpaDao<Rfc3161timestamp>
 
 			return Optional.of(entityManager.createQuery("SELECT r FROM Rfc3161timestamp r WHERE r.m_rfc3161timestamp_message_imprint_digest_hex = :Imprint ORDER BY r.m_rfc3161timestamp_creation_date DESC", Rfc3161timestamp.class)
 					.setParameter("Imprint", timestamp.getMessage_imprint_digest_hex())
-					.getSingleResult());
+					.setMaxResults(1)
+					.getResultList().get(0));
 		} catch (NoResultException e) {
 			return Optional.empty();
 		}
