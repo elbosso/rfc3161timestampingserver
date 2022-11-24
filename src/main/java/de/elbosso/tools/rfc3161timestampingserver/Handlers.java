@@ -37,12 +37,13 @@ public class Handlers extends java.lang.Object implements Constants
 {
     private final static org.slf4j.Logger CLASS_LOGGER=org.slf4j.LoggerFactory.getLogger(Handlers.class);
 	private final static org.slf4j.Logger EXCEPTION_LOGGER=org.slf4j.LoggerFactory.getLogger("ExceptionCatcher");
-   	static DaoFactory df=new DaoFactory();
     private final CryptoResourceManager cryptoResourceManager;
+    private final DaoFactory df;
 
-    Handlers(CryptoResourceManager cryptoResourceManager)
+    Handlers(DaoFactory df,CryptoResourceManager cryptoResourceManager)
     {
         super();
+        this.df=df;
         this.cryptoResourceManager=cryptoResourceManager;
     }
 
