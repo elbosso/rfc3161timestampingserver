@@ -65,15 +65,24 @@
         <div class="w3-card-padding w3-container">
             <h3>Search timestamp...</h3>
             <form action="/query" method="post">
-                <div class="w3-row-padding w3-tiny w3-margin-top"><textarea rows="3" style="width: 100%; height: 100%" name="msgDigestHex"></textarea></div>
-                <div class="w3-row-padding w3-margin-top"><input type="submit" title="Find..." value="Find..."/></div>
+                <div class="w3-row-padding w3-tiny w3-margin-top"><textarea rows="3" style="width: 100%; height: 100%" name="msgDigestHex"></textarea>
+                    <input type="submit" title="Find..." value="Find..."/></div>
             </form>
         </div>
         <div class="w3-card-padding w3-container">
             <h3>Request timestamp...</h3>
             <form action="/" method="post" enctype="multipart/form-data">
-                <div class="w3-row-padding w3-margin-top"><input name="tsq" type="file" accept="application/timestamp-query"></div>
-                <div class="w3-row-padding w3-margin-top"><input type="submit" title="Request Timestamp" value="Request Timestamp"/></div>
+                <div class="w3-row-padding w3-margin-top"><input name="tsq" type="file" accept="application/timestamp-query">
+                    <input type="submit" title="Request Timestamp" value="Request Timestamp"/></div>
+            </form>
+        </div>
+        <div class="w3-card-padding w3-container">
+            <h3>OpenAPI</h3>
+            <form action="/" method="post" enctype="multipart/form-data">
+                <div class="w3-row-padding w3-margin-top">
+                    <a class="w3-btn w3-large w3-theme-dark w3-hover-teal" href="/open-api-spec">Specification</a>
+                    &nbsp;<a class="w3-btn w3-large w3-theme-dark w3-hover-teal" href="/try-it">Try it!</a>
+                </div>
             </form>
         </div>
     </div>

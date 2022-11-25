@@ -4,6 +4,7 @@ import de.elbosso.tools.rfc3161timestampingserver.domain.Rfc3161timestamp;
 import de.elbosso.tools.rfc3161timestampingserver.util.JpaDao;
 
 import javax.persistence.NoResultException;
+import java.math.BigInteger;
 import java.util.Optional;
 
 public class Rfc3161timestampDao extends JpaDao<Rfc3161timestamp>
@@ -47,6 +48,27 @@ public class Rfc3161timestampDao extends JpaDao<Rfc3161timestamp>
 					.setMaxResults(1)
 					.getResultList().get(0));
 		} catch (NoResultException|IndexOutOfBoundsException e) {
+			return Optional.empty();
+		}
+	}
+	public Optional<Rfc3161timestamp> findYoungest() {
+		try {
+
+
+			return Optional.of(entityManager.createQuery("SELECT r FROM Rfc3161timestamp r ORDER BY r.m_rfc3161timestamp_creation_date DESC", Rfc3161timestamp.class)
+					.setMaxResults(1)
+					.getResultList().get(0));
+		} catch (NoResultException|IndexOutOfBoundsException e) {
+			return Optional.empty();
+		}
+	}
+	public Optional<Long> findTotalNumber() {
+		try {
+
+
+			return Optional.of(entityManager.createQuery("SELECT count(r) FROM Rfc3161timestamp r", Long.class)
+					.getSingleResult());
+		} catch (NoResultException e) {
 			return Optional.empty();
 		}
 	}

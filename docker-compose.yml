@@ -27,6 +27,7 @@ services:
       - tsa.crt
       - tsa.key
       - javax.persistence.jdbc.password_FILE
+#      - ADMIN_PASSWORD_FILE
     networks:
       - traefik_proxy
       - default
@@ -65,4 +66,6 @@ secrets:
     file: ./crypto/javax.persistence.jdbc.password_FILE
   POSTGRES_PASSWORD_FILE:
     file: ./crypto/javax.persistence.jdbc.password_FILE
+#  ADMIN_PASSWORD_FILE:
+#    file: ./admin.password_FILE
 

@@ -28,23 +28,7 @@ public class PersistenceManager
 	{
 		if(emFactory==null)
 		{
-			java.lang.String pw=null;
-			java.net.URL url=de.netsysit.util.ResourceLoader.getDockerSecretResource(Constants.JDBC_PASSWORD_FILE);
-			try
-			{
-				if (url != null)
-				{
-					java.io.InputStream is = url.openStream();
-					pw = de.elbosso.util.Utilities.readIntoString(is).trim();
-					is.close();
-				}
-			}
-			catch(java.io.IOException exp)
-			{
-				CLASS_LOGGER.error(exp.getMessage(),exp);
-			}
-			if(pw==null)
-				pw=System.getenv(Constants.JDBC_PASSWORD)!=null?System.getenv(Constants.JDBC_PASSWORD):"xxx";
+			java.lang.String pw=DockerSecrets.readPassword(Constants.JDBC_PASSWORD_FILE,Constants.JDBC_PASSWORD,"xxx");
 			java.util.Map<java.lang.String, java.lang.String> emConfig=new java.util.HashMap();
 			emConfig.put(Constants.JDBC_URL, System.getenv(Constants.JDBC_URL)!=null?System.getenv(Constants.JDBC_URL): Constants.JDBC_DEFAULT_URL);
 			emConfig.put(Constants.JDBC_USER, System.getenv(Constants.JDBC_USER)!=null?System.getenv(Constants.JDBC_USER):"xxx");

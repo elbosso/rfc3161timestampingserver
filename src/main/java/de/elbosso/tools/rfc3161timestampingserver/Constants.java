@@ -13,4 +13,6 @@ public interface Constants
     java.lang.String PERSISTENCE_UNIT_NAME_DEFAULT="rfc3161timestampingserver";
     java.lang.String PERSISTENCE_UNIT_NAME_FOR_TESTS="rfc3161timestampingserver_test";
 
+    java.lang.String ADMIN_PASSWORD_FILE = "admin.password_FILE";
+    java.lang.String ADMIN_PASSWORD = "admin.password";
 }
