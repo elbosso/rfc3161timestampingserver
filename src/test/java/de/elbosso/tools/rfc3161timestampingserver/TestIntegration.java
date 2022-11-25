@@ -2,18 +2,24 @@ package de.elbosso.tools.rfc3161timestampingserver;
 
 import de.elbosso.util.Utilities;
 import io.javalin.Javalin;
+import org.apache.hc.client5.http.auth.AuthCache;
+import org.apache.hc.client5.http.auth.AuthScope;
+import org.apache.hc.client5.http.auth.CredentialsProvider;
+import org.apache.hc.client5.http.auth.UsernamePasswordCredentials;
 import org.apache.hc.client5.http.classic.methods.HttpGet;
 import org.apache.hc.client5.http.classic.methods.HttpPost;
 import org.apache.hc.client5.http.classic.methods.HttpUriRequest;
 import org.apache.hc.client5.http.entity.EntityBuilder;
 import org.apache.hc.client5.http.entity.mime.HttpMultipartMode;
 import org.apache.hc.client5.http.entity.mime.MultipartEntityBuilder;
+import org.apache.hc.client5.http.impl.auth.BasicAuthCache;
+import org.apache.hc.client5.http.impl.auth.BasicCredentialsProvider;
+import org.apache.hc.client5.http.impl.auth.BasicScheme;
+import org.apache.hc.client5.http.impl.classic.CloseableHttpClient;
 import org.apache.hc.client5.http.impl.classic.CloseableHttpResponse;
 import org.apache.hc.client5.http.impl.classic.HttpClientBuilder;
-import org.apache.hc.core5.http.ContentType;
-import org.apache.hc.core5.http.HttpEntity;
-import org.apache.hc.core5.http.HttpResponse;
-import org.apache.hc.core5.http.HttpStatus;
+import org.apache.hc.client5.http.protocol.HttpClientContext;
+import org.apache.hc.core5.http.*;
 import org.bouncycastle.cert.X509CertificateHolder;
 import org.bouncycastle.cert.jcajce.JcaX509CertificateConverter;
 import org.bouncycastle.cms.SignerId;
@@ -34,6 +40,7 @@ import org.junitpioneer.jupiter.SetEnvironmentVariable;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 import java.security.GeneralSecurityException;
 import java.security.Security;
 import java.security.cert.*;
@@ -372,6 +379,127 @@ public class TestIntegration
 
         // Then
         Assertions.assertEquals(HttpStatus.SC_NOT_FOUND,httpResponse.getCode());
+
+    }
+
+    @Test
+    @SetEnvironmentVariable(key = Constants.JDBC_URL, value = "jdbc:h2:mem:test")
+    @SetEnvironmentVariable(key = Constants.JDBC_PASSWORD, value = "")
+    @SetEnvironmentVariable(key = Constants.JDBC_USER, value = "sa")
+    @SetEnvironmentVariable(key = Constants.PERSISTENCE_UNIT_NAME, value = Constants.PERSISTENCE_UNIT_NAME_FOR_TESTS)
+    public void test_SuccessGetUnrestricted() throws Exception
+    {
+        HttpGet get = new HttpGet("http://localhost:"+TEST_PORT+"/");
+
+        HttpResponse httpResponse = HttpClientBuilder.create().build().execute( get );
+        // Then
+        Assertions.assertEquals(HttpStatus.SC_OK,httpResponse.getCode());
+
+    }
+
+    @Test
+    @SetEnvironmentVariable(key = Constants.JDBC_URL, value = "jdbc:h2:mem:test")
+    @SetEnvironmentVariable(key = Constants.JDBC_PASSWORD, value = "")
+    @SetEnvironmentVariable(key = Constants.JDBC_USER, value = "sa")
+    @SetEnvironmentVariable(key = Constants.PERSISTENCE_UNIT_NAME, value = Constants.PERSISTENCE_UNIT_NAME_FOR_TESTS)
+    public void test_FailGetRestrictedNoAuth() throws Exception
+    {
+        HttpGet get = new HttpGet("http://localhost:"+TEST_PORT+"/admin/youngest");
+
+        HttpResponse httpResponse = HttpClientBuilder.create().build().execute( get );
+        // Then
+        Assertions.assertEquals(HttpStatus.SC_UNAUTHORIZED,httpResponse.getCode());
+
+    }
+
+    @Test
+    @SetEnvironmentVariable(key = Constants.JDBC_URL, value = "jdbc:h2:mem:test")
+    @SetEnvironmentVariable(key = Constants.JDBC_PASSWORD, value = "")
+    @SetEnvironmentVariable(key = Constants.JDBC_USER, value = "sa")
+    @SetEnvironmentVariable(key = Constants.PERSISTENCE_UNIT_NAME, value = Constants.PERSISTENCE_UNIT_NAME_FOR_TESTS)
+    @SetEnvironmentVariable(key = Constants.ADMIN_PASSWORD, value = "!pw123")
+    public void test_FailGetRestrictedNoPassword() throws Exception
+    {
+        HttpGet get = new HttpGet("http://localhost:"+TEST_PORT+"/admin/youngest");
+
+        byte[] credentials = Base64.getEncoder().encode(("admin:").getBytes(StandardCharsets.UTF_8));
+        get.addHeader("Authorization", "Basic " + new String(credentials, StandardCharsets.UTF_8));
+
+        HttpResponse httpResponse = HttpClientBuilder.create().build().execute( get );
+        // Then
+        Assertions.assertEquals(HttpStatus.SC_UNAUTHORIZED,httpResponse.getCode());
+
+    }
+
+    @Test
+    @SetEnvironmentVariable(key = Constants.JDBC_URL, value = "jdbc:h2:mem:test")
+    @SetEnvironmentVariable(key = Constants.JDBC_PASSWORD, value = "")
+    @SetEnvironmentVariable(key = Constants.JDBC_USER, value = "sa")
+    @SetEnvironmentVariable(key = Constants.PERSISTENCE_UNIT_NAME, value = Constants.PERSISTENCE_UNIT_NAME_FOR_TESTS)
+    @SetEnvironmentVariable(key = Constants.ADMIN_PASSWORD, value = "!pw123")
+    public void test_FailGetRestrictedWrongPassword() throws Exception
+    {
+        HttpGet get = new HttpGet("http://localhost:"+TEST_PORT+"/admin/youngest");
+
+        byte[] credentials = Base64.getEncoder().encode(("admin:paswordf").getBytes(StandardCharsets.UTF_8));
+        get.addHeader("Authorization", "Basic " + new String(credentials, StandardCharsets.UTF_8));
+
+        HttpResponse httpResponse = HttpClientBuilder.create().build().execute( get );
+        // Then
+        Assertions.assertEquals(HttpStatus.SC_UNAUTHORIZED,httpResponse.getCode());
+
+    }
+
+    @Test
+    @SetEnvironmentVariable(key = Constants.JDBC_URL, value = "jdbc:h2:mem:test")
+    @SetEnvironmentVariable(key = Constants.JDBC_PASSWORD, value = "")
+    @SetEnvironmentVariable(key = Constants.JDBC_USER, value = "sa")
+    @SetEnvironmentVariable(key = Constants.PERSISTENCE_UNIT_NAME, value = Constants.PERSISTENCE_UNIT_NAME_FOR_TESTS)
+    @SetEnvironmentVariable(key = Constants.ADMIN_PASSWORD, value = "!pw123")
+    public void test_FailGetRestrictedWrongUsername() throws Exception
+    {
+        HttpGet get = new HttpGet("http://localhost:"+TEST_PORT+"/admin/youngest");
+
+        byte[] credentials = Base64.getEncoder().encode(("user:!pw123").getBytes(StandardCharsets.UTF_8));
+        get.addHeader("Authorization", "Basic " + new String(credentials, StandardCharsets.UTF_8));
+
+        HttpResponse httpResponse = HttpClientBuilder.create().build().execute( get);
+        // Then
+        Assertions.assertEquals(HttpStatus.SC_UNAUTHORIZED,httpResponse.getCode());
+
+    }
+
+    @Test
+    @SetEnvironmentVariable(key = Constants.JDBC_URL, value = "jdbc:h2:mem:test")
+    @SetEnvironmentVariable(key = Constants.JDBC_PASSWORD, value = "")
+    @SetEnvironmentVariable(key = Constants.JDBC_USER, value = "sa")
+    @SetEnvironmentVariable(key = Constants.PERSISTENCE_UNIT_NAME, value = Constants.PERSISTENCE_UNIT_NAME_FOR_TESTS)
+    @SetEnvironmentVariable(key = Constants.ADMIN_PASSWORD, value = "!pw123")
+    public void test_SuccessGetRestricted() throws Exception
+    {
+        HttpPost post = new HttpPost("http://localhost:"+TEST_PORT+"/");
+        java.net.URL url=TestIntegration.class.getClassLoader().getResource("example.tsq");
+        java.io.ByteArrayOutputStream baos = new java.io.ByteArrayOutputStream();
+        de.elbosso.util.Utilities.copyBetweenStreams(url.openStream(), baos, true);
+        MultipartEntityBuilder builder = MultipartEntityBuilder.create();
+        builder.setMode(HttpMultipartMode.EXTENDED);
+        builder.addBinaryBody("tsq", url.openStream(), ContentType.create("application/timestamp-query"), "query.tsq");
+//
+        HttpEntity entity = builder.build();
+        post.setEntity(entity);
+
+        HttpResponse httpResponse = HttpClientBuilder.create().build().execute( post );
+        // Then
+        Assertions.assertEquals(HttpStatus.SC_CREATED,httpResponse.getCode());
+
+        HttpGet get = new HttpGet("http://localhost:"+TEST_PORT+"/admin/youngest");
+
+        byte[] credentials = Base64.getEncoder().encode(("admin:!pw123").getBytes(StandardCharsets.UTF_8));
+        get.addHeader("Authorization", "Basic " + new String(credentials, StandardCharsets.UTF_8));
+
+        httpResponse = HttpClientBuilder.create().build().execute( get);
+        // Then
+        Assertions.assertEquals(HttpStatus.SC_OK,httpResponse.getCode());
 
     }
 
