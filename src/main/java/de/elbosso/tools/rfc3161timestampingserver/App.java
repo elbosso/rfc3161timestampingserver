@@ -6,6 +6,7 @@ import de.elbosso.tools.rfc3161timestampingserver.domain.TotalNumber;
 import de.elbosso.tools.rfc3161timestampingserver.impl.DefaultCryptoResourceManager;
 import de.elbosso.tools.rfc3161timestampingserver.util.PersistenceManager;
 import io.javalin.Javalin;
+import io.javalin.core.security.Role;
 import io.javalin.http.Context;
 import io.javalin.http.Handler;
 import io.javalin.http.InternalServerErrorResponse;
@@ -89,6 +90,7 @@ public class App {
 								.registerPlugin(new OpenApiPlugin(getOpenApiOptions()))
 								.enableWebjars()
 								.addStaticFiles("/site")
+								.accessManager(new AccessManager())
 		).
 				start(port);
 		CLASS_LOGGER.debug("started app - listening on port 7000");
@@ -111,7 +113,7 @@ public class App {
 			{
 				handlers.handleGetChain(context);
 			}
-		});
+		},new java.util.HashSet<Role>(java.util.Arrays.asList(Roles.values())));
 		CLASS_LOGGER.debug("added path for cert chain: /chain.pem (allowed methods: GET)");
 		app.get("/tsa.crt", new Handler()
 		{
@@ -131,7 +133,7 @@ public class App {
 			{
 				handlers.handleGetSignerCert(context);
 			}
-		});
+		},new java.util.HashSet<Role>(java.util.Arrays.asList(Roles.values())));
 		CLASS_LOGGER.debug("added path for cert: /tsa.cert (allowed methods: GET)");
 		app.get("/tsa.conf", new Handler()
 		{
@@ -150,7 +152,7 @@ public class App {
 			{
 				handlers.handleGetTsaConf(context);
 			}
-		});
+		},new java.util.HashSet<Role>(java.util.Arrays.asList(Roles.values())));
 		CLASS_LOGGER.debug("added path for tsa configuration: /tsa.conf (allowed methods: GET)");
 		app.post("/query", new Handler()
 		{
@@ -173,7 +175,7 @@ public class App {
 			{
 				handlers.handlePostQuery(context);
 			}
-		});
+		},new java.util.HashSet<Role>(java.util.Arrays.asList(Roles.values())));
 		app.post("/", new Handler()
 		{
 			@Override
@@ -194,10 +196,10 @@ public class App {
 			{
 				handlers.handlePost(context);
 			}
-		});
+		},new java.util.HashSet<Role>(java.util.Arrays.asList(Roles.values())));
 		CLASS_LOGGER.debug("added path for requesting timestamps: / (allowed methods: POST)");
-/*		AdminHandlers adminHandlers=new AdminHandlers(df,new DefaultCryptoResourceManager());
-		app.post("/admin/totalNumber", new Handler()
+		AdminHandlers adminHandlers=new AdminHandlers(df,new DefaultCryptoResourceManager());
+		app.get("/admin/totalNumber", new Handler()
 		{
 			@Override
 			@OpenApi(
@@ -212,8 +214,8 @@ public class App {
 			{
 				adminHandlers.handlePostTotalNumber(context);
 			}
-		});
-		app.post("/admin/youngest", new Handler()
+		},new java.util.HashSet<Role>(java.util.Arrays.asList(new Role[]{Roles.ADMIN})));
+		app.get("/admin/youngest", new Handler()
 		{
 			@Override
 			@OpenApi(
@@ -228,8 +230,8 @@ public class App {
 			{
 				adminHandlers.handlePostYoungest(context);
 			}
-		});
-*/
+		},new java.util.HashSet<Role>(java.util.Arrays.asList(new Role[]{Roles.ADMIN})));
+
 		app.before(ctx -> {
 			CLASS_LOGGER.debug(ctx.req.getMethod()+" "+ctx.contentType());
 		});
@@ -255,7 +257,7 @@ public class App {
 			.version("1.6.0-SNAPSHOT")
 			.description("de.elbosso.tools.rfc3161timestampingserver");
 		return new OpenApiOptions(applicationInfo)
-				.path("/open-api-spec")
+				.path("/open-api-spec").roles(new java.util.HashSet<Role>(java.util.Arrays.asList(Roles.values())))
 				.swagger(new SwaggerOptions("/try-it").title("de.elbosso.tools.rfc3161timestampingserver - try it!"))
 //				.reDoc(new ReDocOptions("/redoc").title("My ReDoc Documentation"))
 		;
