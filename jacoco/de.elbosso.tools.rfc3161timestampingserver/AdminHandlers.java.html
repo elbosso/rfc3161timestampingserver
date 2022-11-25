@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>AdminHandlers.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">rfc3161timestampingserver</a> &gt; <a href="index.source.html" class="el_package">de.elbosso.tools.rfc3161timestampingserver</a> &gt; <span class="el_source">AdminHandlers.java</span></div><h1>AdminHandlers.java</h1><pre class="source lang-java linenums">package de.elbosso.tools.rfc3161timestampingserver;
+
+import de.elbosso.tools.rfc3161timestampingserver.dao.DaoFactory;
+import de.elbosso.tools.rfc3161timestampingserver.dao.Rfc3161timestampDao;
+import de.elbosso.tools.rfc3161timestampingserver.domain.Rfc3161timestamp;
+import de.elbosso.tools.rfc3161timestampingserver.domain.TotalNumber;
+import de.elbosso.tools.rfc3161timestampingserver.service.CryptoResourceManager;
+import io.javalin.http.Context;
+import io.javalin.http.UploadedFile;
+import io.micrometer.core.instrument.Metrics;
+import org.bouncycastle.asn1.ASN1ObjectIdentifier;
+import org.bouncycastle.asn1.nist.NISTObjectIdentifiers;
+import org.bouncycastle.asn1.x509.AlgorithmIdentifier;
+import org.bouncycastle.asn1.x509.GeneralName;
+import org.bouncycastle.cert.jcajce.JcaCRLStore;
+import org.bouncycastle.cert.jcajce.JcaCertStore;
+import org.bouncycastle.cert.jcajce.JcaX500NameUtil;
+import org.bouncycastle.cms.jcajce.JcaSimpleSignerInfoGeneratorBuilder;
+import org.bouncycastle.jce.provider.BouncyCastleProvider;
+import org.bouncycastle.operator.DigestCalculatorProvider;
+import org.bouncycastle.operator.OperatorCreationException;
+import org.bouncycastle.operator.jcajce.JcaDigestCalculatorProviderBuilder;
+import org.bouncycastle.tsp.*;
+
+import java.io.IOException;
+import java.math.BigInteger;
+import java.nio.charset.StandardCharsets;
+import java.security.KeyFactory;
+import java.security.NoSuchAlgorithmException;
+import java.security.cert.*;
+import java.security.spec.InvalidKeySpecException;
+import java.security.spec.PKCS8EncodedKeySpec;
+import java.time.Clock;
+import java.util.Base64;
+import java.util.Optional;
+
+public class AdminHandlers extends Object implements Constants
+{
+<span class="fc" id="L39">    private final static org.slf4j.Logger CLASS_LOGGER=org.slf4j.LoggerFactory.getLogger(AdminHandlers.class);</span>
+<span class="fc" id="L40">	private final static org.slf4j.Logger EXCEPTION_LOGGER=org.slf4j.LoggerFactory.getLogger(&quot;ExceptionCatcher&quot;);</span>
+    private final CryptoResourceManager cryptoResourceManager;
+    private final DaoFactory df;
+
+    AdminHandlers(DaoFactory df, CryptoResourceManager cryptoResourceManager)
+    {
+<span class="fc" id="L46">        super();</span>
+<span class="fc" id="L47">        this.df=df;</span>
+<span class="fc" id="L48">        this.cryptoResourceManager=cryptoResourceManager;</span>
+<span class="fc" id="L49">    }</span>
+
+    public void handlePostTotalNumber(Context ctx) throws Exception
+    {
+<span class="nc" id="L53">        CLASS_LOGGER.debug(&quot;Post for total number of timestamps in database&quot;);</span>
+<span class="nc" id="L54">        Rfc3161timestampDao timestampDao=df.createRfc3161timestampDao();</span>
+<span class="nc" id="L55">        Optional&lt;Long&gt; totalNumber=timestampDao.findTotalNumber();</span>
+<span class="nc bnc" id="L56" title="All 2 branches missed.">        if(totalNumber.isPresent())</span>
+        {
+<span class="nc" id="L58">            CLASS_LOGGER.info(&quot;Found some entries in database&quot;);</span>
+<span class="nc" id="L59">            Long bi = totalNumber.get();</span>
+<span class="nc" id="L60">            ctx.status(200);</span>
+<span class="nc" id="L61">            ctx.json(new TotalNumber(bi.longValue()));</span>
+<span class="nc" id="L62">            Metrics.counter(&quot;rfc3161timestampingserver.postTotalNumber&quot;, &quot;resourcename&quot;,&quot;admin/totalNumber&quot;,&quot;httpstatus&quot;, Integer.toString(ctx.status()),&quot;success&quot;,&quot;true&quot;,&quot;remoteAddr&quot;,ctx.ip(),&quot;remoteHost&quot;,ctx.ip(), &quot;localAddr&quot;,ctx.host(), &quot;localName&quot;,ctx.host()).increment();</span>
+<span class="nc" id="L63">        }</span>
+        else
+        {
+<span class="nc" id="L66">            CLASS_LOGGER.info(&quot;No entry found in database&quot;);</span>
+<span class="nc" id="L67">            ctx.status(404);</span>
+<span class="nc" id="L68">            Metrics.counter(&quot;rfc3161timestampingserver.postTotalNumber&quot;, &quot;resourcename&quot;,&quot;admin/totalNumber&quot;,&quot;httpstatus&quot;, Integer.toString(ctx.status()),&quot;success&quot;,&quot;false&quot;,&quot;remoteAddr&quot;,ctx.ip(),&quot;remoteHost&quot;,ctx.ip(), &quot;localAddr&quot;,ctx.host(), &quot;localName&quot;,ctx.host()).increment();</span>
+        }
+<span class="nc" id="L70">    }</span>
+    public void handlePostYoungest(Context ctx) throws Exception
+    {
+<span class="fc" id="L73">        CLASS_LOGGER.debug(&quot;Post for youngest timestamp in database&quot;);</span>
+<span class="fc" id="L74">        Rfc3161timestampDao timestampDao=df.createRfc3161timestampDao();</span>
+<span class="fc" id="L75">        Optional&lt;Rfc3161timestamp&gt; youngest=timestampDao.findYoungest();</span>
+<span class="pc bpc" id="L76" title="1 of 2 branches missed.">        if(youngest.isPresent())</span>
+        {
+<span class="fc" id="L78">            CLASS_LOGGER.info(&quot;Found some entries in database&quot;);</span>
+<span class="fc" id="L79">            Rfc3161timestamp timestamp = youngest.get();</span>
+<span class="fc" id="L80">            ctx.status(200);</span>
+<span class="fc" id="L81">            ctx.json(timestamp);</span>
+<span class="fc" id="L82">            Metrics.counter(&quot;rfc3161timestampingserver.postYoungest&quot;, &quot;resourcename&quot;,&quot;admin/youngest&quot;,&quot;httpstatus&quot;, Integer.toString(ctx.status()),&quot;success&quot;,&quot;true&quot;,&quot;remoteAddr&quot;,ctx.ip(),&quot;remoteHost&quot;,ctx.ip(), &quot;localAddr&quot;,ctx.host(), &quot;localName&quot;,ctx.host()).increment();</span>
+<span class="fc" id="L83">        }</span>
+        else
+        {
+<span class="nc" id="L86">            CLASS_LOGGER.info(&quot;No entry found in database&quot;);</span>
+<span class="nc" id="L87">            ctx.status(404);</span>
+<span class="nc" id="L88">            Metrics.counter(&quot;rfc3161timestampingserver.postYoungest&quot;, &quot;resourcename&quot;,&quot;admin/youngest&quot;,&quot;httpstatus&quot;, Integer.toString(ctx.status()),&quot;success&quot;,&quot;false&quot;,&quot;remoteAddr&quot;,ctx.ip(),&quot;remoteHost&quot;,ctx.ip(), &quot;localAddr&quot;,ctx.host(), &quot;localName&quot;,ctx.host()).increment();</span>
+        }
+<span class="fc" id="L90">    }</span>
+ }
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.3.201901230119</span></div></body></html>

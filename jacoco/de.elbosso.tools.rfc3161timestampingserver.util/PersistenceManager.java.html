@@ -28,41 +28,25 @@ public class PersistenceManager
 	{
 <span class="fc bfc" id="L29" title="All 2 branches covered.">		if(emFactory==null)</span>
 		{
-<span class="fc" id="L31">			java.lang.String pw=null;</span>
-<span class="fc" id="L32">			java.net.URL url=de.netsysit.util.ResourceLoader.getDockerSecretResource(Constants.JDBC_PASSWORD_FILE);</span>
-			try
-			{
-<span class="pc bpc" id="L35" title="1 of 2 branches missed.">				if (url != null)</span>
-				{
-<span class="nc" id="L37">					java.io.InputStream is = url.openStream();</span>
-<span class="nc" id="L38">					pw = de.elbosso.util.Utilities.readIntoString(is).trim();</span>
-<span class="nc" id="L39">					is.close();</span>
-				}
-			}
-<span class="nc" id="L42">			catch(java.io.IOException exp)</span>
-			{
-<span class="nc" id="L44">				CLASS_LOGGER.error(exp.getMessage(),exp);</span>
-<span class="fc" id="L45">			}</span>
-<span class="pc bpc" id="L46" title="1 of 2 branches missed.">			if(pw==null)</span>
-<span class="pc bpc" id="L47" title="1 of 2 branches missed.">				pw=System.getenv(Constants.JDBC_PASSWORD)!=null?System.getenv(Constants.JDBC_PASSWORD):&quot;xxx&quot;;</span>
-<span class="fc" id="L48">			java.util.Map&lt;java.lang.String, java.lang.String&gt; emConfig=new java.util.HashMap();</span>
-<span class="pc bpc" id="L49" title="1 of 2 branches missed.">			emConfig.put(Constants.JDBC_URL, System.getenv(Constants.JDBC_URL)!=null?System.getenv(Constants.JDBC_URL): Constants.JDBC_DEFAULT_URL);</span>
-<span class="pc bpc" id="L50" title="1 of 2 branches missed.">			emConfig.put(Constants.JDBC_USER, System.getenv(Constants.JDBC_USER)!=null?System.getenv(Constants.JDBC_USER):&quot;xxx&quot;);</span>
-<span class="fc" id="L51">			emConfig.put(Constants.JDBC_PASSWORD, pw);</span>
+<span class="fc" id="L31">			java.lang.String pw=DockerSecrets.readPassword(Constants.JDBC_PASSWORD_FILE,Constants.JDBC_PASSWORD,&quot;xxx&quot;);</span>
+<span class="fc" id="L32">			java.util.Map&lt;java.lang.String, java.lang.String&gt; emConfig=new java.util.HashMap();</span>
+<span class="pc bpc" id="L33" title="1 of 2 branches missed.">			emConfig.put(Constants.JDBC_URL, System.getenv(Constants.JDBC_URL)!=null?System.getenv(Constants.JDBC_URL): Constants.JDBC_DEFAULT_URL);</span>
+<span class="pc bpc" id="L34" title="1 of 2 branches missed.">			emConfig.put(Constants.JDBC_USER, System.getenv(Constants.JDBC_USER)!=null?System.getenv(Constants.JDBC_USER):&quot;xxx&quot;);</span>
+<span class="fc" id="L35">			emConfig.put(Constants.JDBC_PASSWORD, pw);</span>
 			// &quot;rfc3161timestampingserver&quot; is the value of the name attribute of the persistence-unit element.
-<span class="pc bpc" id="L53" title="1 of 2 branches missed.">			emFactory = Persistence.createEntityManagerFactory(System.getenv(Constants.PERSISTENCE_UNIT_NAME)!=null?System.getenv(Constants.PERSISTENCE_UNIT_NAME):Constants.PERSISTENCE_UNIT_NAME_DEFAULT,emConfig);</span>
+<span class="pc bpc" id="L37" title="1 of 2 branches missed.">			emFactory = Persistence.createEntityManagerFactory(System.getenv(Constants.PERSISTENCE_UNIT_NAME)!=null?System.getenv(Constants.PERSISTENCE_UNIT_NAME):Constants.PERSISTENCE_UNIT_NAME_DEFAULT,emConfig);</span>
 		}
-<span class="fc" id="L55">	}</span>
+<span class="fc" id="L39">	}</span>
 
 	public EntityManager getEntityManager()
 	{
-<span class="fc" id="L59">		ensureEmFactory();</span>
-<span class="fc" id="L60">		return emFactory.createEntityManager();</span>
+<span class="fc" id="L43">		ensureEmFactory();</span>
+<span class="fc" id="L44">		return emFactory.createEntityManager();</span>
 	}
 	public void close()
 	{
-<span class="pc bpc" id="L64" title="1 of 2 branches missed.">		if(emFactory!=null)</span>
-<span class="fc" id="L65">			emFactory.close();</span>
-<span class="fc" id="L66">	}</span>
+<span class="pc bpc" id="L48" title="1 of 2 branches missed.">		if(emFactory!=null)</span>
+<span class="fc" id="L49">			emFactory.close();</span>
+<span class="fc" id="L50">	}</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.3.201901230119</span></div></body></html>

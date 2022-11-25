@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>AccessManager.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">rfc3161timestampingserver</a> &gt; <a href="index.source.html" class="el_package">de.elbosso.tools.rfc3161timestampingserver</a> &gt; <span class="el_source">AccessManager.java</span></div><h1>AccessManager.java</h1><pre class="source lang-java linenums">package de.elbosso.tools.rfc3161timestampingserver;
+
+import de.elbosso.tools.rfc3161timestampingserver.util.DockerSecrets;
+import io.javalin.core.security.BasicAuthCredentials;
+import io.javalin.core.security.Role;
+import io.javalin.core.util.Header;
+import io.javalin.http.Context;
+import io.javalin.http.Handler;
+import io.javalin.http.UnauthorizedResponse;
+import org.jetbrains.annotations.NotNull;
+
+import java.util.Set;
+
+<span class="fc" id="L14">public class AccessManager extends java.lang.Object implements io.javalin.core.security.AccessManager</span>
+{
+    private static final String ADMINUSERNAME = &quot;admin&quot;;
+
+    @Override
+    public void manage(@NotNull Handler handler, @NotNull Context ctx, @NotNull Set&lt;Role&gt; permittedRoles) throws Exception
+    {
+<span class="fc bfc" id="L21" title="All 2 branches covered.">        if(permittedRoles.contains(Roles.ANYONE))</span>
+<span class="fc" id="L22">            handler.handle(ctx);</span>
+<span class="fc" id="L23">        Role userRole = getUserRole(ctx);</span>
+<span class="fc bfc" id="L24" title="All 2 branches covered.">        if (permittedRoles.contains(userRole)) {</span>
+<span class="fc" id="L25">            handler.handle(ctx);</span>
+        } else {
+<span class="fc" id="L27">            ctx.header(Header.WWW_AUTHENTICATE, &quot;Basic&quot;);</span>
+<span class="fc" id="L28">            ctx.status(401).result(&quot;Unauthorized&quot;);</span>
+<span class="fc" id="L29">            throw new UnauthorizedResponse();</span>
+        }
+<span class="fc" id="L31">    }</span>
+    Role getUserRole(Context ctx) {
+<span class="fc" id="L33">        Role rv=Roles.ANYONE;</span>
+        try
+        {
+<span class="fc" id="L36">            BasicAuthCredentials basicAuthCredentials = ctx.basicAuthCredentials();</span>
+<span class="pc bpc" id="L37" title="1 of 2 branches missed.">            if (basicAuthCredentials != null)</span>
+            {
+<span class="fc" id="L39">                java.lang.String userName = basicAuthCredentials.getUsername();</span>
+<span class="pc bpc" id="L40" title="1 of 4 branches missed.">                if ((userName != null) &amp;&amp; (userName.equals(ADMINUSERNAME)))</span>
+                {
+<span class="fc" id="L42">                    java.lang.String password = basicAuthCredentials.getPassword();</span>
+<span class="fc" id="L43">                    java.lang.String pw= DockerSecrets.readPassword(Constants.ADMIN_PASSWORD_FILE,Constants.ADMIN_PASSWORD,null);</span>
+<span class="pc bpc" id="L44" title="2 of 6 branches missed.">                    if ((pw!=null)&amp;&amp;((password != null) &amp;&amp; (password.equals(pw))))</span>
+<span class="fc" id="L45">                        rv = Roles.ADMIN;</span>
+                }
+            }
+        }
+<span class="fc" id="L49">        catch(IllegalArgumentException exp)</span>
+        {
+            //no auth header is ok for now
+<span class="fc" id="L52">        }</span>
+<span class="fc" id="L53">        return rv;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.3.201901230119</span></div></body></html>

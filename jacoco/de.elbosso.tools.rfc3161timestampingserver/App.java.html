@@ -1,107 +1,266 @@
 <?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>App.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">rfc3161timestampingserver</a> &gt; <a href="index.source.html" class="el_package">de.elbosso.tools.rfc3161timestampingserver</a> &gt; <span class="el_source">App.java</span></div><h1>App.java</h1><pre class="source lang-java linenums">package de.elbosso.tools.rfc3161timestampingserver;
 import ch.qos.logback.classic.Level;
 import de.elbosso.tools.rfc3161timestampingserver.dao.DaoFactory;
+import de.elbosso.tools.rfc3161timestampingserver.domain.Rfc3161timestamp;
+import de.elbosso.tools.rfc3161timestampingserver.domain.TotalNumber;
 import de.elbosso.tools.rfc3161timestampingserver.impl.DefaultCryptoResourceManager;
 import de.elbosso.tools.rfc3161timestampingserver.util.PersistenceManager;
 import io.javalin.Javalin;
+import io.javalin.core.security.Role;
+import io.javalin.http.Context;
+import io.javalin.http.Handler;
+import io.javalin.http.InternalServerErrorResponse;
+import io.javalin.plugin.openapi.OpenApiOptions;
+import io.javalin.plugin.openapi.OpenApiPlugin;
+import io.javalin.plugin.openapi.annotations.*;
+import io.javalin.plugin.openapi.ui.SwaggerOptions;
+import io.swagger.v3.oas.models.info.Info;
 import io.micrometer.core.instrument.Clock;
 import io.micrometer.core.instrument.MeterRegistry;
 import io.micrometer.core.instrument.Metrics;
 import io.micrometer.influx.InfluxConfig;
 import io.micrometer.influx.InfluxMeterRegistry;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
+import org.jetbrains.annotations.NotNull;
+
+import java.math.BigInteger;
 import java.security.Security;
 import java.time.Duration;
 
-<span class="nc" id="L16">public class App {</span>
-<span class="fc" id="L17">	private final static org.slf4j.Logger CLASS_LOGGER=org.slf4j.LoggerFactory.getLogger(App.class);</span>
-<span class="fc" id="L18">	private final static org.slf4j.Logger EXCEPTION_LOGGER=org.slf4j.LoggerFactory.getLogger(&quot;ExceptionCatcher&quot;);</span>
+<span class="nc" id="L30">public class App {</span>
+<span class="fc" id="L31">	private final static org.slf4j.Logger CLASS_LOGGER=org.slf4j.LoggerFactory.getLogger(App.class);</span>
+<span class="fc" id="L32">	private final static org.slf4j.Logger EXCEPTION_LOGGER=org.slf4j.LoggerFactory.getLogger(&quot;ExceptionCatcher&quot;);</span>
 	private static final int DEFAULT_PORT = 7000;
 
 	public static void main(String[] args)
 	{
-<span class="nc" id="L23">		de.elbosso.util.Utilities.configureBasicStdoutLogging(Level.ALL);</span>
-<span class="nc" id="L24">		InfluxConfig config = new InfluxConfig() {</span>
+<span class="nc" id="L37">		de.elbosso.util.Utilities.configureBasicStdoutLogging(Level.ALL);</span>
+<span class="nc" id="L38">		InfluxConfig config = new InfluxConfig() {</span>
 			java.util.Properties props;
 
 			@Override
 			public Duration step() {
-<span class="nc" id="L29">				return Duration.ofSeconds(10);</span>
+<span class="nc" id="L43">				return Duration.ofSeconds(10);</span>
 			}
 
 			@Override
 			public String db() {
-<span class="nc" id="L34">				return &quot;monitoring&quot;;</span>
+<span class="nc" id="L48">				return &quot;monitoring&quot;;</span>
 			}
 
 			@Override
 			public String get(String k) {
-<span class="nc bnc" id="L39" title="All 2 branches missed.">				if(props==null)</span>
+<span class="nc bnc" id="L53" title="All 2 branches missed.">				if(props==null)</span>
 				{
-<span class="nc" id="L41">					props = new java.util.Properties();</span>
-<span class="nc" id="L42">					java.net.URL url=de.netsysit.util.ResourceLoader.getResource(&quot;influxdb_micrometer.properties&quot;);</span>
-<span class="nc bnc" id="L43" title="All 2 branches missed.">					if(url==null)</span>
-<span class="nc" id="L44">						CLASS_LOGGER.error(&quot;could not load default influxdb monitoring properties!&quot;);</span>
+<span class="nc" id="L55">					props = new java.util.Properties();</span>
+<span class="nc" id="L56">					java.net.URL url=de.netsysit.util.ResourceLoader.getResource(&quot;influxdb_micrometer.properties&quot;);</span>
+<span class="nc bnc" id="L57" title="All 2 branches missed.">					if(url==null)</span>
+<span class="nc" id="L58">						CLASS_LOGGER.error(&quot;could not load default influxdb monitoring properties!&quot;);</span>
 					else
 					{
 						try
 						{
-<span class="nc" id="L49">							java.io.InputStream is = url.openStream();</span>
-<span class="nc" id="L50">							props.load(is);</span>
-<span class="nc" id="L51">							is.close();</span>
+<span class="nc" id="L63">							java.io.InputStream is = url.openStream();</span>
+<span class="nc" id="L64">							props.load(is);</span>
+<span class="nc" id="L65">							is.close();</span>
 						}
-<span class="nc" id="L53">						catch(java.io.IOException exp)</span>
+<span class="nc" id="L67">						catch(java.io.IOException exp)</span>
 						{
-<span class="nc" id="L55">							CLASS_LOGGER.error(exp.getMessage(),exp);</span>
-<span class="nc" id="L56">						}</span>
+<span class="nc" id="L69">							CLASS_LOGGER.error(exp.getMessage(),exp);</span>
+<span class="nc" id="L70">						}</span>
 					}
 				}
-<span class="nc bnc" id="L59" title="All 2 branches missed.">				String rv=System.getenv(k)!=null?System.getenv(k):props.getProperty(k);</span>
-<span class="nc" id="L60">				CLASS_LOGGER.debug(&quot;getting value of &quot;+k+&quot;: &quot;+rv);</span>
-<span class="nc" id="L61">				return rv;</span>
+<span class="nc bnc" id="L73" title="All 2 branches missed.">				String rv=System.getenv(k)!=null?System.getenv(k):props.getProperty(k);</span>
+<span class="nc" id="L74">				CLASS_LOGGER.debug(&quot;getting value of &quot;+k+&quot;: &quot;+rv);</span>
+<span class="nc" id="L75">				return rv;</span>
 			}
 		};
-<span class="nc" id="L64">		MeterRegistry registry = new InfluxMeterRegistry(config, Clock.SYSTEM);</span>
-<span class="nc" id="L65">		Metrics.globalRegistry.add(registry);</span>
-<span class="nc" id="L66">		App.init(DEFAULT_PORT);</span>
-<span class="nc" id="L67">	}</span>
+<span class="nc" id="L78">		MeterRegistry registry = new InfluxMeterRegistry(config, Clock.SYSTEM);</span>
+<span class="nc" id="L79">		Metrics.globalRegistry.add(registry);</span>
+<span class="nc" id="L80">		App.init(DEFAULT_PORT);</span>
+<span class="nc" id="L81">	}</span>
 	static final Javalin init(int port)
 	{
-<span class="fc" id="L70">		DaoFactory df=new DaoFactory();</span>
-<span class="fc" id="L71">		CLASS_LOGGER.debug(&quot;adding BouncyCastle crypto provider&quot;);</span>
-<span class="fc" id="L72">		Security.addProvider(new BouncyCastleProvider());</span>
-<span class="fc" id="L73">		Javalin app = Javalin.create().start(port);</span>
-<span class="fc" id="L74">		CLASS_LOGGER.debug(&quot;started app - listening on port 7000&quot;);</span>
-<span class="fc" id="L75">		app.config.addStaticFiles(&quot;/site&quot;);</span>
-<span class="fc" id="L76">		CLASS_LOGGER.debug(&quot;added path for static contents: /site (allowed methods: GET)&quot;);</span>
-<span class="fc" id="L77">		Handlers handlers=new Handlers(df,new DefaultCryptoResourceManager());</span>
-<span class="fc" id="L78">		app.get(&quot;/chain.pem&quot;, handlers::handleGetChain);</span>
-<span class="fc" id="L79">		CLASS_LOGGER.debug(&quot;added path for cert chain: /chain.pem (allowed methods: GET)&quot;);</span>
-<span class="fc" id="L80">		app.get(&quot;/tsa.crt&quot;, handlers::handleGetSignerCert);</span>
-<span class="fc" id="L81">		CLASS_LOGGER.debug(&quot;added path for cert: /tsa.cert (allowed methods: GET)&quot;);</span>
-<span class="fc" id="L82">		app.get(&quot;/tsa.conf&quot;, handlers::handleGetTsaConf);</span>
-<span class="fc" id="L83">		CLASS_LOGGER.debug(&quot;added path for tsa configuration: /tsa.conf (allowed methods: GET)&quot;);</span>
-<span class="fc" id="L84">		app.post(&quot;/query&quot;, handlers::handlePostQuery);</span>
-<span class="fc" id="L85">		app.post(&quot;/&quot;, handlers::handlePost);</span>
-<span class="fc" id="L86">		CLASS_LOGGER.debug(&quot;added path for requesting timestamps: / (allowed methods: POST)&quot;);</span>
-<span class="fc" id="L87">		app.before(ctx -&gt; {</span>
-<span class="fc" id="L88">			CLASS_LOGGER.debug(ctx.req.getMethod()+&quot; &quot;+ctx.contentType());</span>
-<span class="fc" id="L89">		});</span>
-<span class="fc" id="L90">		CLASS_LOGGER.debug(&quot;added before interceptor&quot;);</span>
-<span class="fc" id="L91">		Runtime.getRuntime().addShutdownHook(new Thread(() -&gt; {</span>
-<span class="fc" id="L92">			app.stop();</span>
-<span class="fc" id="L93">		}));</span>
-<span class="fc" id="L94">		CLASS_LOGGER.debug(&quot;added callback for stopping the application&quot;);</span>
-<span class="fc" id="L95">		app.events(event -&gt; {</span>
-<span class="fc" id="L96">			event.serverStopping(() -&gt; { /* Your code here */ });</span>
-<span class="fc" id="L97">			event.serverStopped(() -&gt; {</span>
-<span class="fc" id="L98">				CLASS_LOGGER.debug(&quot;Server stopped&quot;);</span>
-<span class="fc" id="L99">				PersistenceManager.getSharedInstance().close();</span>
-<span class="fc" id="L100">				CLASS_LOGGER.debug(&quot;Persistence manager closed&quot;);</span>
-<span class="fc" id="L101">			});</span>
-<span class="fc" id="L102">			CLASS_LOGGER.debug(&quot;added listener for server stopped event&quot;);</span>
-<span class="fc" id="L103">		});</span>
-<span class="fc" id="L104">		return app;</span>
+<span class="fc" id="L84">		DaoFactory df=new DaoFactory();</span>
+<span class="fc" id="L85">		CLASS_LOGGER.debug(&quot;adding BouncyCastle crypto provider&quot;);</span>
+<span class="fc" id="L86">		Security.addProvider(new BouncyCastleProvider());</span>
+<span class="fc" id="L87">		Javalin app = Javalin.create(config -&gt;</span>
+<span class="fc" id="L88">						config</span>
+//						.registerPlugin(new RouteOverviewPlugin(&quot;/&quot;))
+<span class="fc" id="L90">								.registerPlugin(new OpenApiPlugin(getOpenApiOptions()))</span>
+<span class="fc" id="L91">								.enableWebjars()</span>
+<span class="fc" id="L92">								.addStaticFiles(&quot;/site&quot;)</span>
+<span class="fc" id="L93">								.accessManager(new AccessManager())</span>
+		).
+<span class="fc" id="L95">				start(port);</span>
+<span class="fc" id="L96">		CLASS_LOGGER.debug(&quot;started app - listening on port 7000&quot;);</span>
+<span class="fc" id="L97">		CLASS_LOGGER.debug(&quot;added path for static contents: /site (allowed methods: GET)&quot;);</span>
+<span class="fc" id="L98">		Handlers handlers=new Handlers(df,new DefaultCryptoResourceManager());</span>
+<span class="fc" id="L99">		app.get(&quot;/chain.pem&quot;, new Handler()</span>
+<span class="fc" id="L100">		{</span>
+			@Override
+			@OpenApi(
+					summary = &quot;Get Chain&quot;,
+					method = HttpMethod.GET,
+					deprecated = false,
+					//tags = {&quot;user&quot;},
+					responses = {
+							@OpenApiResponse(status = &quot;200&quot;, content = @OpenApiContent(from = java.lang.String.class, type=&quot;application/pkcs7-mime&quot;)),
+							@OpenApiResponse(status = &quot;204&quot;) // No content
+					}
+			)
+			public void handle(@NotNull Context context) throws Exception
+			{
+<span class="nc" id="L114">				handlers.handleGetChain(context);</span>
+<span class="nc" id="L115">			}</span>
+<span class="fc" id="L116">		},new java.util.HashSet&lt;Role&gt;(java.util.Arrays.asList(Roles.values())));</span>
+<span class="fc" id="L117">		CLASS_LOGGER.debug(&quot;added path for cert chain: /chain.pem (allowed methods: GET)&quot;);</span>
+<span class="fc" id="L118">		app.get(&quot;/tsa.crt&quot;, new Handler()</span>
+<span class="fc" id="L119">		{</span>
+			@Override
+			@OpenApi(
+					summary = &quot;Get Signer Certificate&quot;,
+					operationId = &quot;getAllUsers&quot;,
+					method = HttpMethod.GET,
+					deprecated = false,
+					//tags = {&quot;user&quot;},
+					responses = {
+							@OpenApiResponse(status = &quot;200&quot;, content = @OpenApiContent(from = java.lang.String.class,type = &quot;application/pkix-cert&quot;)),
+							@OpenApiResponse(status = &quot;204&quot;) // No content
+					}
+			)
+			public void handle(@NotNull Context context) throws Exception
+			{
+<span class="nc" id="L134">				handlers.handleGetSignerCert(context);</span>
+<span class="nc" id="L135">			}</span>
+<span class="fc" id="L136">		},new java.util.HashSet&lt;Role&gt;(java.util.Arrays.asList(Roles.values())));</span>
+<span class="fc" id="L137">		CLASS_LOGGER.debug(&quot;added path for cert: /tsa.cert (allowed methods: GET)&quot;);</span>
+<span class="fc" id="L138">		app.get(&quot;/tsa.conf&quot;, new Handler()</span>
+<span class="fc" id="L139">		{</span>
+			@Override
+			@OpenApi(
+					summary = &quot;Get TSA Configuration&quot;,
+					method = HttpMethod.GET,
+					deprecated = false,
+					//tags = {&quot;user&quot;},
+					responses = {
+							@OpenApiResponse(status = &quot;200&quot;, content = @OpenApiContent(from = java.lang.String.class)),
+							@OpenApiResponse(status = &quot;204&quot;) // No content
+					}
+			)
+			public void handle(@NotNull Context context) throws Exception
+			{
+<span class="nc" id="L153">				handlers.handleGetTsaConf(context);</span>
+<span class="nc" id="L154">			}</span>
+<span class="fc" id="L155">		},new java.util.HashSet&lt;Role&gt;(java.util.Arrays.asList(Roles.values())));</span>
+<span class="fc" id="L156">		CLASS_LOGGER.debug(&quot;added path for tsa configuration: /tsa.conf (allowed methods: GET)&quot;);</span>
+<span class="fc" id="L157">		app.post(&quot;/query&quot;, new Handler()</span>
+<span class="fc" id="L158">		{</span>
+			@Override
+			@OpenApi(
+					summary = &quot;Query Timestamps&quot;,
+					deprecated = false,
+					formParams = {
+							@OpenApiFormParam(name = &quot;algoid&quot;, type = String.class,required = false),
+							@OpenApiFormParam(name = &quot;msgDigestBase64&quot;, type = String.class,required = false),
+							@OpenApiFormParam(name = &quot;msgDigestHex&quot;, type = String.class,required = false),
+					},
+					//tags = {&quot;user&quot;},
+					responses = {
+							@OpenApiResponse(status = &quot;200&quot;, content = @OpenApiContent(from = byte[].class, type=&quot;application/timestamp-reply&quot;)),
+							@OpenApiResponse(status = &quot;204&quot;) // No content
+					}
+			)
+			public void handle(@NotNull Context context) throws Exception
+			{
+<span class="fc" id="L176">				handlers.handlePostQuery(context);</span>
+<span class="fc" id="L177">			}</span>
+<span class="fc" id="L178">		},new java.util.HashSet&lt;Role&gt;(java.util.Arrays.asList(Roles.values())));</span>
+<span class="fc" id="L179">		app.post(&quot;/&quot;, new Handler()</span>
+<span class="fc" id="L180">		{</span>
+			@Override
+			@OpenApi(
+					summary = &quot;Create Timestamps&quot;,
+					deprecated = false,
+					fileUploads = {
+						@OpenApiFileUpload(name = &quot;tsq&quot;,required = false)
+					},
+//					requestBody = @OpenApiRequestBody(required = false,content =  @OpenApiContent(from = byte[].class)),
+					//tags = {&quot;user&quot;},
+					responses = {
+							@OpenApiResponse(status = &quot;200&quot;, content = @OpenApiContent(from = byte[].class, type=&quot;application/timestamp-reply&quot;)),
+							@OpenApiResponse(status = &quot;204&quot;) // No content
+					}
+			)
+			public void handle(@NotNull Context context) throws Exception
+			{
+<span class="fc" id="L197">				handlers.handlePost(context);</span>
+<span class="fc" id="L198">			}</span>
+<span class="fc" id="L199">		},new java.util.HashSet&lt;Role&gt;(java.util.Arrays.asList(Roles.values())));</span>
+<span class="fc" id="L200">		CLASS_LOGGER.debug(&quot;added path for requesting timestamps: / (allowed methods: POST)&quot;);</span>
+<span class="fc" id="L201">		AdminHandlers adminHandlers=new AdminHandlers(df,new DefaultCryptoResourceManager());</span>
+<span class="fc" id="L202">		app.get(&quot;/admin/totalNumber&quot;, new Handler()</span>
+<span class="fc" id="L203">		{</span>
+			@Override
+			@OpenApi(
+					summary = &quot;Assess Total Number of Timestamps in Database&quot;,
+					deprecated = false,
+					responses = {
+							@OpenApiResponse(status = &quot;200&quot;, content = @OpenApiContent(from = TotalNumber.class)),
+							@OpenApiResponse(status = &quot;204&quot;) // No content
+					}
+			)
+			public void handle(@NotNull Context context) throws Exception
+			{
+<span class="nc" id="L215">				adminHandlers.handlePostTotalNumber(context);</span>
+<span class="nc" id="L216">			}</span>
+<span class="fc" id="L217">		},new java.util.HashSet&lt;Role&gt;(java.util.Arrays.asList(new Role[]{Roles.ADMIN})));</span>
+<span class="fc" id="L218">		app.get(&quot;/admin/youngest&quot;, new Handler()</span>
+<span class="fc" id="L219">		{</span>
+			@Override
+			@OpenApi(
+					summary = &quot;Assess Total Number of Timestamps in Database&quot;,
+					deprecated = false,
+					responses = {
+							@OpenApiResponse(status = &quot;200&quot;, content = @OpenApiContent(from = Rfc3161timestamp.class)),
+							@OpenApiResponse(status = &quot;204&quot;) // No content
+					}
+			)
+			public void handle(@NotNull Context context) throws Exception
+			{
+<span class="fc" id="L231">				adminHandlers.handlePostYoungest(context);</span>
+<span class="fc" id="L232">			}</span>
+<span class="fc" id="L233">		},new java.util.HashSet&lt;Role&gt;(java.util.Arrays.asList(new Role[]{Roles.ADMIN})));</span>
+
+<span class="fc" id="L235">		app.before(ctx -&gt; {</span>
+<span class="fc" id="L236">			CLASS_LOGGER.debug(ctx.req.getMethod()+&quot; &quot;+ctx.contentType());</span>
+<span class="fc" id="L237">		});</span>
+<span class="fc" id="L238">		CLASS_LOGGER.debug(&quot;added before interceptor&quot;);</span>
+<span class="fc" id="L239">		Runtime.getRuntime().addShutdownHook(new Thread(() -&gt; {</span>
+<span class="nc" id="L240">			app.stop();</span>
+<span class="nc" id="L241">		}));</span>
+<span class="fc" id="L242">		CLASS_LOGGER.debug(&quot;added callback for stopping the application&quot;);</span>
+<span class="fc" id="L243">		app.events(event -&gt; {</span>
+<span class="fc" id="L244">			event.serverStopping(() -&gt; { /* Your code here */ });</span>
+<span class="fc" id="L245">			event.serverStopped(() -&gt; {</span>
+<span class="fc" id="L246">				CLASS_LOGGER.debug(&quot;Server stopped&quot;);</span>
+<span class="fc" id="L247">				PersistenceManager.getSharedInstance().close();</span>
+<span class="fc" id="L248">				CLASS_LOGGER.debug(&quot;Persistence manager closed&quot;);</span>
+<span class="fc" id="L249">			});</span>
+<span class="fc" id="L250">			CLASS_LOGGER.debug(&quot;added listener for server stopped event&quot;);</span>
+<span class="fc" id="L251">		});</span>
+<span class="fc" id="L252">		return app;</span>
+	}
+	private static OpenApiOptions getOpenApiOptions()
+	{
+<span class="fc" id="L256">		Info applicationInfo = new Info()</span>
+<span class="fc" id="L257">			.version(&quot;1.6.0-SNAPSHOT&quot;)</span>
+<span class="fc" id="L258">			.description(&quot;de.elbosso.tools.rfc3161timestampingserver&quot;);</span>
+<span class="fc" id="L259">		return new OpenApiOptions(applicationInfo)</span>
+<span class="fc" id="L260">				.path(&quot;/open-api-spec&quot;).roles(new java.util.HashSet&lt;Role&gt;(java.util.Arrays.asList(Roles.values())))</span>
+<span class="fc" id="L261">				.swagger(new SwaggerOptions(&quot;/try-it&quot;).title(&quot;de.elbosso.tools.rfc3161timestampingserver - try it!&quot;))</span>
+//				.reDoc(new ReDocOptions(&quot;/redoc&quot;).title(&quot;My ReDoc Documentation&quot;))
+		;
 	}
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.3.201901230119</span></div></body></html>
