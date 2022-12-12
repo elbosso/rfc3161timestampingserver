@@ -237,8 +237,8 @@ import java.time.Duration;
 <span class="fc" id="L237">		});</span>
 <span class="fc" id="L238">		CLASS_LOGGER.debug(&quot;added before interceptor&quot;);</span>
 <span class="fc" id="L239">		Runtime.getRuntime().addShutdownHook(new Thread(() -&gt; {</span>
-<span class="nc" id="L240">			app.stop();</span>
-<span class="nc" id="L241">		}));</span>
+<span class="fc" id="L240">			app.stop();</span>
+<span class="fc" id="L241">		}));</span>
 <span class="fc" id="L242">		CLASS_LOGGER.debug(&quot;added callback for stopping the application&quot;);</span>
 <span class="fc" id="L243">		app.events(event -&gt; {</span>
 <span class="fc" id="L244">			event.serverStopping(() -&gt; { /* Your code here */ });</span>

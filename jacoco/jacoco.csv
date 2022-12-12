@@ -13,7 +13,7 @@ rfc3161timestampingserver,de.elbosso.tools.rfc3161timestampingserver,App.new Han
 rfc3161timestampingserver,de.elbosso.tools.rfc3161timestampingserver,App.new Handler() {...},0,11,0,0,0,3,0,2,0,2
 rfc3161timestampingserver,de.elbosso.tools.rfc3161timestampingserver,App.new Handler() {...},0,11,0,0,0,3,0,2,0,2
 rfc3161timestampingserver,de.elbosso.tools.rfc3161timestampingserver,RequestReplyEntity,0,3,0,0,0,1,0,1,0,1
-rfc3161timestampingserver,de.elbosso.tools.rfc3161timestampingserver,App,27,255,0,0,9,56,3,8,3,8
+rfc3161timestampingserver,de.elbosso.tools.rfc3161timestampingserver,App,23,259,0,0,7,58,2,9,2,9
 rfc3161timestampingserver,de.elbosso.tools.rfc3161timestampingserver,AccessManager,0,76,4,12,0,22,4,7,0,3
 rfc3161timestampingserver,de.elbosso.tools.rfc3161timestampingserver,Handlers,9,1989,7,47,1,251,7,30,0,10
 rfc3161timestampingserver,de.elbosso.tools.rfc3161timestampingserver,AdminHandlers,249,113,3,1,17,17,3,3,1,3
