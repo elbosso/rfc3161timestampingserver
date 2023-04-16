@@ -1,5 +1,5 @@
 #Build stage
-FROM 3.8.3-openjdk-17 AS build-env
+FROM maven:3.8.3-openjdk-17 AS build-env
 
 ADD . /rfc3161timestampingserver
 
