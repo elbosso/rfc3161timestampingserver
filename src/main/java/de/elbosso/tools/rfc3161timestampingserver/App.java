@@ -5,14 +5,11 @@ import de.elbosso.tools.rfc3161timestampingserver.domain.TotalNumber;
 import de.elbosso.tools.rfc3161timestampingserver.impl.DefaultCryptoResourceManager;
 import de.elbosso.tools.rfc3161timestampingserver.util.PersistenceManager;
 import io.javalin.Javalin;
-import io.javalin.core.security.Role;
+import io.javalin.core.security.RouteRole;
 import io.javalin.http.Context;
 import io.javalin.http.Handler;
 import io.javalin.http.InternalServerErrorResponse;
-import io.javalin.plugin.openapi.OpenApiOptions;
-import io.javalin.plugin.openapi.OpenApiPlugin;
-import io.javalin.plugin.openapi.annotations.*;
-import io.javalin.plugin.openapi.ui.SwaggerOptions;
+import io.javalin.http.staticfiles.Location;
 import io.swagger.v3.oas.models.info.Info;
 import io.micrometer.core.instrument.Clock;
 import io.micrometer.core.instrument.MeterRegistry;
@@ -85,12 +82,13 @@ public class App {
 		CLASS_LOGGER.debug("adding BouncyCastle crypto provider");
 		Security.addProvider(new BouncyCastleProvider());
 		Javalin app = Javalin.create(config ->
-						config
+						{
+							config.addStaticFiles("/site", Location.CLASSPATH);
 //						.registerPlugin(new RouteOverviewPlugin("/"))
-								.registerPlugin(new OpenApiPlugin(getOpenApiOptions()))
-								.enableWebjars()
-								.addStaticFiles("/site")
-								.accessManager(new AccessManager())
+//								.registerPlugin(new OpenApiPlugin(getOpenApiOptions()))
+									config.enableWebjars();
+									config.accessManager(new AccessManager());
+						}
 		).
 				start(port);
 		CLASS_LOGGER.debug("started app - listening on port 7000");
@@ -99,7 +97,7 @@ public class App {
 		app.get("/chain.pem", new Handler()
 		{
 			@Override
-			@OpenApi(
+/*			@OpenApi(
 					summary = "Get Chain",
 					method = HttpMethod.GET,
 					deprecated = false,
@@ -109,16 +107,16 @@ public class App {
 							@OpenApiResponse(status = "204") // No content
 					}
 			)
-			public void handle(@NotNull Context context) throws Exception
+*/			public void handle(@NotNull Context context) throws Exception
 			{
 				handlers.handleGetChain(context);
 			}
-		},new java.util.HashSet<Role>(java.util.Arrays.asList(Roles.values())));
+		},Roles.values());
 		CLASS_LOGGER.debug("added path for cert chain: /chain.pem (allowed methods: GET)");
 		app.get("/tsa.crt", new Handler()
 		{
 			@Override
-			@OpenApi(
+/*			@OpenApi(
 					summary = "Get Signer Certificate",
 					operationId = "getAllUsers",
 					method = HttpMethod.GET,
@@ -129,16 +127,16 @@ public class App {
 							@OpenApiResponse(status = "204") // No content
 					}
 			)
-			public void handle(@NotNull Context context) throws Exception
+*/			public void handle(@NotNull Context context) throws Exception
 			{
 				handlers.handleGetSignerCert(context);
 			}
-		},new java.util.HashSet<Role>(java.util.Arrays.asList(Roles.values())));
+		},Roles.values());
 		CLASS_LOGGER.debug("added path for cert: /tsa.cert (allowed methods: GET)");
 		app.get("/tsa.conf", new Handler()
 		{
 			@Override
-			@OpenApi(
+/*			@OpenApi(
 					summary = "Get TSA Configuration",
 					method = HttpMethod.GET,
 					deprecated = false,
@@ -148,16 +146,16 @@ public class App {
 							@OpenApiResponse(status = "204") // No content
 					}
 			)
-			public void handle(@NotNull Context context) throws Exception
+*/			public void handle(@NotNull Context context) throws Exception
 			{
 				handlers.handleGetTsaConf(context);
 			}
-		},new java.util.HashSet<Role>(java.util.Arrays.asList(Roles.values())));
+		},Roles.values());
 		CLASS_LOGGER.debug("added path for tsa configuration: /tsa.conf (allowed methods: GET)");
 		app.post("/query", new Handler()
 		{
 			@Override
-			@OpenApi(
+/*			@OpenApi(
 					summary = "Query Timestamps",
 					deprecated = false,
 					formParams = {
@@ -171,15 +169,15 @@ public class App {
 							@OpenApiResponse(status = "204") // No content
 					}
 			)
-			public void handle(@NotNull Context context) throws Exception
+*/			public void handle(@NotNull Context context) throws Exception
 			{
 				handlers.handlePostQuery(context);
 			}
-		},new java.util.HashSet<Role>(java.util.Arrays.asList(Roles.values())));
+		},Roles.values());
 		app.post("/", new Handler()
 		{
 			@Override
-			@OpenApi(
+/*			@OpenApi(
 					summary = "Create Timestamps",
 					deprecated = false,
 					fileUploads = {
@@ -192,17 +190,17 @@ public class App {
 							@OpenApiResponse(status = "204") // No content
 					}
 			)
-			public void handle(@NotNull Context context) throws Exception
+*/			public void handle(@NotNull Context context) throws Exception
 			{
 				handlers.handlePost(context);
 			}
-		},new java.util.HashSet<Role>(java.util.Arrays.asList(Roles.values())));
+		},Roles.values());
 		CLASS_LOGGER.debug("added path for requesting timestamps: / (allowed methods: POST)");
 		AdminHandlers adminHandlers=new AdminHandlers(df,new DefaultCryptoResourceManager());
 		app.get("/admin/totalNumber", new Handler()
 		{
 			@Override
-			@OpenApi(
+/*			@OpenApi(
 					summary = "Assess Total Number of Timestamps in Database",
 					deprecated = false,
 					responses = {
@@ -210,15 +208,15 @@ public class App {
 							@OpenApiResponse(status = "204") // No content
 					}
 			)
-			public void handle(@NotNull Context context) throws Exception
+*/			public void handle(@NotNull Context context) throws Exception
 			{
 				adminHandlers.handlePostTotalNumber(context);
 			}
-		},new java.util.HashSet<Role>(java.util.Arrays.asList(new Role[]{Roles.ADMIN})));
+		},Roles.ADMIN);
 		app.get("/admin/youngest", new Handler()
 		{
 			@Override
-			@OpenApi(
+/*			@OpenApi(
 					summary = "Assess Total Number of Timestamps in Database",
 					deprecated = false,
 					responses = {
@@ -226,11 +224,11 @@ public class App {
 							@OpenApiResponse(status = "204") // No content
 					}
 			)
-			public void handle(@NotNull Context context) throws Exception
+*/			public void handle(@NotNull Context context) throws Exception
 			{
 				adminHandlers.handlePostYoungest(context);
 			}
-		},new java.util.HashSet<Role>(java.util.Arrays.asList(new Role[]{Roles.ADMIN})));
+		},Roles.ADMIN);
 
 		app.before(ctx -> {
 			CLASS_LOGGER.debug(ctx.req.getMethod()+" "+ctx.contentType());
@@ -251,7 +249,7 @@ public class App {
 		});
 		return app;
 	}
-	private static OpenApiOptions getOpenApiOptions()
+/*	private static OpenApiOptions getOpenApiOptions()
 	{
 		Info applicationInfo = new Info()
 			.version("1.6.0-SNAPSHOT")
@@ -262,4 +260,4 @@ public class App {
 //				.reDoc(new ReDocOptions("/redoc").title("My ReDoc Documentation"))
 		;
 	}
-}
+*/}

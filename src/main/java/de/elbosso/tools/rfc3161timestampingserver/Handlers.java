@@ -5,9 +5,7 @@ import de.elbosso.tools.rfc3161timestampingserver.dao.Rfc3161timestampDao;
 import de.elbosso.tools.rfc3161timestampingserver.domain.Rfc3161timestamp;
 import de.elbosso.tools.rfc3161timestampingserver.service.CryptoResourceManager;
 import io.javalin.http.Context;
-import io.javalin.http.InternalServerErrorResponse;
 import io.javalin.http.UploadedFile;
-import io.javalin.plugin.openapi.annotations.*;
 import io.micrometer.core.instrument.Metrics;
 import org.bouncycastle.asn1.ASN1ObjectIdentifier;
 import org.bouncycastle.asn1.nist.NISTObjectIdentifiers;
@@ -22,7 +20,6 @@ import org.bouncycastle.operator.DigestCalculatorProvider;
 import org.bouncycastle.operator.OperatorCreationException;
 import org.bouncycastle.operator.jcajce.JcaDigestCalculatorProviderBuilder;
 import org.bouncycastle.tsp.*;
-import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -243,7 +240,7 @@ public class Handlers extends java.lang.Object implements Constants
             UploadedFile uploadedFile=ctx.uploadedFile("tsq");
             if(uploadedFile!=null)
             {
-                CLASS_LOGGER.debug("found it - timestamp query length is "+uploadedFile.getContentLength());
+                CLASS_LOGGER.debug("found it - timestamp query length is "+uploadedFile.getSize());
                 java.io.InputStream is=ctx.uploadedFile("tsq").getContent();
                 java.io.ByteArrayOutputStream baos=new java.io.ByteArrayOutputStream();
                 de.elbosso.util.io.Utilities.copyBetweenStreams(is,baos,true);
