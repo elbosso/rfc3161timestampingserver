@@ -3,6 +3,14 @@
 Changelog of this project.
 
 ## Unreleased
+### GitHub [#14](https://github.com/elbosso/rfc3161timestampingserver/issues/14) Add a restricted admin area to the rest services
+
+**added new operations for tackling #14**
+
+
+[96a3807ca6b27ec](https://github.com/elbosso//commit/96a3807ca6b27ec) Jürgen Key *2022-11-24 18:18:56*
+
+
 ### GitHub [#27](https://github.com/elbosso/rfc3161timestampingserver/issues/27) change persistence to using JPA
 
 **fixes #27**
@@ -41,7 +49,55 @@ Changelog of this project.
 [5aa9ff7724ddaff](https://github.com/elbosso//commit/5aa9ff7724ddaff) Jürgen Key *2022-11-11 19:04:12*
 
 
+### GitHub [#34](https://github.com/elbosso/rfc3161timestampingserver/issues/34) update crypto material for integration tests under new PKI 
+
+**re #34**
+
+
+[510fce5b569c1a4](https://github.com/elbosso//commit/510fce5b569c1a4) Jürgen Key *2022-12-12 08:13:02*
+
+
 ### No issue
+
+**some integration testcases added**
+
+
+[467604dd20c21ac](https://github.com/elbosso//commit/467604dd20c21ac) Jürgen Key *2022-11-25 08:09:28*
+
+**infrastructure is in place**
+
+
+[e5b6f7c419bc452](https://github.com/elbosso//commit/e5b6f7c419bc452) Jürgen Key *2022-11-25 07:46:18*
+
+**fixes tests**
+
+
+[e22d070075663c0](https://github.com/elbosso//commit/e22d070075663c0) Jürgen Key *2022-11-24 18:32:58*
+
+**corrected status codes**
+
+
+[71a198f59f99aee](https://github.com/elbosso//commit/71a198f59f99aee) Jürgen Key *2022-11-24 18:22:32*
+
+**new operations  in DAO**
+
+
+[877747fe3eac875](https://github.com/elbosso//commit/877747fe3eac875) Jürgen Key *2022-11-24 18:00:07*
+
+**added links to the specification and the swagger UI**
+
+
+[202f2f2ddc34f66](https://github.com/elbosso//commit/202f2f2ddc34f66) Jürgen Key *2022-11-24 17:54:44*
+
+**all operations now work via the swagger UI (and consequently as services reachable via the API)**
+
+
+[41cfea1507d2706](https://github.com/elbosso//commit/41cfea1507d2706) Jürgen Key *2022-11-24 17:49:05*
+
+**put infrastructure into place**
+
+
+[cb5bb908bb47f9c](https://github.com/elbosso//commit/cb5bb908bb47f9c) Jürgen Key *2022-11-24 16:08:43*
 
 **breaking tests mended**
 

@@ -3,11 +3,9 @@ package de.elbosso.tools.rfc3161timestampingserver.domain;
 import de.elbosso.tools.rfc3161timestampingserver.Constants;
 import de.elbosso.tools.rfc3161timestampingserver.dao.DaoFactory;
 import de.elbosso.tools.rfc3161timestampingserver.dao.Rfc3161timestampDao;
-import de.elbosso.tools.rfc3161timestampingserver.util.JpaDao;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-import org.junitpioneer.jupiter.SetEnvironmentVariable;
 
 import java.nio.charset.StandardCharsets;
 import java.sql.Timestamp;
@@ -20,14 +18,14 @@ public class Rfc3161timestampTest
 	@BeforeAll
 	public static void setUp() throws ClassNotFoundException
 	{
+		System.setProperty(Constants.JDBC_URL,"jdbc:h2:mem:test");
+		System.setProperty(Constants.JDBC_PASSWORD,"");
+		System.setProperty(Constants.JDBC_USER,"sa");
+		System.setProperty(Constants.PERSISTENCE_UNIT_NAME,Constants.PERSISTENCE_UNIT_NAME_FOR_TESTS);
 		df=new DaoFactory();
 	}
 
     @Test
-    @SetEnvironmentVariable(key = Constants.JDBC_URL, value = "jdbc:h2:mem:test")
-    @SetEnvironmentVariable(key = Constants.JDBC_PASSWORD, value = "")
-    @SetEnvironmentVariable(key = Constants.JDBC_USER, value = "sa")
-    @SetEnvironmentVariable(key = Constants.PERSISTENCE_UNIT_NAME, value = Constants.PERSISTENCE_UNIT_NAME_FOR_TESTS)
     public void alwaysSuccess()
     {
 	    Rfc3161timestampDao timestampDao=df.createRfc3161timestampDao();

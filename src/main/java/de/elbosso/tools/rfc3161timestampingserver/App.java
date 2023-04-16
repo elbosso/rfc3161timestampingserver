@@ -1,5 +1,4 @@
 package de.elbosso.tools.rfc3161timestampingserver;
-import ch.qos.logback.classic.Level;
 import de.elbosso.tools.rfc3161timestampingserver.dao.DaoFactory;
 import de.elbosso.tools.rfc3161timestampingserver.domain.Rfc3161timestamp;
 import de.elbosso.tools.rfc3161timestampingserver.domain.TotalNumber;
@@ -22,6 +21,7 @@ import io.micrometer.influx.InfluxConfig;
 import io.micrometer.influx.InfluxMeterRegistry;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.jetbrains.annotations.NotNull;
+import org.slf4j.event.Level;
 
 import java.math.BigInteger;
 import java.security.Security;
@@ -34,7 +34,7 @@ public class App {
 
 	public static void main(String[] args)
 	{
-		de.elbosso.util.Utilities.configureBasicStdoutLogging(Level.ALL);
+		de.elbosso.util.Utilities.configureBasicStdoutLogging(Level.DEBUG);
 		InfluxConfig config = new InfluxConfig() {
 			java.util.Properties props;
 
