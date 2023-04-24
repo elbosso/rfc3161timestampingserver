@@ -6,10 +6,16 @@ import de.elbosso.tools.rfc3161timestampingserver.impl.DefaultCryptoResourceMana
 import de.elbosso.tools.rfc3161timestampingserver.util.PersistenceManager;
 import io.javalin.Javalin;
 import io.javalin.core.security.RouteRole;
+import io.javalin.core.util.RouteOverviewPlugin;
 import io.javalin.http.Context;
 import io.javalin.http.Handler;
-import io.javalin.http.InternalServerErrorResponse;
 import io.javalin.http.staticfiles.Location;
+import io.javalin.plugin.openapi.OpenApiOptions;
+import io.javalin.plugin.openapi.OpenApiPlugin;
+import io.javalin.plugin.openapi.annotations.*;
+import io.javalin.plugin.openapi.ui.ReDocOptions;
+import io.javalin.plugin.openapi.ui.SwaggerOptions;
+import io.swagger.annotations.ResponseHeader;
 import io.swagger.v3.oas.models.info.Info;
 import io.micrometer.core.instrument.Clock;
 import io.micrometer.core.instrument.MeterRegistry;
@@ -84,8 +90,8 @@ public class App {
 		Javalin app = Javalin.create(config ->
 						{
 							config.addStaticFiles("/site", Location.CLASSPATH);
-//						.registerPlugin(new RouteOverviewPlugin("/"))
-//								.registerPlugin(new OpenApiPlugin(getOpenApiOptions()))
+							//config.registerPlugin(new RouteOverviewPlugin("/"));
+								config.registerPlugin(new OpenApiPlugin(getOpenApiOptions()));
 									config.enableWebjars();
 									config.accessManager(new AccessManager());
 						}
@@ -97,7 +103,7 @@ public class App {
 		app.get("/chain.pem", new Handler()
 		{
 			@Override
-/*			@OpenApi(
+			@OpenApi(
 					summary = "Get Chain",
 					method = HttpMethod.GET,
 					deprecated = false,
@@ -107,7 +113,7 @@ public class App {
 							@OpenApiResponse(status = "204") // No content
 					}
 			)
-*/			public void handle(@NotNull Context context) throws Exception
+			public void handle(@NotNull Context context) throws Exception
 			{
 				handlers.handleGetChain(context);
 			}
@@ -116,7 +122,7 @@ public class App {
 		app.get("/tsa.crt", new Handler()
 		{
 			@Override
-/*			@OpenApi(
+			@OpenApi(
 					summary = "Get Signer Certificate",
 					operationId = "getAllUsers",
 					method = HttpMethod.GET,
@@ -127,7 +133,7 @@ public class App {
 							@OpenApiResponse(status = "204") // No content
 					}
 			)
-*/			public void handle(@NotNull Context context) throws Exception
+			public void handle(@NotNull Context context) throws Exception
 			{
 				handlers.handleGetSignerCert(context);
 			}
@@ -136,7 +142,7 @@ public class App {
 		app.get("/tsa.conf", new Handler()
 		{
 			@Override
-/*			@OpenApi(
+			@OpenApi(
 					summary = "Get TSA Configuration",
 					method = HttpMethod.GET,
 					deprecated = false,
@@ -146,7 +152,7 @@ public class App {
 							@OpenApiResponse(status = "204") // No content
 					}
 			)
-*/			public void handle(@NotNull Context context) throws Exception
+			public void handle(@NotNull Context context) throws Exception
 			{
 				handlers.handleGetTsaConf(context);
 			}
@@ -155,7 +161,7 @@ public class App {
 		app.post("/query", new Handler()
 		{
 			@Override
-/*			@OpenApi(
+			@OpenApi(
 					summary = "Query Timestamps",
 					deprecated = false,
 					formParams = {
@@ -169,7 +175,7 @@ public class App {
 							@OpenApiResponse(status = "204") // No content
 					}
 			)
-*/			public void handle(@NotNull Context context) throws Exception
+			public void handle(@NotNull Context context) throws Exception
 			{
 				handlers.handlePostQuery(context);
 			}
@@ -177,7 +183,7 @@ public class App {
 		app.post("/", new Handler()
 		{
 			@Override
-/*			@OpenApi(
+			@OpenApi(
 					summary = "Create Timestamps",
 					deprecated = false,
 					fileUploads = {
@@ -190,7 +196,7 @@ public class App {
 							@OpenApiResponse(status = "204") // No content
 					}
 			)
-*/			public void handle(@NotNull Context context) throws Exception
+			public void handle(@NotNull Context context) throws Exception
 			{
 				handlers.handlePost(context);
 			}
@@ -200,7 +206,7 @@ public class App {
 		app.get("/admin/totalNumber", new Handler()
 		{
 			@Override
-/*			@OpenApi(
+			@OpenApi(
 					summary = "Assess Total Number of Timestamps in Database",
 					deprecated = false,
 					responses = {
@@ -208,7 +214,7 @@ public class App {
 							@OpenApiResponse(status = "204") // No content
 					}
 			)
-*/			public void handle(@NotNull Context context) throws Exception
+			public void handle(@NotNull Context context) throws Exception
 			{
 				adminHandlers.handlePostTotalNumber(context);
 			}
@@ -216,7 +222,7 @@ public class App {
 		app.get("/admin/youngest", new Handler()
 		{
 			@Override
-/*			@OpenApi(
+			@OpenApi(
 					summary = "Assess Total Number of Timestamps in Database",
 					deprecated = false,
 					responses = {
@@ -224,7 +230,7 @@ public class App {
 							@OpenApiResponse(status = "204") // No content
 					}
 			)
-*/			public void handle(@NotNull Context context) throws Exception
+			public void handle(@NotNull Context context) throws Exception
 			{
 				adminHandlers.handlePostYoungest(context);
 			}
@@ -249,15 +255,16 @@ public class App {
 		});
 		return app;
 	}
-/*	private static OpenApiOptions getOpenApiOptions()
+	private static OpenApiOptions getOpenApiOptions()
 	{
 		Info applicationInfo = new Info()
 			.version("1.6.0-SNAPSHOT")
 			.description("de.elbosso.tools.rfc3161timestampingserver");
 		return new OpenApiOptions(applicationInfo)
-				.path("/open-api-spec").roles(new java.util.HashSet<Role>(java.util.Arrays.asList(Roles.values())))
+				.path("/open-api-spec").roles(Roles.values())
+				.activateAnnotationScanningFor("de.elbosso.tools.rfc3161timestampingserver")
 				.swagger(new SwaggerOptions("/try-it").title("de.elbosso.tools.rfc3161timestampingserver - try it!"))
-//				.reDoc(new ReDocOptions("/redoc").title("My ReDoc Documentation"))
+				.reDoc(new ReDocOptions("/redoc").title("My ReDoc Documentation"))
 		;
 	}
-*/}
+}
