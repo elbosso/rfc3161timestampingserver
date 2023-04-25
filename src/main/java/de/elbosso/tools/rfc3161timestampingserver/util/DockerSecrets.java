@@ -1,5 +1,7 @@
 package de.elbosso.tools.rfc3161timestampingserver.util;
 
+import jdk.jshell.execution.Util;
+
 public class DockerSecrets
 {
 	private static final org.slf4j.Logger CLASS_LOGGER=org.slf4j.LoggerFactory.getLogger(DockerSecrets.class);
@@ -14,7 +16,7 @@ public class DockerSecrets
             if (url != null)
             {
                 java.io.InputStream is = url.openStream();
-                pw = de.elbosso.util.Utilities.readIntoString(is).trim();
+                pw = de.elbosso.util.io.Utilities.readIntoString(is).trim();
                 is.close();
             }
         }
@@ -23,7 +25,7 @@ public class DockerSecrets
             CLASS_LOGGER.error(exp.getMessage(),exp);
         }
         if(pw==null)
-            pw=System.getenv(envPropertyName)!=null?System.getenv(envPropertyName):fallback;
+            pw= Utilities.getEnvSysPropertyFallback(envPropertyName,fallback);
         return pw;
     }
 }

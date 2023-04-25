@@ -2,7 +2,7 @@ package de.elbosso.tools.rfc3161timestampingserver;
 
 import de.elbosso.tools.rfc3161timestampingserver.util.DockerSecrets;
 import io.javalin.core.security.BasicAuthCredentials;
-import io.javalin.core.security.Role;
+import io.javalin.core.security.RouteRole;
 import io.javalin.core.util.Header;
 import io.javalin.http.Context;
 import io.javalin.http.Handler;
@@ -16,11 +16,11 @@ public class AccessManager extends java.lang.Object implements io.javalin.core.s
     private static final String ADMINUSERNAME = "admin";
 
     @Override
-    public void manage(@NotNull Handler handler, @NotNull Context ctx, @NotNull Set<Role> permittedRoles) throws Exception
+    public void manage(@NotNull Handler handler, @NotNull Context ctx, @NotNull java.util.Set<RouteRole> permittedRoles) throws Exception
     {
         if(permittedRoles.contains(Roles.ANYONE))
             handler.handle(ctx);
-        Role userRole = getUserRole(ctx);
+        RouteRole userRole = getUserRole(ctx);
         if (permittedRoles.contains(userRole)) {
             handler.handle(ctx);
         } else {
@@ -29,8 +29,8 @@ public class AccessManager extends java.lang.Object implements io.javalin.core.s
             throw new UnauthorizedResponse();
         }
     }
-    Role getUserRole(Context ctx) {
-        Role rv=Roles.ANYONE;
+    RouteRole getUserRole(Context ctx) {
+        RouteRole rv=Roles.ANYONE;
         try
         {
             BasicAuthCredentials basicAuthCredentials = ctx.basicAuthCredentials();

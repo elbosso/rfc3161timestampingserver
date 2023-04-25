@@ -10,7 +10,6 @@ import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junitpioneer.jupiter.SetEnvironmentVariable;
 
 import java.io.IOException;
 import java.security.Security;
@@ -41,11 +40,11 @@ public class TestPost
         handlers=new Handlers(df,cryptoResourceManager);
         java.io.ByteArrayOutputStream baos=new java.io.ByteArrayOutputStream();
         java.io.InputStream is=de.netsysit.util.ResourceLoader.getResourceAsStream("example.tsq");
-        de.elbosso.util.Utilities.copyBetweenStreams(is,baos,true);
+        de.elbosso.util.io.Utilities.copyBetweenStreams(is,baos,true);
         tsq=baos.toByteArray();
         baos=new java.io.ByteArrayOutputStream();
         is=de.netsysit.util.ResourceLoader.getResourceAsStream("example_nocert.tsq");
-        de.elbosso.util.Utilities.copyBetweenStreams(is,baos,true);
+        de.elbosso.util.io.Utilities.copyBetweenStreams(is,baos,true);
         tsq_nocert=baos.toByteArray();
         notsq="huhu".getBytes();
     }
@@ -114,7 +113,7 @@ public class TestPost
         when(df.createRfc3161timestampDao()).thenReturn(dao);
         when(ctx.contentType()).thenReturn("multipart/form-dataxyp");
         java.io.ByteArrayInputStream bais=new java.io.ByteArrayInputStream(tsq);
-        UploadedFile uploadedFile=new UploadedFile(bais,"application/timestamp-query",tsq.length,"example.tsq",".tsq",tsq.length);
+        UploadedFile uploadedFile=new UploadedFile(bais,"application/timestamp-query","example.tsq",".tsq",tsq.length);
         when(ctx.uploadedFile("tsq")).thenReturn(uploadedFile);
         when(cryptoResourceManager.getChainPem()).thenReturn(de.netsysit.util.ResourceLoader.getResource("rfc3161timestampingserver/priv/chain.pem"));
         when(cryptoResourceManager.getTsaCert()).thenReturn(de.netsysit.util.ResourceLoader.getResource("rfc3161timestampingserver/priv/tsa.crt"));
@@ -141,7 +140,7 @@ public class TestPost
         when(df.createRfc3161timestampDao()).thenReturn(dao);
         when(ctx.contentType()).thenReturn("multipart/form-dataxyp");
         java.io.ByteArrayInputStream bais=new java.io.ByteArrayInputStream(notsq);
-        UploadedFile uploadedFile=new UploadedFile(bais,"application/timestamp-query",notsq.length,"example.tsq",".tsq",tsq.length);
+        UploadedFile uploadedFile=new UploadedFile(bais,"application/timestamp-query","example.tsq",".tsq",notsq.length);
         when(ctx.uploadedFile("tsq")).thenReturn(uploadedFile);
         when(cryptoResourceManager.getTsaCert()).thenReturn(de.netsysit.util.ResourceLoader.getResource("rfc3161timestampingserver/priv/tsa.crt"));
         doNothing().when(dao).beginTransaction();
@@ -163,7 +162,7 @@ public class TestPost
         when(df.createRfc3161timestampDao()).thenReturn(dao);
         when(ctx.contentType()).thenReturn("multipart/form-dataxyp");
         java.io.ByteArrayInputStream bais=new java.io.ByteArrayInputStream(tsq_nocert);
-        UploadedFile uploadedFile=new UploadedFile(bais,"application/timestamp-query",tsq_nocert.length,"example_nocert.tsq",".tsq",tsq.length);
+        UploadedFile uploadedFile=new UploadedFile(bais,"application/timestamp-query","example_nocert.tsq",".tsq",tsq_nocert.length);
         when(ctx.uploadedFile("tsq")).thenReturn(uploadedFile);
         doNothing().when(dao).beginTransaction();
         when(cryptoResourceManager.getChainPem()).thenReturn(de.netsysit.util.ResourceLoader.getResource("rfc3161timestampingserver/priv/chain.pem"));
@@ -185,13 +184,13 @@ public class TestPost
         verify(dao).commitTransaction();
     }
     @Test
-    @SetEnvironmentVariable(key = Constants.INCLUDE_CRLS, value = "true")
     public void test_POST_formData_includeCRLs() throws Exception
     {
+        System.setProperty(Constants.INCLUDE_CRLS,"true");
         when(df.createRfc3161timestampDao()).thenReturn(dao);
         when(ctx.contentType()).thenReturn("multipart/form-dataxyp");
         java.io.ByteArrayInputStream bais=new java.io.ByteArrayInputStream(tsq);
-        UploadedFile uploadedFile=new UploadedFile(bais,"application/timestamp-query",tsq.length,"example.tsq",".tsq",tsq.length);
+        UploadedFile uploadedFile=new UploadedFile(bais,"application/timestamp-query","example.tsq",".tsq",tsq.length);
         when(ctx.uploadedFile("tsq")).thenReturn(uploadedFile);
         doNothing().when(dao).beginTransaction();
         when(cryptoResourceManager.getChainPem()).thenReturn(de.netsysit.util.ResourceLoader.getResource("rfc3161timestampingserver/priv/chain.pem"));
@@ -213,13 +212,13 @@ public class TestPost
         verify(dao).commitTransaction();
     }
     @Test
-    @SetEnvironmentVariable(key = Constants.INCLUDE_FULL_CHAIN, value = "true")
     public void test_POST_formData_includeFullChain() throws Exception
     {
+        System.setProperty(Constants.INCLUDE_FULL_CHAIN,"true");
         when(df.createRfc3161timestampDao()).thenReturn(dao);
         when(ctx.contentType()).thenReturn("multipart/form-dataxyp");
         java.io.ByteArrayInputStream bais=new java.io.ByteArrayInputStream(tsq);
-        UploadedFile uploadedFile=new UploadedFile(bais,"application/timestamp-query",tsq.length,"example.tsq",".tsq",tsq.length);
+        UploadedFile uploadedFile=new UploadedFile(bais,"application/timestamp-query","example.tsq",".tsq",tsq.length);
         when(ctx.uploadedFile("tsq")).thenReturn(uploadedFile);
         doNothing().when(dao).beginTransaction();
         when(cryptoResourceManager.getChainPem()).thenReturn(de.netsysit.util.ResourceLoader.getResource("rfc3161timestampingserver/priv/chain.pem"));

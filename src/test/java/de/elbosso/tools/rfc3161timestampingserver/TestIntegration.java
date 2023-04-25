@@ -2,23 +2,14 @@ package de.elbosso.tools.rfc3161timestampingserver;
 
 import de.elbosso.util.Utilities;
 import io.javalin.Javalin;
-import org.apache.hc.client5.http.auth.AuthCache;
-import org.apache.hc.client5.http.auth.AuthScope;
-import org.apache.hc.client5.http.auth.CredentialsProvider;
-import org.apache.hc.client5.http.auth.UsernamePasswordCredentials;
 import org.apache.hc.client5.http.classic.methods.HttpGet;
 import org.apache.hc.client5.http.classic.methods.HttpPost;
 import org.apache.hc.client5.http.classic.methods.HttpUriRequest;
 import org.apache.hc.client5.http.entity.EntityBuilder;
 import org.apache.hc.client5.http.entity.mime.HttpMultipartMode;
 import org.apache.hc.client5.http.entity.mime.MultipartEntityBuilder;
-import org.apache.hc.client5.http.impl.auth.BasicAuthCache;
-import org.apache.hc.client5.http.impl.auth.BasicCredentialsProvider;
-import org.apache.hc.client5.http.impl.auth.BasicScheme;
-import org.apache.hc.client5.http.impl.classic.CloseableHttpClient;
 import org.apache.hc.client5.http.impl.classic.CloseableHttpResponse;
 import org.apache.hc.client5.http.impl.classic.HttpClientBuilder;
-import org.apache.hc.client5.http.protocol.HttpClientContext;
 import org.apache.hc.core5.http.*;
 import org.bouncycastle.cert.X509CertificateHolder;
 import org.bouncycastle.cert.jcajce.JcaX509CertificateConverter;
@@ -36,7 +27,6 @@ import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-import org.junitpioneer.jupiter.SetEnvironmentVariable;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -65,6 +55,11 @@ public class TestIntegration
     static void setup()
     {
         Security.addProvider(BC);
+        System.setProperty(Constants.JDBC_URL,"jdbc:h2:mem:test");
+        System.setProperty(Constants.JDBC_PASSWORD,"");
+        System.setProperty(Constants.JDBC_USER,"sa");
+        System.setProperty(Constants.PERSISTENCE_UNIT_NAME,Constants.PERSISTENCE_UNIT_NAME_FOR_TESTS);
+        System.setProperty(Constants.ADMIN_PASSWORD, "!pw123");
         javalin=App.init(TEST_PORT);
     }
     @AfterAll
@@ -73,10 +68,6 @@ public class TestIntegration
         javalin.stop();
     }
     @Test
-    @SetEnvironmentVariable(key = Constants.JDBC_URL, value = "jdbc:h2:mem:test")
-    @SetEnvironmentVariable(key = Constants.JDBC_PASSWORD, value = "")
-    @SetEnvironmentVariable(key = Constants.JDBC_USER, value = "sa")
-    @SetEnvironmentVariable(key = Constants.PERSISTENCE_UNIT_NAME, value = "PERSISTENCE_UNIT_NAME_FOR_TESTS")
     public void test_Success() throws Exception
     {
         HttpUriRequest request=new HttpGet( "http://localhost:"+TEST_PORT+"/hguhu");
@@ -86,16 +77,12 @@ public class TestIntegration
         Assertions.assertEquals(HttpStatus.SC_NOT_FOUND,httpResponse.getCode());
     }
     @Test
-    @SetEnvironmentVariable(key = Constants.JDBC_URL, value = "jdbc:h2:mem:test")
-    @SetEnvironmentVariable(key = Constants.JDBC_PASSWORD, value = "")
-    @SetEnvironmentVariable(key = Constants.JDBC_USER, value = "sa")
-    @SetEnvironmentVariable(key = Constants.PERSISTENCE_UNIT_NAME, value = Constants.PERSISTENCE_UNIT_NAME_FOR_TESTS)
     public void test_SuccessMultiPart() throws Exception
     {
         HttpPost post = new HttpPost("http://localhost:"+TEST_PORT+"/");
         java.net.URL url=TestIntegration.class.getClassLoader().getResource("example.tsq");
         java.io.ByteArrayOutputStream baos = new java.io.ByteArrayOutputStream();
-        de.elbosso.util.Utilities.copyBetweenStreams(url.openStream(), baos, true);
+        de.elbosso.util.io.Utilities.copyBetweenStreams(url.openStream(), baos, true);
         MultipartEntityBuilder builder = MultipartEntityBuilder.create();
         builder.setMode(HttpMultipartMode.EXTENDED);
         builder.addBinaryBody("tsq", url.openStream(), ContentType.create("application/timestamp-query"), "query.tsq");
@@ -118,16 +105,12 @@ public class TestIntegration
         validate(request,response);
     }
     @Test
-    @SetEnvironmentVariable(key = Constants.JDBC_URL, value = "jdbc:h2:mem:test")
-    @SetEnvironmentVariable(key = Constants.JDBC_PASSWORD, value = "")
-    @SetEnvironmentVariable(key = Constants.JDBC_USER, value = "sa")
-    @SetEnvironmentVariable(key = Constants.PERSISTENCE_UNIT_NAME, value = Constants.PERSISTENCE_UNIT_NAME_FOR_TESTS)
     public void test_SuccessBody() throws Exception
     {
         HttpPost post = new HttpPost("http://localhost:" + TEST_PORT + "/");
         java.net.URL url = TestIntegration.class.getClassLoader().getResource("example.tsq");
         java.io.ByteArrayOutputStream baos = new java.io.ByteArrayOutputStream();
-        de.elbosso.util.Utilities.copyBetweenStreams(url.openStream(), baos, true);
+        de.elbosso.util.io.Utilities.copyBetweenStreams(url.openStream(), baos, true);
         post.setHeader("Content-type", "application/timestamp-query");
 
         post.setEntity(EntityBuilder.create().setBinary(baos.toByteArray()).build());
@@ -148,16 +131,12 @@ public class TestIntegration
         validate(request,response);
     }
     @Test
-    @SetEnvironmentVariable(key = Constants.JDBC_URL, value = "jdbc:h2:mem:test")
-    @SetEnvironmentVariable(key = Constants.JDBC_PASSWORD, value = "")
-    @SetEnvironmentVariable(key = Constants.JDBC_USER, value = "sa")
-    @SetEnvironmentVariable(key = Constants.PERSISTENCE_UNIT_NAME, value = Constants.PERSISTENCE_UNIT_NAME_FOR_TESTS)
     public void test_SuccessMultiPartNoCertificate() throws Exception
     {
         HttpPost post = new HttpPost("http://localhost:"+TEST_PORT+"/");
         java.net.URL url=TestIntegration.class.getClassLoader().getResource("example_nocert.tsq");
         java.io.ByteArrayOutputStream baos = new java.io.ByteArrayOutputStream();
-        de.elbosso.util.Utilities.copyBetweenStreams(url.openStream(), baos, true);
+        de.elbosso.util.io.Utilities.copyBetweenStreams(url.openStream(), baos, true);
         MultipartEntityBuilder builder = MultipartEntityBuilder.create();
         builder.setMode(HttpMultipartMode.EXTENDED);
         builder.addBinaryBody("tsq", url.openStream(), ContentType.create("application/timestamp-query"), "query.tsq");
@@ -180,16 +159,12 @@ public class TestIntegration
         validate(request,response);
     }
     @Test
-    @SetEnvironmentVariable(key = Constants.JDBC_URL, value = "jdbc:h2:mem:test")
-    @SetEnvironmentVariable(key = Constants.JDBC_PASSWORD, value = "")
-    @SetEnvironmentVariable(key = Constants.JDBC_USER, value = "sa")
-    @SetEnvironmentVariable(key = Constants.PERSISTENCE_UNIT_NAME, value = Constants.PERSISTENCE_UNIT_NAME_FOR_TESTS)
     public void test_SuccessBodyNoCertificate() throws Exception
     {
         HttpPost post = new HttpPost("http://localhost:" + TEST_PORT + "/");
         java.net.URL url = TestIntegration.class.getClassLoader().getResource("example.tsq");
         java.io.ByteArrayOutputStream baos = new java.io.ByteArrayOutputStream();
-        de.elbosso.util.Utilities.copyBetweenStreams(url.openStream(), baos, true);
+        de.elbosso.util.io.Utilities.copyBetweenStreams(url.openStream(), baos, true);
         post.setHeader("Content-type", "application/timestamp-query");
 
         post.setEntity(EntityBuilder.create().setBinary(baos.toByteArray()).build());
@@ -210,16 +185,12 @@ public class TestIntegration
         validate(request,response);
     }
     @Test
-    @SetEnvironmentVariable(key = Constants.JDBC_URL, value = "jdbc:h2:mem:test")
-    @SetEnvironmentVariable(key = Constants.JDBC_PASSWORD, value = "")
-    @SetEnvironmentVariable(key = Constants.JDBC_USER, value = "sa")
-    @SetEnvironmentVariable(key = Constants.PERSISTENCE_UNIT_NAME, value = Constants.PERSISTENCE_UNIT_NAME_FOR_TESTS)
     public void test_SuccessMultiPartQuery_msgDigestBase64() throws Exception
     {
         HttpPost post = new HttpPost("http://localhost:"+TEST_PORT+"/");
         java.net.URL url=TestIntegration.class.getClassLoader().getResource("example.tsq");
         java.io.ByteArrayOutputStream baos = new java.io.ByteArrayOutputStream();
-        de.elbosso.util.Utilities.copyBetweenStreams(url.openStream(), baos, true);
+        de.elbosso.util.io.Utilities.copyBetweenStreams(url.openStream(), baos, true);
         MultipartEntityBuilder builder = MultipartEntityBuilder.create();
         builder.setMode(HttpMultipartMode.EXTENDED);
         builder.addBinaryBody("tsq", url.openStream(), ContentType.create("application/timestamp-query"), "query.tsq");
@@ -256,16 +227,12 @@ public class TestIntegration
         validate(request,response);
     }
     @Test
-    @SetEnvironmentVariable(key = Constants.JDBC_URL, value = "jdbc:h2:mem:test")
-    @SetEnvironmentVariable(key = Constants.JDBC_PASSWORD, value = "")
-    @SetEnvironmentVariable(key = Constants.JDBC_USER, value = "sa")
-    @SetEnvironmentVariable(key = Constants.PERSISTENCE_UNIT_NAME, value = Constants.PERSISTENCE_UNIT_NAME_FOR_TESTS)
     public void test_SuccessMultiPartQuery_msgDigestBase64_NotFound() throws Exception
     {
         HttpPost post = new HttpPost("http://localhost:"+TEST_PORT+"/");
         java.net.URL url=TestIntegration.class.getClassLoader().getResource("example.tsq");
         java.io.ByteArrayOutputStream baos = new java.io.ByteArrayOutputStream();
-        de.elbosso.util.Utilities.copyBetweenStreams(url.openStream(), baos, true);
+        de.elbosso.util.io.Utilities.copyBetweenStreams(url.openStream(), baos, true);
         MultipartEntityBuilder builder = MultipartEntityBuilder.create();
         builder.setMode(HttpMultipartMode.EXTENDED);
         builder.addBinaryBody("tsq", url.openStream(), ContentType.create("application/timestamp-query"), "query.tsq");
@@ -296,16 +263,12 @@ public class TestIntegration
 
     }
     @Test
-    @SetEnvironmentVariable(key = Constants.JDBC_URL, value = "jdbc:h2:mem:test")
-    @SetEnvironmentVariable(key = Constants.JDBC_PASSWORD, value = "")
-    @SetEnvironmentVariable(key = Constants.JDBC_USER, value = "sa")
-    @SetEnvironmentVariable(key = Constants.PERSISTENCE_UNIT_NAME, value = Constants.PERSISTENCE_UNIT_NAME_FOR_TESTS)
     public void test_SuccessMultiPartQuery_msgDigestHex() throws Exception
     {
         HttpPost post = new HttpPost("http://localhost:"+TEST_PORT+"/");
         java.net.URL url=TestIntegration.class.getClassLoader().getResource("example.tsq");
         java.io.ByteArrayOutputStream baos = new java.io.ByteArrayOutputStream();
-        de.elbosso.util.Utilities.copyBetweenStreams(url.openStream(), baos, true);
+        de.elbosso.util.io.Utilities.copyBetweenStreams(url.openStream(), baos, true);
         MultipartEntityBuilder builder = MultipartEntityBuilder.create();
         builder.setMode(HttpMultipartMode.EXTENDED);
         builder.addBinaryBody("tsq", url.openStream(), ContentType.create("application/timestamp-query"), "query.tsq");
@@ -342,16 +305,12 @@ public class TestIntegration
         validate(request,response);
     }
     @Test
-    @SetEnvironmentVariable(key = Constants.JDBC_URL, value = "jdbc:h2:mem:test")
-    @SetEnvironmentVariable(key = Constants.JDBC_PASSWORD, value = "")
-    @SetEnvironmentVariable(key = Constants.JDBC_USER, value = "sa")
-    @SetEnvironmentVariable(key = Constants.PERSISTENCE_UNIT_NAME, value = Constants.PERSISTENCE_UNIT_NAME_FOR_TESTS)
     public void test_SuccessMultiPartQuery_msgDigestHex_NotFound() throws Exception
     {
         HttpPost post = new HttpPost("http://localhost:"+TEST_PORT+"/");
         java.net.URL url=TestIntegration.class.getClassLoader().getResource("example.tsq");
         java.io.ByteArrayOutputStream baos = new java.io.ByteArrayOutputStream();
-        de.elbosso.util.Utilities.copyBetweenStreams(url.openStream(), baos, true);
+        de.elbosso.util.io.Utilities.copyBetweenStreams(url.openStream(), baos, true);
         MultipartEntityBuilder builder = MultipartEntityBuilder.create();
         builder.setMode(HttpMultipartMode.EXTENDED);
         builder.addBinaryBody("tsq", url.openStream(), ContentType.create("application/timestamp-query"), "query.tsq");
@@ -383,10 +342,6 @@ public class TestIntegration
     }
 
     @Test
-    @SetEnvironmentVariable(key = Constants.JDBC_URL, value = "jdbc:h2:mem:test")
-    @SetEnvironmentVariable(key = Constants.JDBC_PASSWORD, value = "")
-    @SetEnvironmentVariable(key = Constants.JDBC_USER, value = "sa")
-    @SetEnvironmentVariable(key = Constants.PERSISTENCE_UNIT_NAME, value = Constants.PERSISTENCE_UNIT_NAME_FOR_TESTS)
     public void test_SuccessGetUnrestricted() throws Exception
     {
         HttpGet get = new HttpGet("http://localhost:"+TEST_PORT+"/");
@@ -398,10 +353,6 @@ public class TestIntegration
     }
 
     @Test
-    @SetEnvironmentVariable(key = Constants.JDBC_URL, value = "jdbc:h2:mem:test")
-    @SetEnvironmentVariable(key = Constants.JDBC_PASSWORD, value = "")
-    @SetEnvironmentVariable(key = Constants.JDBC_USER, value = "sa")
-    @SetEnvironmentVariable(key = Constants.PERSISTENCE_UNIT_NAME, value = Constants.PERSISTENCE_UNIT_NAME_FOR_TESTS)
     public void test_FailGetRestrictedNoAuth() throws Exception
     {
         HttpGet get = new HttpGet("http://localhost:"+TEST_PORT+"/admin/youngest");
@@ -413,11 +364,6 @@ public class TestIntegration
     }
 
     @Test
-    @SetEnvironmentVariable(key = Constants.JDBC_URL, value = "jdbc:h2:mem:test")
-    @SetEnvironmentVariable(key = Constants.JDBC_PASSWORD, value = "")
-    @SetEnvironmentVariable(key = Constants.JDBC_USER, value = "sa")
-    @SetEnvironmentVariable(key = Constants.PERSISTENCE_UNIT_NAME, value = Constants.PERSISTENCE_UNIT_NAME_FOR_TESTS)
-    @SetEnvironmentVariable(key = Constants.ADMIN_PASSWORD, value = "!pw123")
     public void test_FailGetRestrictedNoPassword() throws Exception
     {
         HttpGet get = new HttpGet("http://localhost:"+TEST_PORT+"/admin/youngest");
@@ -432,11 +378,6 @@ public class TestIntegration
     }
 
     @Test
-    @SetEnvironmentVariable(key = Constants.JDBC_URL, value = "jdbc:h2:mem:test")
-    @SetEnvironmentVariable(key = Constants.JDBC_PASSWORD, value = "")
-    @SetEnvironmentVariable(key = Constants.JDBC_USER, value = "sa")
-    @SetEnvironmentVariable(key = Constants.PERSISTENCE_UNIT_NAME, value = Constants.PERSISTENCE_UNIT_NAME_FOR_TESTS)
-    @SetEnvironmentVariable(key = Constants.ADMIN_PASSWORD, value = "!pw123")
     public void test_FailGetRestrictedWrongPassword() throws Exception
     {
         HttpGet get = new HttpGet("http://localhost:"+TEST_PORT+"/admin/youngest");
@@ -451,11 +392,6 @@ public class TestIntegration
     }
 
     @Test
-    @SetEnvironmentVariable(key = Constants.JDBC_URL, value = "jdbc:h2:mem:test")
-    @SetEnvironmentVariable(key = Constants.JDBC_PASSWORD, value = "")
-    @SetEnvironmentVariable(key = Constants.JDBC_USER, value = "sa")
-    @SetEnvironmentVariable(key = Constants.PERSISTENCE_UNIT_NAME, value = Constants.PERSISTENCE_UNIT_NAME_FOR_TESTS)
-    @SetEnvironmentVariable(key = Constants.ADMIN_PASSWORD, value = "!pw123")
     public void test_FailGetRestrictedWrongUsername() throws Exception
     {
         HttpGet get = new HttpGet("http://localhost:"+TEST_PORT+"/admin/youngest");
@@ -470,17 +406,12 @@ public class TestIntegration
     }
 
     @Test
-    @SetEnvironmentVariable(key = Constants.JDBC_URL, value = "jdbc:h2:mem:test")
-    @SetEnvironmentVariable(key = Constants.JDBC_PASSWORD, value = "")
-    @SetEnvironmentVariable(key = Constants.JDBC_USER, value = "sa")
-    @SetEnvironmentVariable(key = Constants.PERSISTENCE_UNIT_NAME, value = Constants.PERSISTENCE_UNIT_NAME_FOR_TESTS)
-    @SetEnvironmentVariable(key = Constants.ADMIN_PASSWORD, value = "!pw123")
     public void test_SuccessGetRestricted() throws Exception
     {
         HttpPost post = new HttpPost("http://localhost:"+TEST_PORT+"/");
         java.net.URL url=TestIntegration.class.getClassLoader().getResource("example.tsq");
         java.io.ByteArrayOutputStream baos = new java.io.ByteArrayOutputStream();
-        de.elbosso.util.Utilities.copyBetweenStreams(url.openStream(), baos, true);
+        de.elbosso.util.io.Utilities.copyBetweenStreams(url.openStream(), baos, true);
         MultipartEntityBuilder builder = MultipartEntityBuilder.create();
         builder.setMode(HttpMultipartMode.EXTENDED);
         builder.addBinaryBody("tsq", url.openStream(), ContentType.create("application/timestamp-query"), "query.tsq");
@@ -555,11 +486,11 @@ public class TestIntegration
         List<String> crlUrls=new java.util.LinkedList();
         for(X509Certificate cert:chainCerts)
         {
-            crlUrls.addAll(de.elbosso.util.security.Utilities.getCrlDistributionPoints(cert));
+            crlUrls.addAll(de.elbosso.util.security.X509ExtensionUtilities.getCrlDistributionPoints(cert));
         }
         if(request.getCertReq()==true)
         {
-            crlUrls.addAll(de.elbosso.util.security.Utilities.getCrlDistributionPoints(tsaCert));
+            crlUrls.addAll(de.elbosso.util.security.X509ExtensionUtilities.getCrlDistributionPoints(tsaCert));
         }
         Collection<X509CRL> crls=new java.util.LinkedList();
         for (String surl : crlUrls)

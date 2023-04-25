@@ -24,17 +24,18 @@ public class PersistenceManager
 	private PersistenceManager()
 	{
 	}
+
 	private synchronized void ensureEmFactory()
 	{
 		if(emFactory==null)
 		{
 			java.lang.String pw=DockerSecrets.readPassword(Constants.JDBC_PASSWORD_FILE,Constants.JDBC_PASSWORD,"xxx");
 			java.util.Map<java.lang.String, java.lang.String> emConfig=new java.util.HashMap();
-			emConfig.put(Constants.JDBC_URL, System.getenv(Constants.JDBC_URL)!=null?System.getenv(Constants.JDBC_URL): Constants.JDBC_DEFAULT_URL);
-			emConfig.put(Constants.JDBC_USER, System.getenv(Constants.JDBC_USER)!=null?System.getenv(Constants.JDBC_USER):"xxx");
+			emConfig.put(Constants.JDBC_URL, Utilities.getEnvSysPropertyFallback(Constants.JDBC_URL,Constants.JDBC_DEFAULT_URL));
+			emConfig.put(Constants.JDBC_USER, Utilities.getEnvSysPropertyFallback(Constants.JDBC_USER,"xxx"));
 			emConfig.put(Constants.JDBC_PASSWORD, pw);
 			// "rfc3161timestampingserver" is the value of the name attribute of the persistence-unit element.
-			emFactory = Persistence.createEntityManagerFactory(System.getenv(Constants.PERSISTENCE_UNIT_NAME)!=null?System.getenv(Constants.PERSISTENCE_UNIT_NAME):Constants.PERSISTENCE_UNIT_NAME_DEFAULT,emConfig);
+			emFactory = Persistence.createEntityManagerFactory(Utilities.getEnvSysPropertyFallback(Constants.PERSISTENCE_UNIT_NAME,Constants.PERSISTENCE_UNIT_NAME_DEFAULT),emConfig);
 		}
 	}
 

@@ -5,9 +5,7 @@ import de.elbosso.tools.rfc3161timestampingserver.dao.Rfc3161timestampDao;
 import de.elbosso.tools.rfc3161timestampingserver.domain.Rfc3161timestamp;
 import de.elbosso.tools.rfc3161timestampingserver.service.CryptoResourceManager;
 import io.javalin.http.Context;
-import io.javalin.http.InternalServerErrorResponse;
 import io.javalin.http.UploadedFile;
-import io.javalin.plugin.openapi.annotations.*;
 import io.micrometer.core.instrument.Metrics;
 import org.bouncycastle.asn1.ASN1ObjectIdentifier;
 import org.bouncycastle.asn1.nist.NISTObjectIdentifiers;
@@ -22,7 +20,6 @@ import org.bouncycastle.operator.DigestCalculatorProvider;
 import org.bouncycastle.operator.OperatorCreationException;
 import org.bouncycastle.operator.jcajce.JcaDigestCalculatorProviderBuilder;
 import org.bouncycastle.tsp.*;
-import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -55,7 +52,7 @@ public class Handlers extends java.lang.Object implements Constants
         java.net.URL url=cryptoResourceManager.getChainPem();
         java.io.InputStream is=url.openStream();
         java.io.ByteArrayOutputStream baos=new java.io.ByteArrayOutputStream();
-        de.elbosso.util.Utilities.copyBetweenStreams(is,baos,true);
+        de.elbosso.util.io.Utilities.copyBetweenStreams(is,baos,true);
         byte[] content=baos.toByteArray();
         ctx.status(201);
         ctx.contentType("application/pkcs7-mime");
@@ -68,7 +65,7 @@ public class Handlers extends java.lang.Object implements Constants
         java.net.URL url=cryptoResourceManager.getTsaCert();
         java.io.InputStream is=url.openStream();
         java.io.ByteArrayOutputStream baos=new java.io.ByteArrayOutputStream();
-        de.elbosso.util.Utilities.copyBetweenStreams(is,baos,true);
+        de.elbosso.util.io.Utilities.copyBetweenStreams(is,baos,true);
         byte[] content=baos.toByteArray();
         ctx.status(201);
         ctx.contentType("application/pkix-cert");
@@ -81,7 +78,7 @@ public class Handlers extends java.lang.Object implements Constants
         java.net.URL url=cryptoResourceManager.getTsaConf();
         java.io.InputStream is=url.openStream();
         java.io.ByteArrayOutputStream baos=new java.io.ByteArrayOutputStream();
-        de.elbosso.util.Utilities.copyBetweenStreams(is,baos,true);
+        de.elbosso.util.io.Utilities.copyBetweenStreams(is,baos,true);
         byte[] content=baos.toByteArray();
         ctx.status(201);
         ctx.contentType("text/plain");
@@ -243,10 +240,10 @@ public class Handlers extends java.lang.Object implements Constants
             UploadedFile uploadedFile=ctx.uploadedFile("tsq");
             if(uploadedFile!=null)
             {
-                CLASS_LOGGER.debug("found it - timestamp query length is "+uploadedFile.getContentLength());
+                CLASS_LOGGER.debug("found it - timestamp query length is "+uploadedFile.getSize());
                 java.io.InputStream is=ctx.uploadedFile("tsq").getContent();
                 java.io.ByteArrayOutputStream baos=new java.io.ByteArrayOutputStream();
-                de.elbosso.util.Utilities.copyBetweenStreams(is,baos,true);
+                de.elbosso.util.io.Utilities.copyBetweenStreams(is,baos,true);
                 tsq=baos.toByteArray();
             }
             //curl -F "file=@../../work/expect-dialog-ca.git/_priv/create_ca.sh.tsq" http://localhost:7000/
@@ -277,7 +274,7 @@ public class Handlers extends java.lang.Object implements Constants
                 Rfc3161timestamp rfc3161Timestamp=new Rfc3161timestamp();
                 rfc3161Timestamp.setCreation_date(java.sql.Timestamp.from(Clock.systemUTC().instant()));
                 rfc3161Timestamp.setMessage_imprint_alg_oid(timeStampRequest.getMessageImprintAlgOID().getId());
-                rfc3161Timestamp.setMessage_imprint_digest_base64(de.elbosso.util.Utilities.base64Encode(timeStampRequest.getMessageImprintDigest()));
+                rfc3161Timestamp.setMessage_imprint_digest_base64(new java.lang.String(java.util.Base64.getEncoder().encode(timeStampRequest.getMessageImprintDigest())));
                 rfc3161Timestamp.setMessage_imprint_digest_hex(de.elbosso.util.Utilities.formatHexDump(timeStampRequest.getMessageImprintDigest(),false).toUpperCase());
                 timestampDao.persist(rfc3161Timestamp);
 
@@ -290,7 +287,7 @@ public class Handlers extends java.lang.Object implements Constants
                     CLASS_LOGGER.debug("Timestamp Response created - length: " + tsr.length);
 
                 
-                    CLASS_LOGGER.debug("Response (Base64): " + de.elbosso.util.Utilities.base64Encode(tsr));
+                    CLASS_LOGGER.debug("Response (Base64): " + new java.lang.String(java.util.Base64.getEncoder().encode(tsr)));
 
                 ctx.status(201);
                 ctx.contentType("application/timestamp-reply");
@@ -375,7 +372,7 @@ public class Handlers extends java.lang.Object implements Constants
         
             CLASS_LOGGER.debug("Message imprint: " + timeStampRequest.getMessageImprintAlgOID().getId() + " " + de.elbosso.util.Utilities.formatHexDump(timeStampRequest.getMessageImprintDigest(), true));
         
-            CLASS_LOGGER.debug("Message imprint (Base64): " + timeStampRequest.getMessageImprintAlgOID().getId() + " " + de.elbosso.util.Utilities.base64Encode(timeStampRequest.getMessageImprintDigest()));
+            CLASS_LOGGER.debug("Message imprint (Base64): " + timeStampRequest.getMessageImprintAlgOID().getId() + " " + new java.lang.String(java.util.Base64.getEncoder().encode(timeStampRequest.getMessageImprintDigest())));
 
         byte[] tsr = tsRespGen.generateGrantedResponse(timeStampRequest, rfc3161Timestamp.getId().toBigInteger(), rfc3161Timestamp.getCreation_date()).getEncoded();
         return tsr;
@@ -403,7 +400,7 @@ public class Handlers extends java.lang.Object implements Constants
         url=cryptoResourceManager.getPrivateKey();
          CLASS_LOGGER.debug("Loading TSA private key from " + url);
         is = url.openStream();
-        java.lang.String privateKeyPEM = de.elbosso.util.Utilities.readIntoString(is, StandardCharsets.UTF_8);
+        java.lang.String privateKeyPEM = de.elbosso.util.io.Utilities.readIntoString(is, StandardCharsets.UTF_8);
         is.close();
 
         // strip of header, footer, newlines, whitespaces
