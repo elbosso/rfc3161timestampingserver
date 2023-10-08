@@ -42,6 +42,9 @@ material, namely*
  
 *all inside the directory _src/main/resources/rfc3161timestampingserver/priv_.*
 
+**And of course the computer you are running this on is always synchronized with a time source like GPS or the
+[PTB](https://www.ptb.de/cms/ptb/fachabteilungen/abt4/fb-44/ag-441.html).**
+
 The easiest way to get these files is to use a Certificate Authority
 managed by project [expect-dialog-ca](https://github.com/elbosso/expect-dialog-ca).
 Another advantage of using this project is that you get a configuration file
